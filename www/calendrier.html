@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Aurelie Orellana, Cabinet Kiné à Aulnay-sous-bois</title>
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css"/>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/radio.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,800,700,300' rel='stylesheet'
+          type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=BenchNine:300,400,700' rel='stylesheet' type='text/css'>
+    <script>
+        window.onload = redirect;
+
+        function redirect() {
+            if (readCookie('session') == '') {
+                window.location.href = ("/rendez-vous.html");
+            }
+            if (readCookie('admin') == '1') {
+                window.location.href = ("/moncalendrier.html");
+            }
+        }
+
+        function readCookie(name) {
+            var i, c, ca, nameEQ = name + "=";
+            ca = document.cookie.split(';');
+            for (i = 0; i < ca.length; i++) {
+                c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1, c.length);
+                }
+                if (c.indexOf(nameEQ) == 0) {
+                    return c.substring(nameEQ.length, c.length);
+                }
+            }
+            return '';
+        }
+
+        function delete_cookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            window.location.href = ("/rendez-vous.html");
+        }
+    </script>
+    <script src="js/modernizr.js"></script>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+
+    <![endif]-->
+
+</head>
+<body>
+
+<!-- ====================================================
+header section -->
+<header class="top-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-5 header-logo">
+
+            </div>
+
+            <div class="col-md-7">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid nav-bar">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a class="menu" href="index.html">Présentation</a></li>
+                                <li><a class="menu active" href="rendez-vous.html">Rendez-vous</a></li>
+                                <li><a class="menu" href="profil.html">Mon Profil</a></li>
+                                <li><a class="menu" href="contact.html">Contact</a></li>
+                                <li><a class="menu" href="#" onclick="delete_cookie('session')">Deconnexion</a></li>
+                            </ul>
+                        </div><!-- /navbar-collapse -->
+                    </div><!-- / .container-fluid -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header> <!-- end of header area -->
+
+<section class="about text-center" id="calendar">
+    <div class="container">
+        <div class="row">
+            <h2>Rendez-vous</h2>
+            <div id="testa" style="overflow:hidden; ">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="datetimepicker"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 id="current-jour"></h3>
+                            <div class="row">
+                                <form name="form1">
+                                    <div class="col-xs-2">
+                                        <div class="radiobtn">
+                                            <input type="radio" id="dewey1"
+                                                   name="drone" value="dewey1"/>
+                                            <label for="dewey1">12h30</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radiobtn">
+                                            <input type="radio" id="dewey2"
+                                                   name="drone" value="dewey2"/>
+                                            <label for="dewey2">12h45</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radiobtn">
+                                            <input type="radio" id="dewey3"
+                                                   name="drone" value="dewey3"/>
+                                            <label for="dewey3">13h00</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radiobtn">
+                                            <input type="radio" id="dewey4"
+                                                   name="drone" value="dewey4"/>
+                                            <label for="dewey4">13h15</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radiobtn">
+                                            <input type="radio" id="dewey5"
+                                                   name="drone" value="dewey5"/>
+                                            <label for="dewey5">13h30</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radiobtn">
+                                            <input type="radio" id="dewey6"
+                                                   name="drone" value="dewey6"/>
+                                            <label for="dewey6">13h45</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radiobtn">
+                                            <input type="radio" id="dewey7"
+                                                   name="drone" value="dewey7"/>
+                                            <label for="dewey7">14h00</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <input type="button" id="buttonRDV" value="Prendre Rendez-vous">
+                        </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+
+                </script>
+            </div>
+        </div>
+    </div>
+</section><!-- end of about section -->
+
+<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="padding-top: 100px">
+    <div class="modal-dialog" role="document">
+        <form class="form-signin">
+            <h3>Attention</h3>
+            <span id="dialog_title_span"></span>
+        </form>
+    </div>
+</div>
+
+<!-- footer starts here -->
+<footer class="footer clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 footer-para">
+                <p></p>
+            </div>
+            <div class="col-xs-6 text-right">
+                <a href=""><i class="fa fa-facebook"></i></a>
+                <a href=""><i class="fa fa-twitter"></i></a>
+                <a href=""><i class="fa fa-skype"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- script tags
+============================================================= -->
+
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/moment.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+
+    $("#buttonRDV").click(function () {
+        var radioValue = $("input[name='drone']:checked").val();
+        if (radioValue) {
+
+        } else {
+            $('#dialog_title_span').text("Aucune date sellectionné");
+            $('#modalMessage').modal('toggle');
+        }
+    });
+
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker').datetimepicker({
+            locale: 'fr',
+            inline: true,
+            sideBySide: true,
+            format: 'L'
+        });
+    });
+</script>
+</body>
+</html>

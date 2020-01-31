@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Aurelie Orellana, Cabinet Kiné à Aulnay-sous-bois</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,800,700,300' rel='stylesheet'
+          type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=BenchNine:300,400,700' rel='stylesheet' type='text/css'>
+    <script>
+        window.onload = redirect;
+
+        function redirect() {
+            if (readCookie('session') == '') {
+                window.location.href = ("/rendez-vous.html");
+            }
+
+            //from url redirection
+            if($_GET('id')){
+                $.ajax({
+                    url: 'http://51.178.55.94:8080/kineore_war/rest/cab/getcabid', // the file to call
+                    type: 'POST',
+                    data: 'id=' + $_GET('id'),
+                    success: function (data, textStatus, jqXHR) {
+                        console.log(data);
+                        $('#nomcab').text(data.name);
+                        $('#addresse').html('<i class="glyphicon glyphicon-map-marker"> </i>' + data.nomRue + ' <br> ' + data.ville + ', ' + data.codePostal);
+                        $('#pres').html(data.pres.replace(/\n/g, '<br>'));
+                        $('#rest').html('<i class="glyphicon glyphicon-phone"></i> '+data.phone+' <br/> <i class="glyphicon glyphicon-envelope"></i> '+data.email+'<br/> <a id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : '+data.paiment+' <br>Carte Vitale Accepté : '+data.cartevital+' <br> Tarifs : '+data.tarif+' <br> Conventionné : '+data.convention+'"> <i class="glyphicon glyphicon-info-sign"></i> Plus d\'infos </a>');
+                        $('#popinfo').popover({
+                            container: 'body'
+                        });
+                        //TODO ajouter redirection ver la page RDV du cabinet (java.service)
+                        $("#rdvlink").attr("href", "http://51.178.55.94:8080/kineore_war/rest/rdv/"+data.url);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                    }
+                });
+            }else { //from admin
+                $.ajax({
+                    url: 'http://51.178.55.94:8080/kineore_war/rest/cab/getcabprofil', // the file to call
+                    type: 'POST',
+                    data: {token: readCookie('session')},
+                    success: function (data, textStatus, jqXHR) {
+                        console.log(data);
+                        $('#nomcab').text(data.name);
+                        $('#addresse').html('<i class="glyphicon glyphicon-map-marker"> </i>' + data.nomRue + ' <br> ' + data.ville + ', ' + data.codePostal);
+                        $('#pres').html(data.pres.replace(/\n/g, '<br>'));
+                        $('#rest').html('<i class="glyphicon glyphicon-phone"></i> '+data.phone+' <br/> <i class="glyphicon glyphicon-envelope"></i> '+data.email+'<br/> <a id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : '+data.paiment+' <br>Carte Vitale Accepté : '+data.cartevital+' <br> Tarifs : '+data.tarif+' <br> Conventionné : '+data.convention+'"> <i class="glyphicon glyphicon-info-sign"></i> Plus d\'infos </a>');
+                        $('#popinfo').popover({
+                            container: 'body'
+                        });
+                        //TODO ajouter redirection ver la page RDV du cabinet (java.service)
+                        $("#rdvlink").attr("href", "http://51.178.55.94:8080/kineore_war/rest/rdv/"+data.url);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                    }
+                });
+            }
+
+        }
+
+        function readCookie(name) {
+            var i, c, ca, nameEQ = name + "=";
+            ca = document.cookie.split(';');
+            for (i = 0; i < ca.length; i++) {
+                c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1, c.length);
+                }
+                if (c.indexOf(nameEQ) == 0) {
+                    return c.substring(nameEQ.length, c.length);
+                }
+            }
+            return '';
+        }
+
+        function delete_cookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            window.location.href = ("/rendez-vous.html");
+        }
+    </script>
+    <script src="js/modernizr.js"></script>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+<!-- ====================================================
+header section -->
+<header class="top-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3 header-logo">
+            </div>
+
+            <div class="col-md-9">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid nav-bar">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a class="menu" href="moncalendrier.html">Mon Calendrier</a></li>
+                                <li><a class="menu active" href="#">Mon Cabinet</a></li>
+                                <li><a class="menu" href="profiladmin.html">Mon Compte</a></li>
+                                <li><a class="menu" href="#" onclick="delete_cookie('session')">Deconnexion</a></li>
+                            </ul>
+                        </div><!-- /navbar-collapse -->
+                    </div><!-- / .container-fluid -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header> <!-- end of header area -->
+
+<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="padding-top: 100px">
+    <div class="modal-dialog" role="document">
+        <form class="form-signin">
+            <h3>Veuillez patienter</h3>
+            <span id="dialog_title_span"></span>
+        </form>
+    </div>
+</div>
+
+
+<!-- about section -->
+<section class="about" id="about">
+    <div class="container">
+        <div class="row">
+            <div class="panel panel-primary" style="margin-top: 100px">
+                <div class="panel-heading text-center" style="font-size: 2.4rem" id="nomcab"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4" style="max-width: 230px">
+                            <div class="well well-sm">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12">
+                                        <img src="/img/member1.jpg" alt="" class="img-rounded img-responsive"
+                                             height="250" width="120"/>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12">
+                                        <br>
+                                        <p id="addresse"></p>
+                                        <p id="rest">
+
+                                        </p>
+                                        <br>
+                                        <p>
+                                            <a href="" id="rdvlink"><b> <i class="glyphicon glyphicon-calendar"></i> Prendre rendez-vous</b></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="well well-sm">
+                                <div class="row">
+
+                                    <p id="pres">
+                                    </p>
+
+                                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                        <!-- Indicators -->
+                                        <ol class="carousel-indicators">
+                                            <li data-slide-to="0"
+                                                class="active"></li>
+                                            <li data-slide-to="1"></li>
+                                            <li data-slide-to="2"></li>
+                                        </ol>
+
+                                        <!-- Wrapper for slides -->
+                                        <div class="carousel-inner" role="listbox">
+                                            <div class="item active">
+                                                <img src="/img/slide-one.jpg" alt="...">
+                                                <div class="carousel-caption">
+                                                </div>
+                                            </div>
+                                            <div class="item">
+                                                <img src="/img/slide-two.jpg" alt="...">
+                                                <div class="carousel-caption">
+                                                </div>
+                                            </div>
+                                            <div class="item">
+                                                <img src="/img/slide-three.jpg" alt="...">
+                                                <div class="carousel-caption">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Controls -->
+                                        <a class="left carousel-control" href="#carousel-example-generic" role="button"
+                                           data-slide="prev">
+                                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="right carousel-control" href="#carousel-example-generic" role="button"
+                                           data-slide="next">
+                                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section><!-- end of about section -->
+
+
+<div class="modal fade" id="modalSupp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="padding-top: 100px">
+    <div class="modal-dialog" role="document">
+        <form class="form-signin" id="suppForm" action="" method="post">
+            <h4>Suppression définitive de votre compte</h4>
+            <p>Attention, cette action est définitive et irréversible!</p>
+            <input type="password" class="form-control" name="mdp" id="mdp" placeholder="Mot de passe" required=""
+                   autofocus=""/>
+            <input type="token" id="token2" class="form-control" name="token" placeholder="token" required=""
+                   autofocus="" style="display: none"/>
+            <br>
+            <button class="btn btn-lg btn-danger btn-block" type="submit">Supprimer mon compte</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- footer starts here -->
+<footer class="footer clearfix" style="bottom: 0;width: 100%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 footer-para">
+                <p>&copy;</p>
+            </div>
+            <div class="col-xs-6 text-right">
+                <a href=""><i class="fa fa-facebook"></i></a>
+                <a href=""><i class="fa fa-twitter"></i></a>
+                <a href=""><i class="fa fa-skype"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- script tags
+============================================================= -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/smoothscroll.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/custom.js"></script>
+<script type="text/javascript">
+
+
+    $(function () {
+        $('.c').carousel();
+
+    })
+
+    function $_GET(param) {
+        var vars = {};
+        window.location.href.replace(location.hash, '').replace(
+            /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+            function (m, key, value) { // callback
+                vars[key] = value !== undefined ? value : '';
+            }
+        );
+
+        if (param) {
+            return vars[param] ? vars[param] : null;
+        }
+        return vars;
+    }
+</script>
+</body>
+</html>
