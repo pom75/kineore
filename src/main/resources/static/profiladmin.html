@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Aurelie Orellana, Cabinet Kiné à Aulnay-sous-bois</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        window.onload = redirect;
+
+        function redirect() {
+            if (readCookie('session') == '' || readCookie('admin') != '1') {
+                window.location.href = ("/rendez-vous.html");
+            }
+            if (readCookie('admin') == '0') {
+                window.location.href = ("/profil.html");
+            }
+
+            $.ajax({
+                url: '/login/getprofiladmin', // the file to call
+                type: 'POST',
+                data: 'token=' + readCookie('session'),
+                success: function (data, textStatus, jqXHR) {
+                    var jsonData = JSON.parse(data);
+                    $('#mail').val(jsonData.email);
+                    $('#num').val(jsonData.tel);
+                    $('#nom').val(jsonData.nom);
+                    $('#prenom').val(jsonData.prenom);
+                    $('#token').val(readCookie('session'));
+                    $('#token3').val(readCookie('session'));
+                    $('#token2').val(readCookie('session'));
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                }
+            });
+
+            $.ajax({
+                url: '/cab/getcabprofil', // the file to call
+                type: 'POST',
+                data: 'token=' + readCookie('session'),
+                success: function (data, textStatus, jqXHR) {
+                    var jsonData = JSON.parse(data);
+                    $('#vitale').val(jsonData.cartevital);
+                    $('#codepostal').val(jsonData.codePostal);
+                    $('#convention').val(jsonData.convention);
+                    $('#mailcab').val(jsonData.email);
+                    $('#nomcab').val(jsonData.name);
+                    $('#rue').val(jsonData.nomRue);
+                    $('#paiement').val(jsonData.paiment);
+                    $('#numcab').val(jsonData.phone);
+                    $('#tarifs').val(jsonData.tarif);
+                    $('#prescab').val(jsonData.pres);
+                    $('#urlcab').val(jsonData.url);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                }
+            });
+        }
+
+        function readCookie(name) {
+            var i, c, ca, nameEQ = name + "=";
+            ca = document.cookie.split(';');
+            for (i = 0; i < ca.length; i++) {
+                c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1, c.length);
+                }
+                if (c.indexOf(nameEQ) == 0) {
+                    return c.substring(nameEQ.length, c.length);
+                }
+            }
+            return '';
+        }
+
+        function delete_cookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            window.location.href = ("/rendez-vous.html");
+        }
+    </script>
+    <script src="js/modernizr.js"></script>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+<!-- ====================================================
+header section -->
+<header class="top-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3 header-logo">
+            </div>
+
+            <div class="col-md-9">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid nav-bar">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a class="menu" href="moncalendrier.html">Mon Calendrier</a></li>
+                                <li><a class="menu" href="moncabinet.html">Mon Cabinet</a></li>
+                                <li><a class="menu active" href="#">Mon Compte</a></li>
+                                <li><a class="menu" href="#" onclick="delete_cookie('session')">Deconnexion</a></li>
+                            </ul>
+                        </div><!-- /navbar-collapse -->
+                    </div><!-- / .container-fluid -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header> <!-- end of header area -->
+
+<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="padding-top: 100px">
+    <div class="modal-dialog" role="document">
+        <form class="form-signin">
+            <h3>Veuillez patienter</h3>
+            <span id="dialog_title_span"></span>
+        </form>
+    </div>
+</div>
+
+
+<!-- about section -->
+<section class="about text-center" id="about">
+    <div class="container">
+        <div class="row">
+            <ul class="nav nav-tabs" style="margin-top: 100px">
+                <li class="active"><a data-toggle="tab" href="#cab">Mon Cabinet</a></li>
+                <li><a data-toggle="tab" href="#profil">Profil</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="profil" class="tab-pane fade ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="font-size: 2.4rem">Mon Profil</div>
+                        <div class="panel-body">
+                            <div class="col-sm-6">
+                                <form id="changeProfil" action="" method="post">
+                                    <div class="row">
+                                        <div class="col-sm text-left">
+                                            <label class="text-left">Nom</label>
+                                            <input class="form-control" id="nom" value=""
+                                                   style="padding:5px;width: 200px; "
+                                                   readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Prenom</label>
+                                            <input class="form-control btn-group-sm" id="prenom"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Téléphone</label>
+                                            <input class="form-control btn-group-sm" id="num" name="num"
+                                                   pattern="[0][76][0-9]{8}$" style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Addresse mail</label>
+                                            <input class="form-control btn-group-sm" id="mail"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left" style="display: none">
+                                            <label>Token</label>
+                                            <input class="form-control btn-group-sm" id="token" name="token"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Mot de passe</label>
+                                            <input class="form-control btn-group-sm" id="mdp" name="mdp"
+                                                   pattern="^\S{6,}$" style="padding:5px;width: 200px; "
+                                                   placeholder="*********"
+                                                   value="" readonly>
+                                            <small id="mdpsmall" class="form-text text-muted">6 caractères minimum.
+                                            </small>
+
+                                        </div>
+                                        <br>
+                                        <div class="col-sm" id="modifBlock">
+                                            <button type="button" id="modif" class="btn btn-secondary pull-left">
+                                                Modifier le compte
+                                            </button>
+                                        </div>
+                                        <div class="col-sm" id="saveBlock" style="display: none">
+                                            <input type="submit" value="Enregistrer"
+                                                   class="btn btn-secondary pull-left">
+                                        </div>
+                                        <div class="col-sm">
+                                            <button type="button" id="supp" class="btn btn-danger pull-right">Supprimer
+                                                le compte
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div id="cab" class="tab-pane fade in active">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="font-size: 2.4rem">Mon Cabinet</div>
+                        <div class="panel-body">
+                            <div class="col-sm-6" id="mycab">
+                                <h3 class="text-left">Mes rendez-vous en attente de confirmation</h3>
+                                <div class="text-left" id="waitRDV">
+                                    <p>Aucun rendez-vous en attente de confirmation.</p>
+                                </div>
+                                <h3 class="text-left">Accepter un collaborateur dans mon cabinet</h3>
+                                <div class="text-left" id="waitCollab">
+                                    <p>Aucun collaborateur en attente de confirmation.</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <form id="changeCabinet" action="" method="post">
+                                    <div class="row" id="darwCab">
+                                        <div class="col-sm text-left">
+                                            <label class="text-left">Nom URL du cabinet</label>
+                                            <input class="form-control" name="urlcab" id="urlcab" value=""
+                                                   style="padding:5px;width: 200px; "
+                                                   readonly>
+                                            <small id="urcabsamll" class="form-text text-muted">
+                                                http://www.kinecab.com/cab/
+                                            </small>
+                                            <b>monCabinet</b>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Nom du Cabinet</label>
+                                            <input class="form-control btn-group-sm" id="nomcab" name="nomcab"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Présenation du Cabinet</label>
+                                            <textarea class="form-control btn-group-sm" rows="5" id="prescab"
+                                                      name="prescab" readonly></textarea>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Photos de présentation</label>
+                                            <input class="form-control btn-group-sm" id="photo" name="photo"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Téléphone</label>
+                                            <input class="form-control btn-group-sm" id="numcab" name="numcab"
+                                                   pattern="[0][716][0-9]{8}$" style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Addresse mail</label>
+                                            <input class="form-control btn-group-sm" id="mailcab" name="mailcab"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left" style="display: none">
+                                            <label>Token</label>
+                                            <input class="form-control btn-group-sm" id="token3" name="token"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Numéro et nom de rue</label>
+                                            <input class="form-control btn-group-sm" id="rue" name="rue"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Code postal</label>
+                                            <input class="form-control btn-group-sm" id="codepostal" name="codepostal"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+
+                                        <div class="col-sm text-left">
+                                            <label>Moyen de paiement</label>
+                                            <input class="form-control btn-group-sm" id="paiement" name="paiement"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+
+                                        <div class="col-sm text-left">
+                                            <label>Carte vitale accepté</label>
+                                            <input class="form-control btn-group-sm" id="vitale" name="vitale"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Tarifs</label>
+                                            <input class="form-control btn-group-sm" id="tarifs" name="tarifs"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <div class="col-sm text-left">
+                                            <label>Convenionné</label>
+                                            <input class="form-control btn-group-sm" id="convention" name="convention"
+                                                   style="padding:5px;width: 200px; "
+                                                   value="" readonly>
+                                        </div>
+                                        <br>
+                                        <div class="col-sm" id="modifBlock2">
+                                            <button type="button" id="modif2" class="btn btn-secondary pull-left">
+                                                Modifier le compte
+                                            </button>
+                                        </div>
+                                        <div class="col-sm" id="saveBlock2" style="display: none">
+                                            <input type="submit" value="Enregistrer"
+                                                   class="btn btn-secondary pull-left">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section><!-- end of about section -->
+
+
+<div class="modal fade" id="modalSupp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="padding-top: 100px">
+    <div class="modal-dialog" role="document">
+        <form class="form-signin" id="suppForm" action="" method="post">
+            <h4>Suppression définitive de votre compte</h4>
+            <p>Attention, cette action est définitive et irréversible!</p>
+            <input type="password" class="form-control" name="mdp" id="mdp2" placeholder="Mot de passe" required=""
+                   autofocus=""/>
+            <input type="token" id="token2" class="form-control" name="token" placeholder="token" required=""
+                   autofocus="" style="display: none"/>
+            <br>
+            <button class="btn btn-lg btn-danger btn-block" type="submit">Supprimer mon compte</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- footer starts here -->
+<footer class="footer clearfix" style="bottom: 0;width: 100%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 footer-para">
+                <p>&copy;</p>
+            </div>
+            <div class="col-xs-6 text-right">
+                <a href=""><i class="fa fa-facebook"></i></a>
+                <a href=""><i class="fa fa-twitter"></i></a>
+                <a href=""><i class="fa fa-skype"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- script tags
+============================================================= -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/smoothscroll.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/custom.js"></script>
+<script type="text/javascript">
+
+
+    $('#modif').click(function () {
+        jQuery('#modifBlock').css("display", "none");
+        jQuery('#saveBlock').css("display", "block");
+        $('#num').removeAttr('readonly');
+        $('#mdp').removeAttr('readonly');
+    });
+
+    $('#modif2').click(function () {
+        jQuery('#modifBlock2').css("display", "none");
+        jQuery('#saveBlock2').css("display", "block");
+        $('#nomcab').removeAttr('readonly');
+        $('#prescab').removeAttr('readonly');
+        $('#numcab').removeAttr('readonly');
+        $('#mailcab').removeAttr('readonly');
+        $('#rue').removeAttr('readonly');
+        $('#paiement').removeAttr('readonly');
+        $('#codepostal').removeAttr('readonly');
+        $('#vitale').removeAttr('readonly');
+        $('#tarifs').removeAttr('readonly');
+        $('#convention').removeAttr('readonly');
+    });
+
+    $('#supp').click(function () {
+        $('#modalSupp').modal('toggle');
+    });
+
+
+    $('#changeProfil').submit(function () {
+        $('#dialog_title_span').text("");
+        $('#modalMessage').modal('toggle');// catch the form's submit event
+        $.ajax({ // create an AJAX call...
+            data: $('#changeProfil').serialize(), // get the form data
+            type: 'POST',
+            url: '/login/changeprofiladmin', // the file to call
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                $('#dialog_title_span').text(jsonData.message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+        jQuery('#modifBlock').css("display", "block");
+        jQuery('#saveBlock').css("display", "none");
+        $('#num').attr('readonly', true);
+        $('#mdp').attr('readonly', true);
+        return false; // cancel original event to prevent form submitting
+    });
+
+    $('#changeCabinet').submit(function () {
+        $('#dialog_title_span').text("");
+        $('#modalMessage').modal('toggle');// catch the form's submit event
+        $.ajax({ // create an AJAX call...
+            data: $('#changeCabinet').serialize(), // get the form data
+            type: 'POST',
+            url: '/cab/updatecab', // the file to call
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                $('#dialog_title_span').text(jsonData.message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+        jQuery('#modifBlock').css("display", "block");
+        jQuery('#saveBlock').css("display", "none");
+        $('#num').attr('readonly', true);
+        $('#mdp').attr('readonly', true);
+        return false; // cancel original event to prevent form submitting
+    });
+
+    //Do nothing on submit
+    $("#suppForm").submit(function (e) {
+        e.preventDefault();
+    });
+
+    $('#suppForm').submit(function () {
+        $('#dialog_title_span').text("");
+        $('#modalSupp').modal('hide');
+        $('#modalMessage').modal('toggle');// catch the form's submit event
+        $.ajax({ // create an AJAX call...
+            data: $('#suppForm').serialize(), // get the form data
+            type: 'POST',
+            url: '/login/suppprofiladmin', // the file to call
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                $('#dialog_title_span').text(jsonData.message);
+                if (jsonData.status == "OK") {
+                    delete_cookie('session');
+                } else {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+    });
+</script>
+</body>
+</html>
