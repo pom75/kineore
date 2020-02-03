@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static com.kinecab.demo.db.LoginDB.*;
+import static com.kinecab.demo.util.MailUtil.*;
 
 
 @Controller
@@ -41,6 +42,7 @@ public class LoginService {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return new Message("FAIL", "Email ou mot de passe incorrecte "+e);
         }
     }
@@ -60,23 +62,24 @@ public class LoginService {
             try {
                 String token = passwordGenerator.generate(10);
                 LoginDB.savePersonTemp(new PersonTemp(nom, prenom, email, tel, password, token));
-                //sendEmail(email, NEW_PERSON_TITLE, NEW_PERSON_CONTENT.replace("xxx", token)); TODO
+                sendEmail(email, NEW_PERSON_TITLE, NEW_PERSON_CONTENT.replace("xxx", token));
             } catch (Exception e) {
+                e.printStackTrace();
                 return new Message("FAIL", "Mail déjà utilisé "+e);
             }
-            return new Message("OK", "Inscription Réussite. Vous allez recevoir un lien d'activation de votre compte par mail.");
+            return new Message("OK", "Inscription Réussite. Vous allez recevoir un lien d'activation de votre compte par mail. Pensez a regarder dans vos spams.");
 
         }
     }
 
     @RequestMapping(value = "/login/motdepasseoublier", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Message motDePasseOublier(@RequestParam("email") String email) {
+    public @ResponseBody Message motDePasseOublier(@RequestParam("email") String email) throws Exception {
         List<Person> personByEmail = getPersonByEmail(email);
         if (!personByEmail.isEmpty()) {
             String newPassword = newPassword(personByEmail.get(0));
             if (!newPassword.isEmpty()) {
-                //sendEmail(email, CHANGE_PASSWORD_TITLE, CHANGE_PASSWORD_CONTENT.replace("xxx", newPassword)); TODO
-                return new Message("OK", "Un nouveau mot de passe vas vous être envoyé d'ici 5 minutes");
+                sendEmail(email, CHANGE_PASSWORD_TITLE, CHANGE_PASSWORD_CONTENT.replace("xxx", newPassword));
+                return new Message("OK", "Un nouveau mot de passe vas vous être envoyé d'ici 5 minutes. Pensez à regarder dans vos spams.");
             }
             return new Message("FAIL", "Erreur pendant le changement de mot de passe");
         } else {

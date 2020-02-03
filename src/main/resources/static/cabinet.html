@@ -16,10 +16,6 @@
         window.onload = redirect;
 
         function redirect() {
-            if (readCookie('session') == '') {
-                window.location.href = ("/rendez-vous.html");
-            }
-
             //from url redirection
             if($_GET('id')){
                 $.ajax({

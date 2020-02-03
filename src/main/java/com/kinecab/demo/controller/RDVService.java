@@ -58,6 +58,7 @@ public class RDVService {
             final List<Event> rdvs = RDVDB.getRdvByTime(start,end,adminByToken.get(0).getId());
             return new GetRDV("OK","RAS",rdvs);
         }catch (Exception e){
+            e.printStackTrace();
             return new Message("OK", "Erreur pendant le chargement des rendez-vous."+e);
         }
     }
@@ -74,6 +75,7 @@ public class RDVService {
             RDVDB.removeRdvByIds(new JSONArray(idEvents),adminByToken.get(0).getId());
             return new Message("OK", "Evenement supprimé");
         }catch (Exception e){
+            e.printStackTrace();
             return  new Message("FAIL", "Erreur interne serveur "+e);
 
         }
@@ -90,7 +92,7 @@ public class RDVService {
             final List<Motif> motifByIdAdmin = RDVDB.getMotifByIdAdmin(adminByToken.get(0).getId());
             return new GetMotif("OK", "RAS",motifByIdAdmin);
         }catch (Exception e){
-            System.out.println(e);
+            e.printStackTrace();
             return new Message("FAIL", "Erreur pendant le chargement des Motifs."+e);
         }
     }
@@ -106,7 +108,7 @@ public class RDVService {
             final List<Person> people = RDVDB.getPersonByIdAdmin(adminByToken.get(0).getId());
             return new GetPerson("OK", "RAS",people);
         }catch (Exception e){
-            System.out.println(e);
+            e.printStackTrace();
             return new Message("OK", "Erreur pendant le chargement des patients."+e);
         }
     }

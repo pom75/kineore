@@ -7,7 +7,7 @@ import com.kinecab.demo.json.Message;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.reactive.result.view.RedirectView;
 
 import java.util.List;
 
@@ -84,7 +84,7 @@ public class CabService {
         RedirectView redirectView = new RedirectView();
         if (!cabByUrl.isEmpty()) {
             Cab cab = cabByUrl.get(0);
-            redirectView.setUrl("/cab.html?id=" + cab.getId());
+            redirectView.setUrl("/cabinet.html?id=" + cab.getId());
         } else {
             redirectView.setUrl("/notfound");
         }
