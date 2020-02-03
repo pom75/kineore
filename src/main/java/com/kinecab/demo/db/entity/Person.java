@@ -3,13 +3,10 @@ package com.kinecab.demo.db.entity;
 
 import com.google.common.hash.Hashing;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.nio.charset.StandardCharsets;
 
-@XmlRootElement
 @Entity
 public class Person {
 
@@ -18,6 +15,7 @@ public class Person {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column
@@ -48,6 +46,14 @@ public class Person {
         this.prenom = prenom;
         this.tel = tel;
         this.password = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
+    }
+
+    public Person(String nom, String prenom, String email, String tel) {
+        this.email = email;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.tel = tel;
+        this.password = null;
     }
 
     //~ ----------------------------------------------------------------------------------------------------------------

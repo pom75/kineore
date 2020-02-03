@@ -226,6 +226,13 @@ header section -->
                         <div class="panel-heading" style="font-size: 2.4rem">Mon Cabinet</div>
                         <div class="panel-body">
                             <div class="col-sm-6" id="mycab">
+                                <h3 class="text-left">Ajouter un nouveau patient</h3>
+                                <div class="text-left" id="addPatientz">
+                                    <button type="button" id="addPatient" class="btn btn-primary pull-left">Ajouter
+                                    </button>
+                                </div>
+                                <br>
+                                <br>
                                 <h3 class="text-left">Mes rendez-vous en attente de confirmation</h3>
                                 <div class="text-left" id="waitRDV">
                                     <p>Aucun rendez-vous en attente de confirmation.</p>
@@ -363,6 +370,34 @@ header section -->
 </div>
 
 
+<!-- Popup Add Patient -->
+
+<div class="modal fade" id="popupAddPatient" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="padding-top: 100px">
+    <div class="modal-dialog event-popup" role="document">
+        <div class="wrapper">
+            <form class="form-signin" id="eventAddPatient" method="POST">
+                <h3 id="eventCanceledTitle"></h3>
+                <div id="CanceledEvent" class="daySelectect">
+                    <input type="text"  id="namePat" class="form-control" name="nom" placeholder="Nom" required=""
+                           oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                    <br>
+                    <input type="text" id="prenomPat" class="form-control" name="prenom" placeholder="Prenom" required=""
+                           oninput="setCustomValidity(this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                    <br>
+                    <input type="tel" id="telPat" class="form-control" name="tel" id="tel" pattern="[0][76][0-9]{8}$"
+                           placeholder="Téléphone : ex 0637849203" required="" autofocus=""
+                           oninput="setCustomValidity(this.validity.patternMismatch ? 'Numéro de téléphone incorrecte' : '')"/>
+                    <br>
+                    <div class="col-sm">
+                        <button type="button" id="savePatient" class="btn btn-danger pull-right">Enregistrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- footer starts here -->
 <footer class="footer clearfix" style="bottom: 0;width: 100%;">
     <div class="container">
@@ -485,6 +520,37 @@ header section -->
             }
         });
     });
+
+    $("#addPatient").click(function () {
+        $('#popupAddPatient').modal('show');
+    });
+
+    //DO nothing on submit
+    $("#eventAddPatient").submit(function (e) {
+        e.preventDefault();
+    });
+
+    $("#savePatient").click(function (e) {
+        addPatient($('#namePat').val(),$('#prenomPat').val(),$('#telPat').val())
+    });
+
+    function addPatient(nom, prenom, tel) {
+        $('#popupAddPatient').modal('hide');
+        $('#dialog_title_span').text("");
+        $('#modalMessage').modal('toggle');// catch the form's submit event
+        $.ajax({ // create an AJAX call...
+            data: {nom: nom, prenom: prenom, tel: tel, tokenAdmin: readCookie('session')}, // get the form data
+            type: 'POST',
+            url: '/admin/addpatient', // the file to call
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                $('#dialog_title_span').text(jsonData.message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur ");
+            }
+        });
+    }
 </script>
 </body>
 </html>

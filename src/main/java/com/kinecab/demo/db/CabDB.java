@@ -2,10 +2,12 @@
 package com.kinecab.demo.db;
 
 import com.kinecab.demo.db.entity.Cab;
+import com.kinecab.demo.db.entity.CabPerson;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -26,6 +28,14 @@ public class CabDB {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB where CAB.id = '" + id + "' ;");
             return sqlQuery.addEntity(Cab.class).list();
+        }
+    }
+
+    public static void saveCabPerson(CabPerson cabPerson) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+            session.save(cabPerson);
+            trx.commit();
         }
     }
 
