@@ -101,6 +101,13 @@ public class LoginDB {
         }
     }
 
+public static List<Admin> getAdminByEmail(String email) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from ADMIN where  ADMIN.email = '" + email + "';");
+            return sqlQuery.addEntity(Admin.class).list();
+        }
+    }
+
     public static List<PersonTemp> tempTokenExist(String token) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON_TEMP where  PERSON_TEMP.token = '" + token + "';");
@@ -132,12 +139,25 @@ public class LoginDB {
         }
     }
 
-    public static String newPassword(Person person) {
+    public static String newPasswordPerson(Person person) {
         String password = passwordGenerator.generate(8);
         person.setPassword(password);
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
             session.update(person);
+            tx.commit();
+        } catch (Exception e) {
+            return "";
+        }
+        return password;
+    }
+
+    public static String newPasswordAdmin(Admin admin) {
+        String password = passwordGenerator.generate(8);
+        admin.setPassword(password);
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.update(admin);
             tx.commit();
         } catch (Exception e) {
             return "";

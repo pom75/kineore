@@ -76,15 +76,23 @@ public class LoginService {
     public @ResponseBody Message motDePasseOublier(@RequestParam("email") String email) throws Exception {
         List<Person> personByEmail = getPersonByEmail(email);
         if (!personByEmail.isEmpty()) {
-            String newPassword = newPassword(personByEmail.get(0));
+            String newPassword = newPasswordPerson(personByEmail.get(0));
             if (!newPassword.isEmpty()) {
                 sendEmail(email, CHANGE_PASSWORD_TITLE, CHANGE_PASSWORD_CONTENT.replace("xxx", newPassword));
                 return new Message("OK", "Un nouveau mot de passe vas vous être envoyé d'ici 5 minutes. Pensez à regarder dans vos spams.");
             }
             return new Message("FAIL", "Erreur pendant le changement de mot de passe");
         } else {
-            return new Message("FAIL", "Cet email n'existe pas");
+            List<Admin> adminByEmail = getAdminByEmail(email);
+            if (!adminByEmail.isEmpty()) {
+                String newPassword = newPasswordAdmin(adminByEmail.get(0));
+                if (!newPassword.isEmpty()) {
+                    sendEmail(email, CHANGE_PASSWORD_TITLE, CHANGE_PASSWORD_CONTENT.replace("xxx", newPassword));
+                    return new Message("OK", "Un nouveau mot de passe vas vous être envoyé d'ici 5 minutes. Pensez à regarder dans vos spams.");
+                }
+            }
         }
+        return new Message("FAIL", "Cet email n'existe pas");
     }
 
     @RequestMapping(value = "/login/confirme", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
