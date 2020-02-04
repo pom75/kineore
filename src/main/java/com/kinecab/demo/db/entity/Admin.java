@@ -1,15 +1,22 @@
-
+/**
+ *  Copyright Murex S.A.S., 2003-2020. All Rights Reserved.
+ *
+ *  This software program is proprietary and confidential to Murex S.A.S and its affiliates ("Murex") and, without limiting the generality of the foregoing reservation of rights, shall not be accessed, used, reproduced or distributed without the
+ *  express prior written consent of Murex and subject to the applicable Murex licensing terms. Any modification or removal of this copyright notice is expressly prohibited.
+ */
 package com.kinecab.demo.db.entity;
 
-import com.google.common.hash.Hashing;
+import java.nio.charset.StandardCharsets;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.nio.charset.StandardCharsets;
 
-@XmlRootElement
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.google.common.hash.Hashing;
+
+
 @Entity
 public class Admin {
 
@@ -18,6 +25,7 @@ public class Admin {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column
@@ -46,6 +54,12 @@ public class Admin {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     public Admin() {
+    }
+
+    public Admin(String nom, String prenom, String email) {
+        this.email = email;
+        this.nom = nom;
+        this.prenom = prenom;
     }
 
     public Admin(String nom, String prenom, String email, String tel, String password) {
