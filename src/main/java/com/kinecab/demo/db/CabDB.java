@@ -1,17 +1,26 @@
 
 package com.kinecab.demo.db;
 
+import java.util.List;
+
 import com.kinecab.demo.db.entity.Cab;
+import com.kinecab.demo.db.entity.CabAdmin;
 import com.kinecab.demo.db.entity.CabPerson;
+import com.kinecab.demo.util.HibernateUtil;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 
-import java.io.Serializable;
-import java.util.List;
-
 
 public class CabDB {
+
+    //~ ----------------------------------------------------------------------------------------------------------------
+    //~ Constructors
+    //~ ----------------------------------------------------------------------------------------------------------------
+
+    private CabDB() {
+    }
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
@@ -35,6 +44,14 @@ public class CabDB {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction trx = session.beginTransaction();
             session.save(cabPerson);
+            trx.commit();
+        }
+    }
+
+    public static void saveCabAdmin(CabAdmin person) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+            session.saveOrUpdate(person);
             trx.commit();
         }
     }

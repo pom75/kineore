@@ -1,15 +1,13 @@
 
 package com.kinecab.demo.db.entity;
 
-import com.google.common.hash.Hashing;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.nio.charset.StandardCharsets;
 
-@XmlRootElement
+import javax.persistence.*;
+
+import com.google.common.hash.Hashing;
+
+
 @Entity
 public class Admin {
 
@@ -18,6 +16,7 @@ public class Admin {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column
@@ -46,6 +45,12 @@ public class Admin {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     public Admin() {
+    }
+
+    public Admin(String nom, String prenom, String email) {
+        this.email = email;
+        this.nom = nom;
+        this.prenom = prenom;
     }
 
     public Admin(String nom, String prenom, String email, String tel, String password) {

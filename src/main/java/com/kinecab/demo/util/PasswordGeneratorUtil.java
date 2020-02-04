@@ -1,15 +1,15 @@
 
-package com.kinecab.demo.db;
+package com.kinecab.demo.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 
-public final class PasswordGenerator {
+public final class PasswordGeneratorUtil {
 
     //~ ----------------------------------------------------------------------------------------------------------------
-    //~ Static fields/initializers 
+    //~ Static fields/initializers
     //~ ----------------------------------------------------------------------------------------------------------------
 
     private static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
@@ -18,7 +18,7 @@ public final class PasswordGenerator {
     private static final String PUNCTUATION = "!@#$%&*()_+-=[]|,./?><";
 
     //~ ----------------------------------------------------------------------------------------------------------------
-    //~ Instance fields 
+    //~ Instance fields
     //~ ----------------------------------------------------------------------------------------------------------------
 
     private boolean useLower;
@@ -27,14 +27,10 @@ public final class PasswordGenerator {
     private boolean usePunctuation;
 
     //~ ----------------------------------------------------------------------------------------------------------------
-    //~ Constructors 
+    //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    private PasswordGenerator() {
-        throw new UnsupportedOperationException("Empty constructor is not supported.");
-    }
-
-    private PasswordGenerator(PasswordGeneratorBuilder builder) {
+    private PasswordGeneratorUtil(PasswordGeneratorBuilder builder) {
         this.useLower = builder.useLower;
         this.useUpper = builder.useUpper;
         this.useDigits = builder.useDigits;
@@ -141,20 +137,8 @@ public final class PasswordGenerator {
             return this;
         }
 
-        /**
-         * Set true in case you would like to include punctuation characters (!@#..). Default false.
-         *
-         * @param  usePunctuation true in case you would like to include punctuation characters (!@#..). Default false.
-         *
-         * @return the builder for chaining.
-         */
-        public PasswordGeneratorBuilder usePunctuation(boolean usePunctuation) {
-            this.usePunctuation = usePunctuation;
-            return this;
-        }
-
-        public PasswordGenerator build() {
-            return new PasswordGenerator(this);
+        public PasswordGeneratorUtil build() {
+            return new PasswordGeneratorUtil(this);
         }
     }
 }

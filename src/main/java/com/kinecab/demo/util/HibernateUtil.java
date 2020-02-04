@@ -1,20 +1,28 @@
 
-package com.kinecab.demo.db;
+package com.kinecab.demo.util;
 
+import java.util.Properties;
 
 import com.kinecab.demo.db.entity.*;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 
-import java.util.Properties;
-
 
 public class HibernateUtil {
 
+    //~ ----------------------------------------------------------------------------------------------------------------
+    //~ Static fields/initializers
+    //~ ----------------------------------------------------------------------------------------------------------------
+
     private static SessionFactory sessionFactory;
+
+    //~ ----------------------------------------------------------------------------------------------------------------
+    //~ Methods
+    //~ ----------------------------------------------------------------------------------------------------------------
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
@@ -27,11 +35,10 @@ public class HibernateUtil {
                 settings.put(Environment.USER, "administrator");
                 settings.put(Environment.PASS, "Kinecab5!");
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
-                settings.put(Environment.SHOW_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
                 settings.put(Environment.HBM2DDL_AUTO, "validate");
                 settings.put(Environment.AUTOCOMMIT, "true");
-                settings.put(Environment.C3P0_MIN_SIZE, 5);//TODO add utf8 unicode
+                settings.put(Environment.C3P0_MIN_SIZE, 5); //TODO add utf8 unicode
                 settings.put(Environment.C3P0_MAX_SIZE, 20);
                 settings.put(Environment.C3P0_ACQUIRE_INCREMENT, 20);
                 settings.put(Environment.C3P0_TIMEOUT, 1800);
@@ -45,8 +52,7 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(PersonTemp.class);
                 configuration.addAnnotatedClass(Token.class);
                 configuration.addAnnotatedClass(Motif.class);
-                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                        .applySettings(configuration.getProperties()).build();
+                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             } catch (Exception e) {
                 e.printStackTrace();
