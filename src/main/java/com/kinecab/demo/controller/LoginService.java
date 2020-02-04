@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
-public classLoginService {
+public class LoginService {
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
