@@ -1,17 +1,26 @@
-
+/**
+ *  Copyright Murex S.A.S., 2003-2020. All Rights Reserved.
+ *
+ *  This software program is proprietary and confidential to Murex S.A.S and its affiliates ("Murex") and, without limiting the generality of the foregoing reservation of rights, shall not be accessed, used, reproduced or distributed without the
+ *  express prior written consent of Murex and subject to the applicable Murex licensing terms. Any modification or removal of this copyright notice is expressly prohibited.
+ */
 package com.kinecab.demo.db;
 
-import com.kinecab.demo.db.entity.*;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.NativeQuery;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.kinecab.demo.db.entity.*;
+import com.kinecab.demo.util.HibernateUtil;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 public class RDVDB {
@@ -19,10 +28,11 @@ public class RDVDB {
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
+
     public static void saveRDV(List<Event> rdvs) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction trx = session.beginTransaction();
-            for(Event rdv : rdvs) {
+            for (Event rdv : rdvs) {
                 session.saveOrUpdate(rdv);
             }
             trx.commit();
@@ -36,23 +46,16 @@ public class RDVDB {
             final JSONObject currentEvent = (JSONObject) events.next();
             int idPatient;
             final Object idPatObj = ((JSONObject) currentEvent.get("data")).get("idPatient");
-            if(idPatObj instanceof Integer){
+            if (idPatObj instanceof Integer) {
                 idPatient = (int) idPatObj;
-            }else {
+            } else {
                 idPatient = Integer.parseInt((String) idPatObj);
             }
-            final Event event = new Event(adminId,
-                    Timestamp.valueOf((String) currentEvent.get("start")),
-                    Timestamp.valueOf((String) currentEvent.get("end")),
-                    Status.stringToStatus((String) ((JSONObject) currentEvent.get("data")).get("status")),
-                    idPatient,
-                    (Integer) ((JSONObject) currentEvent.get("data")).get("idMotif"),
-                    (Integer) ((JSONObject) currentEvent.get("data")).get("duration"),
-                    (String) ((JSONObject) currentEvent.get("data")).get("info"),
-                    (boolean) ((JSONObject) currentEvent.get("data")).get("pointe"),
-                    (boolean) ((JSONObject) currentEvent.get("data")).get("paye"),
-                    (String) ((JSONObject) currentEvent.get("data")).get("nomPatient"));
-            if(currentEvent.get("id") != null && Integer.parseInt(String.valueOf(currentEvent.get("id"))) != 0){//TODO DIRTY
+            final Event event = new Event(adminId, Timestamp.valueOf((String) currentEvent.get("start")), Timestamp.valueOf((String) currentEvent.get("end")),
+                Status.stringToStatus((String) ((JSONObject) currentEvent.get("data")).get("status")), idPatient, (Integer) ((JSONObject) currentEvent.get("data")).get("idMotif"),
+                (Integer) ((JSONObject) currentEvent.get("data")).get("duration"), (String) ((JSONObject) currentEvent.get("data")).get("info"), (boolean) ((JSONObject) currentEvent.get("data")).get("pointe"),
+                (boolean) ((JSONObject) currentEvent.get("data")).get("paye"), (String) ((JSONObject) currentEvent.get("data")).get("nomPatient"));
+            if ((currentEvent.get("id") != null) && (Integer.parseInt(String.valueOf(currentEvent.get("id"))) != 0)) { //TODO DIRTY
                 event.setId(Integer.parseInt(String.valueOf(currentEvent.get("id"))));
             }
             rdvs.add(event);
@@ -71,7 +74,7 @@ public class RDVDB {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery;
             Transaction trx = session.beginTransaction();
-            for (Object currentId: idEvents) {
+            for (Object currentId : idEvents) {
                 sqlQuery = session.createSQLQuery("DELETE FROM Event WHERE Event.idAdmin = '" + idAdmin + "' AND  Event.id = '" + currentId + "';");
                 sqlQuery.executeUpdate();
             }
@@ -83,25 +86,6 @@ public class RDVDB {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF WHERE  MOTIF.idAdmin = '" + id + "';");
             return sqlQuery.addEntity(Motif.class).list();
-        }
-    }
-
-    public static List<Person> getPersonByIdAdmin(int IdAdmin) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            List<Person> people = new ArrayList<>();
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_ADMIN WHERE  CAB_ADMIN.idAdmin = '" + IdAdmin + "';");
-            final CabAdmin cabAdmin = (CabAdmin) sqlQuery.addEntity(CabAdmin.class).list().get(0);//TODO one admin in multiple cab
-
-            sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + cabAdmin.getIdCab() + "';");
-            List<CabPerson> cabPerson = (List<CabPerson>) sqlQuery.addEntity(CabPerson.class).list();
-
-            cabPerson.stream().forEach(person -> {
-                final NativeQuery sqlQuery1 = session.createSQLQuery("SELECT * FROM PERSON WHERE  PERSON.id = '" + person.getIdPerson() + "';");
-                final Person singleResult = (Person) sqlQuery1.addEntity(Person.class).getSingleResult();
-                singleResult.setPassword("");
-                people.add(singleResult);
-            });
-            return people;
         }
     }
 }

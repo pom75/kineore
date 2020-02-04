@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.google.common.hash.Hashing;
 
+import static com.kinecab.demo.db.AdminDB.*;
 import com.kinecab.demo.db.LoginDB;
 import static com.kinecab.demo.db.LoginDB.*;
 import com.kinecab.demo.db.entity.Admin;
@@ -26,8 +27,8 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -39,7 +40,7 @@ public class LoginService {
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    @RequestMapping(value = "/login/connexion", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/connexion", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message connexion(@RequestParam("email") String email,
         @RequestParam("password") String password) {
@@ -48,9 +49,9 @@ public class LoginService {
             if (!person.isEmpty()) {
                 return new CookieMessage("OK", "Connexion réussite", getTokenPerson(person.get(0)), "0");
             } else {
-                List<Admin> admin = LoginDB.checkPasswordByEmailAdmin(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
+                List<Admin> admin = checkPasswordByEmailAdmin(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
                 if (!admin.isEmpty()) {
-                    return new CookieMessage("OK", "Connexion réussite", LoginDB.getTokenAdmin(admin.get(0)), "1");
+                    return new CookieMessage("OK", "Connexion réussite", getTokenAdmin(admin.get(0)), "1");
                 } else {
                     return new Message("FAIL", "Email ou mot de passe incorrecte");
                 }
@@ -61,7 +62,7 @@ public class LoginService {
         }
     }
 
-    @RequestMapping(value = "/login/inscription", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/inscription", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message inscription(@RequestParam("nom") String nom,
         @RequestParam("prenom") String prenom,
@@ -92,7 +93,7 @@ public class LoginService {
         }
     }
 
-    @RequestMapping(value = "/login/motdepasseoublier", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/motdepasseoublier", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message motDePasseOublier(@RequestParam("email") String email) throws Exception {
         List<Person> personByEmail = getPersonByEmail(email);
@@ -113,7 +114,7 @@ public class LoginService {
         }
     }
 
-    @RequestMapping(value = "/login/confirme", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/login/confirme", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message confirme(@RequestParam("token") String token) {
         try {
@@ -133,7 +134,7 @@ public class LoginService {
         }
     }
 
-    @RequestMapping(value = "/login/getprofil", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/getprofil", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Person getProfil(@RequestParam("token") String token) {
         try {
@@ -151,7 +152,7 @@ public class LoginService {
         }
     }
 
-    @RequestMapping(value = "/login/changeprofil", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/changeprofil", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message changeProfil(@RequestParam("num") String tel,
         @RequestParam("mdp") String mdp,
@@ -181,7 +182,7 @@ public class LoginService {
         }
     }
 
-    @RequestMapping(value = "/login/suppprofil", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/suppprofil", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message deleteProfil(@RequestParam("mdp") String mdp,
         @RequestParam("token") String token) {
@@ -203,7 +204,7 @@ public class LoginService {
         }
     }
 
-    @RequestMapping(value = "/login/getprofiladmin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/getprofiladmin", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Admin getProfilAdmin(@RequestParam("token") String token) {
         try {
@@ -221,7 +222,7 @@ public class LoginService {
         }
     }
 
-    @RequestMapping(value = "/login/changeprofiladmin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/changeprofiladmin", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message changeProfilAdmin(@RequestParam("num") String tel,
         @RequestParam("mdp") String mdp,
@@ -251,7 +252,7 @@ public class LoginService {
         }
     }
 
-    @RequestMapping(value = "/login/suppprofiladmin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/suppprofiladmin", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message deleteProfilAdmin(@RequestParam("mdp") String mdp,
         @RequestParam("token") String token) {
@@ -274,7 +275,7 @@ public class LoginService {
         }
     }
 
-    private static boolean validateEmailStandard(String email) {
+    static boolean validateEmailStandard(String email) {
         return EmailValidator.getInstance(true).isValid(email);
     }
 }

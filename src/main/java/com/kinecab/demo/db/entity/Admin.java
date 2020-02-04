@@ -8,11 +8,7 @@ package com.kinecab.demo.db.entity;
 
 import java.nio.charset.StandardCharsets;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.*;
 
 import com.google.common.hash.Hashing;
 

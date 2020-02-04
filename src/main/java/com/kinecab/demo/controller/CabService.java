@@ -8,8 +8,8 @@ package com.kinecab.demo.controller;
 
 import java.util.List;
 
+import static com.kinecab.demo.db.AdminDB.getAdminByToken;
 import static com.kinecab.demo.db.CabDB.*;
-import static com.kinecab.demo.db.LoginDB.getAdminByToken;
 import com.kinecab.demo.db.entity.Admin;
 import com.kinecab.demo.db.entity.Cab;
 import com.kinecab.demo.json.Message;
@@ -27,7 +27,7 @@ public class CabService {
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    @RequestMapping(value = "/cab/updatecab", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/cab/updatecab", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message updateCab(@RequestParam("urlcab") String urlcab,
         @RequestParam("nomcab") String nomcab,
@@ -71,7 +71,7 @@ public class CabService {
         }
     }
 
-    @RequestMapping(value = "/cab/getcabprofil", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/cab/getcabprofil", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Cab getCabProfil(@RequestParam("token") String token) {
         List<Admin> adminByToken = getAdminByToken(token);
@@ -81,7 +81,7 @@ public class CabService {
         return getCabByAdminID(String.valueOf(adminByToken.get(0).getId())).get(0);
     }
 
-    @RequestMapping(value = "/cab/getcabid", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/cab/getcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Cab getCabId(@RequestParam("id") String id) {
         try {
@@ -96,7 +96,7 @@ public class CabService {
         }
     }
 
-    @RequestMapping(value = "/cab/{url}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/cab/{url}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public RedirectView redirect(@PathVariable("url") String url) {
         try {

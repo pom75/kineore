@@ -10,17 +10,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.kinecab.demo.db.LoginDB.getAdminByToken;
+import static com.kinecab.demo.db.AdminDB.getAdminByToken;
+import static com.kinecab.demo.db.AdminDB.getPersonByIdAdmin;
 import com.kinecab.demo.db.RDVDB;
-import com.kinecab.demo.db.entity.*;
+import com.kinecab.demo.db.entity.Admin;
+import com.kinecab.demo.db.entity.Event;
+import com.kinecab.demo.db.entity.Motif;
+import com.kinecab.demo.db.entity.Person;
 import com.kinecab.demo.json.*;
 
 import org.json.JSONArray;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -32,7 +35,7 @@ public class RDVService {
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    @RequestMapping(value = "/rdv/bookrdv", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/bookrdv", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message bookRDV(@RequestParam("events") String events,
         @RequestParam("tokenAdmin") String tokenAdmin) {
@@ -51,7 +54,7 @@ public class RDVService {
         }
     }
 
-    @RequestMapping(value = "/rdv/getrdv", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/getrdv", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getRDV(@RequestParam("start") String start,
         @RequestParam("end") String end,
@@ -69,7 +72,7 @@ public class RDVService {
         }
     }
 
-    @RequestMapping(value = "/rdv/removerdv", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/removerdv", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message removeRDV(@RequestParam("idEvents") String idEvents,
         @RequestParam("tokenAdmin") String tokenAdmin) {
@@ -87,7 +90,7 @@ public class RDVService {
         }
     }
 
-    @RequestMapping(value = "/rdv/getmotif", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/getmotif", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getMotif(@RequestParam("tokenAdmin") String tokenAdmin) {
         try {
@@ -103,7 +106,7 @@ public class RDVService {
         }
     }
 
-    @RequestMapping(value = "/rdv/getpersonidadmin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/getpersonidadmin", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getPersonIdAdmin(@RequestParam("tokenAdmin") String tokenAdmin) {
         try {
@@ -111,7 +114,7 @@ public class RDVService {
             if (adminByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<Person> people = RDVDB.getPersonByIdAdmin(adminByToken.get(0).getId());
+            final List<Person> people = getPersonByIdAdmin(adminByToken.get(0).getId());
             return new GetPerson("OK", "RAS", people);
         } catch (Exception e) {
             e.printStackTrace();

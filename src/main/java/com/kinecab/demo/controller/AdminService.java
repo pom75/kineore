@@ -9,18 +9,16 @@ package com.kinecab.demo.controller;
 import java.util.List;
 
 import static com.kinecab.demo.controller.LoginService.validateEmailStandard;
-import static com.kinecab.demo.db.CabDB.getCabByAdminID;
-import static com.kinecab.demo.db.CabDB.saveCabPerson;
+import static com.kinecab.demo.db.AdminDB.getAdminByToken;
+import static com.kinecab.demo.db.AdminDB.saveAdmin;
+import static com.kinecab.demo.db.CabDB.*;
 import com.kinecab.demo.db.LoginDB;
-import static com.kinecab.demo.db.LoginDB.getAdminByToken;
-import static com.kinecab.demo.db.LoginDB.saveCabAdmin;
 import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.json.Message;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -32,9 +30,9 @@ public class AdminService {
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    @RequestMapping(value = "/admin/addpatient", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/admin/addpatient", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message inscription(@RequestParam("nom") String nom,
+    public Message ajoutPatient(@RequestParam("nom") String nom,
         @RequestParam("prenom") String prenom,
         @RequestParam("tel") String tel,
         @RequestParam("tokenAdmin") String tokenAdmin) {
@@ -62,9 +60,9 @@ public class AdminService {
         }
     }
 
-    @RequestMapping(value = "/admin/addadmin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/admin/addadmin", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message inscription(@RequestParam("nom") String nom,
+    public Message ajoutAdmin(@RequestParam("nom") String nom,
         @RequestParam("prenom") String prenom,
         @RequestParam("email") String email,
         @RequestParam("tokenAdmin") String tokenAdmin) {
@@ -77,7 +75,7 @@ public class AdminService {
                 return new Message("FAIL", "Un des champ est invalide");
             } else {
                 Admin admin = new Admin(nom, prenom, email);
-                LoginDB.saveAdmin(admin);
+                saveAdmin(admin);
                 final List<Cab> cabByAdminID = getCabByAdminID(String.valueOf(adminByToken.get(0).getId()));
                 CabAdmin cabAdmin = new CabAdmin(String.valueOf(cabByAdminID.get(0).getId()), String.valueOf(admin.getId()));
                 saveCabAdmin(cabAdmin);
@@ -88,4 +86,5 @@ public class AdminService {
             return new Message("FAIL", "Impossible d'ajouter un patient.");
         }
     }
+
 }
