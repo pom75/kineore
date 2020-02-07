@@ -1,135 +1,70 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-	<title>KinéCab - Site de rendez-vous en ligne pour les Kinésithérapeute</title>
-	<link rel="stylesheet" href="css/font-awesome.min.css">
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/style.css">
-	<script src="js/modernizr.js"></script>
-	<!--[if lt IE 9]>
-      <script src="js/html5shiv.js"></script>
-      <script src="js/respond.min.js"></script>
-    <![endif]-->
-
+    <title>KinéCab - Site de rendez-vous en ligne pour les Kinésithérapeute</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+	<link rel="icon" type="image/png" href="file:///D:/kineore/src/main/resources/static/img/ckk.png" />
 </head>
 <body>
-	
-	<!-- ====================================================
-	header section -->
-	<header class="top-header">
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-5 header-logo">
-				</div>
 
-				<div class="col-md-7">
-					<nav class="navbar navbar-default">
-					  <div class="container-fluid nav-bar">
-					    <!-- Brand and toggle get grouped for better mobile display -->
-					    <div class="navbar-header">
-					      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-					        <span class="sr-only">Toggle navigation</span>
-					        <span class="icon-bar"></span>
-					        <span class="icon-bar"></span>
-					        <span class="icon-bar"></span>
-					      </button>
-					    </div>
+<!-- ====================================================
+header section -->
+<header style="padding-bottom: 70px;">
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
+		<img src="file:///D:/kineore/src/main/resources/static/img/ckk.png" width="30" height="30">
+		<a class="navbar-brand" href="#" >&nbsp;Kinecab</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
 
-					    <!-- Collect the nav links, forms, and other content for toggling -->
-					    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-					      <ul class="nav navbar-nav navbar-right">
-					        <li><a class="menu active" href="index.html" >Présentation</a></li>
-					        <li><a class="menu" href="rendez-vous.html">Rendez-vous</a></li>
-					        <li><a class="menu" href="contact.html">Contact</a></li>
-					      </ul>
-					    </div><!-- /navbar-collapse -->
-					  </div><!-- / .container-fluid -->
-					</nav>
-				</div>
-			</div>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="nav navbar-nav ml-auto">
+				<li class="nav-item navbar-right">
+					<a class="nav-link navbar-right" href="connexion.html">Se connecter</a>
+				</li>
+				<li class="nav-item navbar-right">
+					<a class="nav-link navbar-right" href="presentation.html">Professionel de santé</a>
+				</li>
+				<li class="nav-item navbar-right">
+					<a class="nav-link navbar-right" href="#">Qui somme nous?</a>
+				</li>
+			</ul>
 		</div>
-	</header> <!-- end of header area -->
+	</nav>
+</header> <!-- end of header area -->
 
-	<!-- about section -->
-	<section class="about text-center" id="home">
+<main role="main">
+	<section class="text-center">
 		<div class="container">
-			<div class="row">
-				<h2>Présentation</h2>
-				<h4>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled</h4>
-				<div class="col-md-4 col-sm-6">
-					<div class="single-about-detail clearfix">
-						<div class="about-img">
-							<img class="img-responsive" src="img/item1.jpg" alt="">
-						</div>
-						<div class="about-details">
-							<div class="pentagon-text">
-								<h1>C</h1>
-							</div>
-							<h3>Children’s specialist</h3>
-							<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4 col-sm-6">
-					<div class="single-about-detail">
-						<div class="about-img">
-							<img class="img-responsive" src="img/item2.jpg" alt="">
-						</div>
-						<div class="about-details">
-							<div class="pentagon-text">
-								<h1>W</h1>
-							</div>
-
-							<h3>Children’s specialist</h3>
-							<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4 col-sm-6">
-					<div class="single-about-detail">
-						<div class="about-img">
-							<img class="img-responsive" src="img/item3.jpg" alt="">
-						</div>
-						<div class="about-details">
-							<div class="pentagon-text">
-								<h1>M</h1>
-							</div>
-							<h3>Children’s specialist</h3>
-							<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer.</p>
-						</div>
-					</div>
-				</div>
-			</div>
+			<h1 class="jumbotron-heading">Bienvenue sur Kinécab</h1>
+			<p class="lead text-muted">Prise de rendez-vous en ligne et Gestion de calendrier.</p>
 		</div>
-	</section><!-- end of about section -->
+	</section>
 
-
-	<!-- footer starts here -->
-	<footer class="footer clearfix">
+	<section class="text-center" style="margin-top: 100px">
 		<div class="container">
-			<div class="row">
-				<div class="col-xs-6 footer-para">
-					<p>&copy;</p>
-				</div>
-				<div class="col-xs-6 text-right">
-					<a href=""><i class="fa fa-facebook"></i></a>
-					<a href=""><i class="fa fa-twitter"></i></a>
-					<a href=""><i class="fa fa-skype"></i></a>
-				</div>
-			</div>
+			<form class="navbar-form navbar-left">
+				<input type="text" class="form-control col-lg-12" placeholder="Trouver un Kinésithérapeute">
+			</form>
 		</div>
-	</footer>
+	</section>
 
-	<!-- script tags
-	============================================================= -->
-	<script src="js/jquery-2.1.1.js"></script>
-	<script src="js/smoothscroll.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/custom.js"></script>
+</main>
+
+
+<!-- footer starts here -->
+<nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
+	© 2020 Copyright
+</nav>
+
+<!-- script tags
+============================================================= -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/bootstrap.min.js"></script>
 </body>
 </html>
