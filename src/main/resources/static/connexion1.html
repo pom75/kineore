@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Aurelie Orellana, Cabinet Kiné à Aulnay-sous-bois</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        window.onload = redirect;
+        function redirect() {
+            if(readCookie('session')!= ''){
+                window.location.href = ("/calendrier.html");
+            }
+        }
+        function readCookie(name) {
+            var i, c, ca, nameEQ = name + "=";
+            ca = document.cookie.split(';');
+            for(i=0;i < ca.length;i++) {
+                c = ca[i];
+                while (c.charAt(0)==' ') {
+                    c = c.substring(1,c.length);
+                }
+                if (c.indexOf(nameEQ) == 0) {
+                    return c.substring(nameEQ.length,c.length);
+                }
+            }
+            return '';
+        }
+    </script>
+    <script src="js/modernizr.js"></script>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+<!-- ====================================================
+header section -->
+<header class="top-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-5 header-logo">
+            </div>
+
+            <div class="col-md-7">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid nav-bar">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a class="menu" href="index.html">Présentation</a></li>
+                                <li><a class="menu active" href="rendez-vous.html">Rendez-vous</a></li>
+                                <li><a class="menu" href="contact.html">Contact</a></li>
+                            </ul>
+                        </div><!-- /navbar-collapse -->
+                    </div><!-- / .container-fluid -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header> <!-- end of header area -->
+
+
+<!-- about section -->
+<section class="about text-center" id="about">
+    <div class="container">
+        <div class="row">
+            <h2>Rendez-vous</h2>
+
+            <div class="wrapper">
+                <form class="form-signin" id="connexion" method="POST">
+                    <h4>Connectez vous pour voir le calendrier</h4>
+                    <input type="email" class="form-control" name="email" placeholder="Adresse email" required=""
+                           autofocus=""/>
+                    <input type="password" class="form-control" name="password" placeholder="Mot de passe" required=""/>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
+                    <br>
+                    <a href="inscription.html" style="font-size: large">Inscription</a>
+                    <br>
+                    <a href="" data-toggle="modal" data-target="#modalLoginFormMdp" style="font-size: large">Mot de
+                        passe oublié</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</section><!-- end of about section -->
+
+
+<div class="modal fade" id="modalLoginFormMdp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="padding-top: 100px">
+    <div class="modal-dialog" role="document">
+        <form class="form-signin" id="newPassword">
+            <h4>Mot de passe oublié</h4>
+            <input type="email" class="form-control" name="email" placeholder="Adresse mail" required="" autofocus=""/>
+            <br>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Envoyer un nouveau mot de passe</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="padding-top: 100px">
+    <div class="modal-dialog" role="document">
+        <form class="form-signin">
+            <h3>Veuillez patienter</h3>
+            <span id="dialog_title_span"></span>
+        </form>
+    </div>
+</div>
+
+<!-- footer starts here -->
+<footer class="footer clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 footer-para">
+                <p>&copy;</p>
+            </div>
+            <div class="col-xs-6 text-right">
+                <a href=""><i class="fa fa-facebook"></i></a>
+                <a href=""><i class="fa fa-twitter"></i></a>
+                <a href=""><i class="fa fa-skype"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- script tags
+============================================================= -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/custom.js"></script>
+<script type="text/javascript">
+    $('#connexion').submit(function () {
+        $('#dialog_title_span').text("");
+        $('#modalMessage').modal('toggle');// catch the form's submit event
+        $.ajax({ // create an AJAX call...
+            data: $('#connexion').serialize(), // get the form data
+            type: 'POST', // GET or POST
+            url: '/login/connexion', // the file to call
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                console.log(jsonData)
+                $('#dialog_title_span').text(jsonData.message);
+                console.log(jsonData.message);
+                if(jsonData.status == "OK"){
+                    writeCookie("session",jsonData.token,30)
+                    writeCookie("admin",jsonData.admin,30)
+                    window.setTimeout(function(){
+                        // Move to a new location or you can do something else
+                        if(jsonData.admin == 1){
+                            window.location.href = "moncalendrier.html";
+                        }else {
+                            window.location.href = "calendrier.html";
+                        }
+                    }, 2000);
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+        return false; // cancel original event to prevent form submitting
+    });
+
+    $('#newPassword').submit(function () {
+        $('#dialog_title_span').text("");
+        $('#modalMessage').modal('toggle');// catch the form's submit event
+        $.ajax({ // create an AJAX call...
+            data: $('#newPassword').serialize(), // get the form data
+            type: 'POST',
+            url: '/login/motdepasseoublier', // the file to call
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                $('#dialog_title_span').text(jsonData.message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+        return false; // cancel original event to prevent form submitting
+    });
+
+    function writeCookie(name,value,days) {
+        var date, expires;
+        if (days) {
+            date = new Date();
+            date.setTime(date.getTime()+(days*24*60*60*1000));
+            expires = "; expires=" + date.toGMTString();
+        }else{
+            expires = "";
+        }
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+</script>
+</body>
+</html>
