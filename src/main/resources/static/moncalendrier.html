@@ -5,17 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Aurelie Orellana, Cabinet Kiné à Aulnay-sous-bois</title>
-    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css"/>
-    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <title>KinéCab - Site de rendez-vous en ligne pour les Kinésithérapeute</title>
+    <link rel="stylesheet" href="js/jquery-ui.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/radio.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="icon" type="image/png" href="img/ck.png"/>
+    <link href="fullcalendar/daygrid/main.css" rel="stylesheet">
+    <link href="fullcalendar/timegrid/main.css" rel="stylesheet">
+    <link href="fullcalendar/list/main.css" rel="stylesheet">
+    <link href="fullcalendar/core/main.css" rel="stylesheet">
+    <script src="fullcalendar/core/main.js"></script>
+    <script src="fullcalendar/interaction/main.js"></script>
+    <script src="fullcalendar/daygrid/main.js"></script>
+    <script src="fullcalendar/timegrid/main.js"></script>
+    <script src="fullcalendar/list/main.js"></script>
     <script src="js/jquery-2.1.1.js"></script>
     <script src="js/jquery-ui.min.js"></script>
-    <script src="js/moment.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-autocomplete.min.js"></script>
+    <script src="js/moment.js"></script>
     <script>
         window.onload = redirect;
 
@@ -27,7 +35,6 @@
                 window.location.href = ("/index.html");
             }
         }
-
 
         function readCookie(name) {
             var i, c, ca, nameEQ = name + "=";
@@ -69,65 +76,38 @@
             });
         }
     </script>
-    <script src="js/modernizr.js"></script>
-    <!--[if lt IE 9]>
-    <script src="js/html5shiv.js"></script>
-    <script src="js/respond.min.js"></script>
-
-    <![endif]-->
-
-
-    <link href="/fullcalendar/daygrid/main.css" rel="stylesheet">
-    <link href="/fullcalendar/timegrid/main.css" rel="stylesheet">
-    <link href="/fullcalendar/list/main.css" rel="stylesheet">
-    <link href="/fullcalendar/core/main.css" rel="stylesheet">
-    <script src="/fullcalendar/core/main.js"></script>
-    <script src="/fullcalendar/interaction/main.js"></script>
-    <script src="/fullcalendar/daygrid/main.js"></script>
-    <script src="/fullcalendar/timegrid/main.js"></script>
-    <script src="/fullcalendar/list/main.js"></script>
-    <link href="/js/jquery-ui.css" rel="stylesheet">
-    <link href="/js/jquery-ui.structure.css" rel="stylesheet">
-
 </head>
 <body>
 
-<!-- Menu nav bar -->
+<!-- ====================================================
+header section -->
+<header style="padding-bottom: 70px;">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
+        <img src="img/ck.png" width="30" height="30">
+        <a class="navbar-brand" href="index.html">&nbspKinécab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-<header class="top-header">
-    <div class="container">
-        <div class="row">
-            <!-- Logo -->
-            <div class="col-xs-5 header-logo">
-            </div>
-            <div class="col-md-7">
-                <nav class="navbar navbar-default">
-                    <div class="container-fluid nav-bar">
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                    data-target="#bs-example-navbar-collapse-1">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        </div>
-
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a class="menu active" href="#">Mon Calendrier</a></li>
-                                <li><a class="menu" href="cabinet.html">Mon Cabinet</a></li>
-                                <li><a class="menu" href="profiladmin.html">Mon Compte</a></li>
-                                <li><a class="menu" href="#" onclick="delete_cookie('session')">Deconnexion</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right active" href="#">Mon Calendrier</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="#">Gestion Du Calendrier</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="profiladmin.html">Mon Compte</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session')" href="#">Deconnexion</a>
+                </li>
+            </ul>
         </div>
-    </div>
-</header>
+    </nav>
+</header> <!-- end of header area -->
 
 <!-- Body Calendar -->
 
@@ -147,48 +127,53 @@
 <!-- Popup Month Selection -->
 
 <div class="modal fade" id="MonthSelectionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
-    <div class="modal-dialog" role="document">
-        <div class="wrapper">
-            <form class="form-signin" id="connexion" method="POST">
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3 id="titreSemaine"></h3>
-                <select class="form-control" id="daySelection">
-                    <option value="default" selected>Veuillez faire un choix</option>
-                    <option value="createDay">Créér de nouveaux rendez-vous</option>
-                    <option value="dayOff">Supprimer les rendez-vous</option>
-                </select>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="connexion" method="POST">
 
-                <div id="dayOff" class="daySelectect" style="display:none">
-                    <h4>Tous les rendez-vous prit seront annuler.</h4>
-                    <h4>Les patients ne pourons pas prendre de nouveaux rendez-vous.</h4>
-                    <br>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit" id="setDayOff">Supprimer</button>
-                </div>
+                    <select class="form-control" id="daySelection">
+                        <option value="default" selected>Veuillez faire un choix</option>
+                        <option value="createDay">Créér de nouveaux rendez-vous</option>
+                        <option value="dayOff">Supprimer les rendez-vous</option>
+                    </select>
 
-                <div id="createDay" class="daySelectect" style="display:none">
-                    <h4>Duree d'un rendez-vous : </h4>
-                    <select class="form-control" id="dureeSelection">
-                        <option value="default" selected></option>
-                        <option value="15">15 min</option>
-                        <option value="20">20 min</option>
-                        <option value="30">30 min</option>
-                        <option value="60">1 h</option>
-                    </select>
-                </div>
-                <div id="debutDaySelectionDiv" class="daySelectect" style="display:none">
-                    <h4>Heure du premier rendez-vous : </h4>
-                    <select class="form-control" id="debutDaySelection">
-                    </select>
-                </div>
-                <div id="finDaySelectionDiv" class="daySelectect" style="display:none">
-                    <h4>Heure du dernier rendez-vous : </h4>
-                    <select class="form-control" id="finDaySelection">
-                    </select>
-                    <br>
-                    <button id="createListRdvDay" class="btn btn-lg btn-primary btn-block" type="submit">Enregistrer
-                    </button>
-                </div>
-            </form>
+                    <div id="dayOff" class="daySelectect" style="display:none">
+                        <h4>Tous les rendez-vous prit seront annuler.</h4>
+                        <h4>Les patients ne pourons pas prendre de nouveaux rendez-vous.</h4>
+                        <br>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit" id="setDayOff">Supprimer</button>
+                    </div>
+
+                    <div id="createDay" class="daySelectect" style="display:none">
+                        <h4>Duree d'un rendez-vous : </h4>
+                        <select class="form-control" id="dureeSelection">
+                            <option value="default" selected></option>
+                            <option value="15">15 min</option>
+                            <option value="20">20 min</option>
+                            <option value="30">30 min</option>
+                            <option value="60">1 h</option>
+                        </select>
+                    </div>
+                    <div id="debutDaySelectionDiv" class="daySelectect" style="display:none">
+                        <h4>Heure du premier rendez-vous : </h4>
+                        <select class="form-control" id="debutDaySelection">
+                        </select>
+                    </div>
+                    <div id="finDaySelectionDiv" class="daySelectect" style="display:none">
+                        <h4>Heure du dernier rendez-vous : </h4>
+                        <select class="form-control" id="finDaySelection">
+                        </select>
+                        <br>
+                        <button id="createListRdvDay" class="btn btn-lg btn-primary btn-block" type="submit">Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -196,57 +181,63 @@
 <!-- Popup Day selection -->
 
 <div class="modal fade" id="timeGrid" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
-    <div class="modal-dialog" role="document">
-        <div class="wrapper">
-            <form class="form-signin" id="connexion2" method="POST">
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3 id="timeGridTitle"></h3>
-                <select class="form-control" id="timeGridSelect">
-                    <option value="default" selected>Veuillez faire un choix</option>
-                    <option value="createListRDV">Créer des crénos libre</option>
-                    <option value="rdvClient">Créer un rendez-vous client</option>
-                    <option value="suppRDV">Supprimer les rendez-vous</option>
-                </select>
-
-                <div id="suppRDVDiv" class="daySelectect2" style="display:none">
-                    <h4>Tous les rendez-vous prit seront annuler.</h4>
-                    <h4>Les patients ne pourons pas prendre de nouveaux rendez-vous dans ce créno.</h4>
-                    <br>
-                    <button id="suppHour" class="btn btn-lg btn-primary btn-block" type="submit">Supprimer</button>
-                </div>
-
-                <div id="createDay2" class="daySelectect2" style="display:none">
-                    <h4>Duree d'un rendez-vous : </h4>
-                    <select class="form-control" id="dureeSelection2">
-                        <option selected></option>
-                        <option value="15">15 min</option>
-                        <option value="20">20 min</option>
-                        <option value="30">30 min</option>
-                        <option value="60">1 h</option>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="connexion2" method="POST">
+                    <select class="form-control" id="timeGridSelect">
+                        <option value="default" selected>Veuillez faire un choix</option>
+                        <option value="createListRDV">Créer des crénos libre</option>
+                        <option value="rdvClient">Créer un rendez-vous client</option>
+                        <option value="suppRDV">Supprimer les rendez-vous</option>
                     </select>
-                    <br>
-                    <button id="createListRdvHour" class="btn btn-lg btn-primary btn-block" type="submit">Enregistrer
-                    </button>
-                </div>
-                <div id="rdvClient" class="daySelectect2" style="display:none">
-                    <h4>Duree d'un rendez-vous : </h4>
-                    <select class="form-control" id="dureeSelectionClient">
-                        <option selected></option>
-                        <option value="15">15 min</option>
-                        <option value="20">20 min</option>
-                        <option value="30">30 min</option>
-                        <option value="60">1 h</option>
-                    </select>
-                    <h4>Nom du Patient</h4>
-                    <input type="text" class="form-control" name="nom" id="namePatient" placeholder="Nom du Patient"/>
-                    <h4>Information du rendez-vous </h4>
-                    <textarea class="form-control input-lg" placeholder="Information client" rows="5"
-                              id="commentRdv"></textarea>
-                    <br>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit" id="createRdvClient">Enregistrer
-                    </button>
-                </div>
-            </form>
+
+                    <div id="suppRDVDiv" class="daySelectect2" style="display:none">
+                        <h4>Tous les rendez-vous prit seront annuler.</h4>
+                        <h4>Les patients ne pourons pas prendre de nouveaux rendez-vous dans ce créno.</h4>
+                        <br>
+                        <button id="suppHour" class="btn btn-lg btn-primary btn-block" type="submit">Supprimer</button>
+                    </div>
+
+                    <div id="createDay2" class="daySelectect2" style="display:none">
+                        <h4>Duree d'un rendez-vous : </h4>
+                        <select class="form-control" id="dureeSelection2">
+                            <option selected></option>
+                            <option value="15">15 min</option>
+                            <option value="20">20 min</option>
+                            <option value="30">30 min</option>
+                            <option value="60">1 h</option>
+                        </select>
+                        <br>
+                        <button id="createListRdvHour" class="btn btn-lg btn-primary btn-block" type="submit">
+                            Enregistrer
+                        </button>
+                    </div>
+                    <div id="rdvClient" class="daySelectect2" style="display:none">
+                        <h4>Duree d'un rendez-vous : </h4>
+                        <select class="form-control" id="dureeSelectionClient">
+                            <option selected></option>
+                            <option value="15">15 min</option>
+                            <option value="20">20 min</option>
+                            <option value="30">30 min</option>
+                            <option value="60">1 h</option>
+                        </select>
+                        <h4>Nom du Patient</h4>
+                        <input type="text" class="form-control" name="nom" id="namePatient"
+                               placeholder="Nom du Patient"/>
+                        <h4>Information du rendez-vous </h4>
+                        <textarea class="form-control input-lg" placeholder="Information client" rows="5"
+                                  id="commentRdv"></textarea>
+                        <br>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit" id="createRdvClient">Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -254,32 +245,36 @@
 <!-- Popup Event New FREE -->
 
 <div class="modal fade" id="popupSingleEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
+     aria-hidden="true">
     <div class="modal-dialog event-popup" role="document">
-        <div class="wrapper">
-            <form class="form-signin" id="eventFreeForm" method="POST">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3 id="eventFreeTitle"></h3>
-                <div id="bookEvent" class="daySelectect">
-                    <h4>Nom du patient</h4>
-                    <input id="namePat" type="text" class="form-control" name="nom" placeholder="Nom"
-                           oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
-                    <h4>Motif du rendez-vous</h4>
-                    <select class="form-control" id="eventMotifSelection">
-                        <option value="default" selected>Veuillez faire un choix</option>
-                    </select>
-                    <h4>Informations complémentaire</h4>
-                    <textarea class="form-control input-lg" placeholder="Information client" rows="5"
-                              id="commentEvent"></textarea>
-                    <br>
-                    <div class="col-sm" id="modifBlock">
-                        <button type="button" id="saveEvent" class="btn btn-secondary pull-left">Sauvegarder
-                        </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventFreeForm" method="POST">
+                    <div id="bookEvent" class="daySelectect">
+                        <h4>Nom du patient</h4>
+                        <input id="namePat" type="text" class="form-control" name="nom" placeholder="Nom"
+                               oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                        <h4>Motif du rendez-vous</h4>
+                        <select class="form-control" id="eventMotifSelection">
+                            <option value="default" selected>Veuillez faire un choix</option>
+                        </select>
+                        <h4>Informations complémentaire</h4>
+                        <textarea class="form-control input-lg" placeholder="Information client" rows="5"
+                                  id="commentEvent"></textarea>
+                        <br>
+                        <div class="float-sm-right" id="modifBlock">
+                            <button type="button" id="saveEvent" class="btn btn-secondary pull-left">Sauvegarder
+                            </button>
+                        </div>
+                        <div class="float-sm-left">
+                            <button type="button" id="suppEvent" class="btn btn-danger pull-right">Supprimer</button>
+                        </div>
                     </div>
-                    <div class="col-sm">
-                        <button type="button" id="suppEvent" class="btn btn-danger pull-right">Supprimer</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -288,33 +283,38 @@
 <!-- Popup Event New WAITING -->
 
 <div class="modal fade" id="popupSingleEventWaiting" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
+     aria-hidden="true">
     <div class="modal-dialog event-popup" role="document">
-        <div class="wrapper">
-            <form class="form-signin" id="eventFreeFormWaiting" method="POST">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3 id="eventWaitingTitle"></h3>
-                <div id="WaitingEvent" class="daySelectect">
-                    <input id="namePatWaiting" type="text" class="form-control" name="nom" placeholder="Nom"
-                           value="" readonly/>
-                    <br/>
-                    <input id="numWaiting" type="text" class="form-control" name="nom" placeholder="Nom"
-                           value="" readonly/>
-                    <br/>
-                    <input id="motifWaiting" type="text" class="form-control" name="nom" placeholder="Nom"
-                           value="" readonly/>
-                    <br/>
-                    <textarea class="form-control input-lg" placeholder="Information client" rows="5"
-                              id="commentEventWaiting" readonly> </textarea>
-                    <br>
-                    <div class="col-sm" id="modifBlockWaiting">
-                        <button type="button" id="accepteEventWaiting" class="btn btn-secondary pull-left">Accepter
-                        </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventFreeFormWaiting" method="POST">
+                    <div id="WaitingEvent" class="daySelectect">
+                        <input id="namePatWaiting" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="numWaiting" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="motifWaiting" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <textarea class="form-control input-lg" placeholder="Information client" rows="5"
+                                  id="commentEventWaiting" readonly> </textarea>
+                        <br>
+                        <div class="float-sm-right" id="modifBlockWaiting">
+                            <button type="button" id="accepteEventWaiting" class="btn btn-secondary pull-left">Accepter
+                            </button>
+                        </div>
+                        <div class="float-sm-left">
+                            <button type="button" id="refuseEventWaiting" class="btn btn-danger pull-right">Refuser
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-sm">
-                        <button type="button" id="refuseEventWaiting" class="btn btn-danger pull-right">Refuser</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -322,46 +322,56 @@
 <!-- Popup Event New BOOKED -->
 
 <div class="modal fade" id="popupSingleEventBooked" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
+     aria-hidden="true">
     <div class="modal-dialog event-popup" role="document">
-        <div class="wrapper">
-            <form class="form-signin" id="eventFreeFormBooked" method="POST">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3 id="eventBookedTitle"></h3>
-                <div id="BookedEvent" class="daySelectect">
-                    <input id="namePatBooked" type="text" class="form-control" name="nom" placeholder="Nom"
-                           value="" readonly/>
-                    <br/>
-                    <input id="numBooked" type="text" class="form-control" name="nom" placeholder="Nom"
-                           value="" readonly/>
-                    <br/>
-                    <input id="motifBooked" type="text" class="form-control" name="nom" placeholder="Nom"
-                           value="" readonly/>
-                    <br/>
-                    <textarea class="form-control input-lg" style="resize:none" placeholder="Information client" rows="5"
-                              id="commentEventBooked" readonly> </textarea>
-                    <br>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventFreeFormBooked" method="POST">
+                    <div id="BookedEvent" class="daySelectect">
+                        <input id="namePatBooked" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="numBooked" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="motifBooked" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <textarea class="form-control input-lg" style="resize:none" placeholder="Information client"
+                                  rows="5"
+                                  id="commentEventBooked" readonly> </textarea>
+                        <br>
 
-                    <div class="col-sm">
-                        <input class="form-check-input" type="checkbox" value="" id="pointe">
-                        <label class="form-check-label" for="pointe" style="margin-right: 10px">
-                            Pointé
-                        </label>
-                        <input class="form-check-input" type="checkbox" value="" id="paye">
-                        <label class="form-check-label" for="paye">
-                            Payé
-                        </label>
-                        <button type="button" id="saveEventBooked" class="btn btn-secondary pull-right">Enregistrer</button>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="pointe">
+                            <label class="form-check-label" for="pointe">
+                                Pointé
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="paye">
+                            <label class="form-check-label" for="paye">
+                                Payé
+                            </label>
+                            <button type="button" id="saveEventBooked" class="btn btn-secondary float-sm-right">Enregistrer
+                            </button>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="float-sm-right" id="modifBlockBooked">
+                            <button type="button" id="cancelEventBooked" class="btn btn-secondary pull-left">Annuler
+                            </button>
+                        </div>
+                        <div class="float-sm-left">
+                            <button type="button" id="suppEventBooked" class="btn btn-danger pull-right">Supprimer
+                            </button>
+                        </div>
                     </div>
-                    <br>
-                    <div class="col-sm" id="modifBlockBooked">
-                        <button type="button" id="cancelEventBooked" class="btn btn-secondary pull-left">Annuler
-                        </button>
-                    </div>
-                    <div class="col-sm">
-                        <button type="button" id="suppEventBooked" class="btn btn-danger pull-right">Supprimer</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -370,40 +380,53 @@
 <!-- Popup Event CANCELED EVENT -->
 
 <div class="modal fade" id="popupSingleEventCanceled" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
+     aria-hidden="true">
     <div class="modal-dialog event-popup" role="document">
-        <div class="wrapper">
-            <form class="form-signin" id="eventFreeFormCanceled" method="POST">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3 id="eventCanceledTitle"></h3>
-                <div id="CanceledEvent" class="daySelectect">
-                    <input id="namePatCanceled" type="text" class="form-control" name="nom" placeholder="Nom"
-                           value="" readonly/>
-                    <br/>
-                    <input id="numCanceled" type="text" class="form-control" name="nom" placeholder="Nom"
-                           value="" readonly/>
-                    <br/>
-                    <input id="motifCanceled" type="text" class="form-control" name="nom" placeholder="Nom"
-                           value="" readonly/>
-                    <br/>
-                    <textarea class="form-control input-lg" placeholder="Information client" rows="5"
-                              id="commentEventCanceled" readonly> </textarea>
-                    <br>
-                    <div class="col-sm">
-                        <button type="button" id="suppEventCanceled" class="btn btn-danger pull-right">Supprimer</button>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventFreeFormCanceled" method="POST">
+                    <div id="CanceledEvent" class="daySelectect">
+                        <input id="namePatCanceled" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="numCanceled" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="motifCanceled" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <textarea class="form-control input-lg" placeholder="Information client" rows="5"
+                                  id="commentEventCanceled" readonly> </textarea>
+                        <br>
+                        <div class="col-sm">
+                            <button type="button" id="suppEventCanceled" class="btn btn-danger float-sm-right">Supprimer
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
-    <div class="modal-dialog" role="document">
-        <form class="form-signin">
-            <h3>Erreur</h3>
-            <span id="dialog_title_span"></span>
-        </form>
+<!-- Modal -->
+<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaleMessageTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span id="dialog_title_span"></span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -426,6 +449,7 @@
 
 <!-- script tags ========================================= -->
 <script>
+
     var idPersonMap = {};
 
     function getPerson() {
@@ -542,8 +566,8 @@
                     $('#numBooked').val(idPersonMap[data.idPatient].tel);
                     $('#motifBooked').val(idMotifMap[data.idMotif]);
                     $('#commentEventBooked').val(data.info);
-                    $( "#pointe" ).prop( "checked", data.pointe );
-                    $( "#paye" ).prop( "checked", data.paye );
+                    $("#pointe").prop("checked", data.pointe);
+                    $("#paye").prop("checked", data.paye);
                     $('#popupSingleEventBooked').modal('show');
                 }
                 if (status.toUpperCase().localeCompare("WAITING") == 0) {
@@ -564,7 +588,8 @@
                 }
                 if (status.toUpperCase().localeCompare("FREE") == 0) {
                     $('#namePat').val("");
-                    $("#eventMotifSelection").val("default").change();;
+                    $("#eventMotifSelection").val("default").change();
+                    ;
                     $('#eventFreeTitle').html(moment(info.event.start).format("dddd D MMMM") + "   " + moment(info.event.start).format("HH:mm") + " à " + moment(info.event.end).format("HH:mm"));
                     $('#popupSingleEvent').modal('show');
                 }
@@ -898,7 +923,6 @@
     $("#eventFreeFormWaiting").submit(function (e) {
         e.preventDefault();
     });
-
 
 
     //Cancel Booked RDV
