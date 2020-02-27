@@ -5,27 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Aurelie Orellana, Cabinet Kiné à Aulnay-sous-bois</title>
-    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <title>KinéCab - Site de rendez-vous en ligne pour les Kinésithérapeute</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="icon" type="image/png" href="img/ck.png"/>
     <script>
         window.onload = redirect;
+
         function redirect() {
-            if(readCookie('session')!= ''){
+            if (readCookie('session') != '') {
                 window.location.href = ("/calendrier.html");
             }
         }
+
         function readCookie(name) {
             var i, c, ca, nameEQ = name + "=";
             ca = document.cookie.split(';');
-            for(i=0;i < ca.length;i++) {
+            for (i = 0; i < ca.length; i++) {
                 c = ca[i];
-                while (c.charAt(0)==' ') {
-                    c = c.substring(1,c.length);
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1, c.length);
                 }
                 if (c.indexOf(nameEQ) == 0) {
-                    return c.substring(nameEQ.length,c.length);
+                    return c.substring(nameEQ.length, c.length);
                 }
             }
             return '';
@@ -42,76 +44,78 @@
 
 <!-- ====================================================
 header section -->
-<header class="top-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-5 header-logo">
-            </div>
+<header style="padding-bottom: 70px;">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
+        <img src="img/ck.png" width="30" height="30">
+        <a class="navbar-brand" href="index.html">&nbspKinécab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="col-md-7">
-                <nav class="navbar navbar-default">
-                    <div class="container-fluid nav-bar">
-                        <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                    data-target="#bs-example-navbar-collapse-1">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        </div>
-
-                        <!-- Collect the nav links, forms, and other content for toggling -->
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a class="menu" href="index.html">Présentation</a></li>
-                                <li><a class="menu active" href="rendez-vous.html">Rendez-vous</a></li>
-                                <li><a class="menu" href="contact.html">Contact</a></li>
-                            </ul>
-                        </div><!-- /navbar-collapse -->
-                    </div><!-- / .container-fluid -->
-                </nav>
-            </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item navbar-right">
+                    <a class="nav-link active navbar-right" href="connexion.html">Se connecter</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="presentation.html">Professionel de santé</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="#">Qui somme nous?</a>
+                </li>
+            </ul>
         </div>
-    </div>
+    </nav>
 </header> <!-- end of header area -->
 
 
 <!-- about section -->
-<section class="about text-center" id="about">
-    <div class="container">
-        <div class="row">
-            <h2>Inscription</h2>
-
-            <div class="wrapper">
-                <form class="form-signin" id="inscription" method="POST">
-                    <h4>Inscription</h4>
-                    <input type="text" class="form-control" name="nom" placeholder="Nom" required=""
-                           oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
-                    <input type="text" class="form-control" name="prenom" placeholder="Prenom" required=""
-                           oninput="setCustomValidity(this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
-                    <input type="email" class="form-control" name="email" placeholder="Adresse mail" required=""
-                           autofocus=""
-                           oninput="setCustomValidity(this.validity.patternMismatch ? 'Adresse mail incorrecte' : '')"/>
-                    <input type="tel" class="form-control" name="tel" pattern="[0][76][0-9]{8}$"
-                           placeholder="Téléphone : ex 0637849203" required="" autofocus=""
-                           oninput="setCustomValidity(this.validity.patternMismatch ? 'Numéro de téléphone incorrecte' : '')"/>
-                    <input type="password" id="password" class="form-control" name="password" pattern="^\S{6,}$"
-                           placeholder="Mot de passe" required=""
-                           onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Le mot de passe doit faire 6 charactères' : ''); if(this.checkValidity()) form.confirm_password.pattern = this.value;"/>
-                    <input type="password" id="confirm_password" class="form-control" name="confirm_password"
-                           placeholder="Confirmez votre mot de passe" required=""
-                           onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Les deux mots de passes sont différents' : '');"/>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Inscription</button>
-                </form>
-
+<main role="main">
+    <section class="text-center">
+        <div class="container">
+            <body class="text-center">
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <form class="form-signin" id="inscription" method="POST">
+                        <img class="mb-4" src="img/ck.png" alt="" width="72" height="72">
+                        <h1 class="h3 mb-3 font-weight-normal">Inscription</h1>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="nom" placeholder="Nom" required=""
+                                   oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="prenom" placeholder="Prenom" required=""
+                                   oninput="setCustomValidity(this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" name="email" placeholder="Adresse mail" required=""
+                                   autofocus=""
+                                   oninput="setCustomValidity(this.validity.patternMismatch ? 'Adresse mail incorrecte' : '')"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" class="form-control" name="tel" pattern="[0][76][0-9]{8}$"
+                                   placeholder="Téléphone : ex 0637849203" required="" autofocus=""
+                                   oninput="setCustomValidity(this.validity.patternMismatch ? 'Numéro de téléphone incorrecte' : '')"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="password" class="form-control" name="password" pattern="^\S{6,}$"
+                                   placeholder="Mot de passe" required=""
+                                   onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Le mot de passe doit faire 6 charactères' : ''); if(this.checkValidity()) form.confirm_password.pattern = this.value;"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="confirm_password" class="form-control" name="confirm_password"
+                                   placeholder="Confirmez votre mot de passe" required=""
+                                   onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Les deux mots de passes sont différents' : '');"/>
+                        </div>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Inscription</button>
+                    </form>
+                </div>
             </div>
-
+            </body>
         </div>
-    </div>
-</section><!-- end of about section -->
+    </section><!-- end of about section -->
+</main>
 
 
 <div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -126,20 +130,9 @@ header section -->
 
 
 <!-- footer starts here -->
-<footer class="footer clearfix">
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-6 footer-para">
-                <p>&copy;</p>
-            </div>
-            <div class="col-xs-6 text-right">
-                <a href=""><i class="fa fa-facebook"></i></a>
-                <a href=""><i class="fa fa-twitter"></i></a>
-                <a href=""><i class="fa fa-skype"></i></a>
-            </div>
-        </div>
-    </div>
-</footer>
+<nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
+    © 2020 Copyright
+</nav>
 
 <!-- script tags
 ============================================================= -->
@@ -150,7 +143,6 @@ header section -->
 <script type="text/javascript">
 
 
-
     $('#inscription').submit(function () {
         $('#dialog_title_span').text("");
         $('#modalMessage').modal('toggle');// catch the form's submit event
@@ -158,18 +150,18 @@ header section -->
             data: $('#inscription').serialize(), // get the form data
             type: 'POST', // GET or POST
             url: '/login/inscription', // the file to call
-            success: function(data, textStatus, jqXHR){
+            success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
-                if(jsonData.status == "OK"){
-                    window.setTimeout(function(){
+                if (jsonData.status == "OK") {
+                    window.setTimeout(function () {
 
                         // Move to a new location or you can do something else
                         window.location.href = "rendez-vous.html";
 
                     }, 20000);
-                }else{
-                    window.setTimeout(function(){
+                } else {
+                    window.setTimeout(function () {
 
                         // Move to a new location or you can do something else
                         window.location.href = "inscription.html";
@@ -177,7 +169,7 @@ header section -->
                     }, 100000);
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown){
+            error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });
