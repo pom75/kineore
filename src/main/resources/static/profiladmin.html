@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
     <link rel="icon" type="image/png" href="img/ck.png"/>
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <script>
 
 
@@ -131,24 +133,24 @@ header section -->
 </div>
 
 
-<!-- about section -->
 <main role="main">
-    <section class="about text-center" id="about">
+    <section class="text-center">
         <div class="container">
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#cab" role="tab"
+                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
                        aria-controls="nav-home" aria-selected="true">Mon Cabinet</a>
-                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#profil" role="tab"
+                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
                        aria-controls="nav-profile" aria-selected="false">Profil</a>
                 </div>
             </nav>
-            <div class="row">
-                <div class="tab-content justify-content-md-center" id="nav-tabContent">
-                    <div class="tab-pane fade show active mt-5" id="cab" role="tabpanel" aria-labelledby="nav-home-tab">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading" style="font-size: 2.4rem">Mon Cabinet</div>
-                            <div class="panel-body">
+            <div class="tab-content justify-content-md-center" id="nav-tabContent">
+                <div class="tab-pane fade show active mt-5" id="nav-home" role="tabpanel"
+                     aria-labelledby="nav-home-tab">
+                    <section class="text-center">
+                        <div class="container">
+                            <h1 class="jumbotron-heading mb-4">Mon Cabinet</h1>
+                            <div class="row">
                                 <div class="col-sm-6" id="mycab">
                                     <h3 class="text-left">Ajouter un nouveau patient</h3>
                                     <div class="text-left" id="addPatientz">
@@ -169,34 +171,33 @@ header section -->
                                 <div class="col-sm-6">
                                     <form id="changeCabinet" action="" method="post">
                                         <div class="row" id="darwCab">
-                                            <div class="col-sm text-left">
+                                            <div class="col-sm text-left mb-3">
                                                 <label class="text-left">Nom URL du cabinet</label>
                                                 <input class="form-control" name="urlcab" id="urlcab" value=""
                                                        style="padding:5px;width: 200px; "
                                                        readonly>
                                                 <small id="urcabsamll" class="form-text text-muted">
-                                                    http://www.kinecab.com/cab/
+                                                    http://www.kinecab.com/cab/<b>monCabinet</b>
                                                 </small>
-                                                <b>monCabinet</b>
                                             </div>
-                                            <div class="col-sm text-left">
+                                            <div class="col-sm text-left mb-3">
                                                 <label>Nom du Cabinet</label>
                                                 <input class="form-control btn-group-sm" id="nomcab" name="nomcab"
                                                        style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
-                                            <div class="col-sm text-left">
+                                            <div class="col-sm text-left mb-3">
                                                 <label>Présenation du Cabinet</label>
                                                 <textarea class="form-control btn-group-sm" rows="5" id="prescab"
                                                           name="prescab" readonly></textarea>
                                             </div>
-                                            <div class="col-sm text-left">
+                                            <div class="col-sm text-left mb-3">
                                                 <label>Photos de présentation</label>
                                                 <input class="form-control btn-group-sm" id="photo" name="photo"
                                                        style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
-                                            <div class="col-sm text-left">
+                                            <div class="col-sm text-left mb-3">
                                                 <label>Téléphone</label>
                                                 <input class="form-control btn-group-sm" id="numcab" name="numcab"
                                                        pattern="[0][716][0-9]{8}$" style="padding:5px;width: 200px; "
@@ -208,19 +209,19 @@ header section -->
                                                        style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
-                                            <div class="col-sm text-left" style="display: none">
+                                            <div class="col-sm text-left mb-3" style="display: none">
                                                 <label>Token</label>
                                                 <input class="form-control btn-group-sm" id="token3" name="token"
                                                        style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
-                                            <div class="col-sm text-left">
+                                            <div class="col-sm text-left mb-3">
                                                 <label>Numéro et nom de rue</label>
                                                 <input class="form-control btn-group-sm" id="rue" name="rue"
                                                        style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
-                                            <div class="col-sm text-left">
+                                            <div class="col-sm text-left mb-3">
                                                 <label>Code postal</label>
                                                 <input class="form-control btn-group-sm" id="codepostal"
                                                        name="codepostal"
@@ -228,14 +229,14 @@ header section -->
                                                        value="" readonly>
                                             </div>
 
-                                            <div class="col-sm text-left">
+                                            <div class="col-sm text-left mb-3">
                                                 <label>Moyen de paiement</label>
                                                 <input class="form-control btn-group-sm" id="paiement" name="paiement"
                                                        style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
 
-                                            <div class="col-sm text-left">
+                                            <div class="col-sm text-left mb-3">
                                                 <label>Carte vitale accepté</label>
                                                 <input class="form-control btn-group-sm" id="vitale" name="vitale"
                                                        style="padding:5px;width: 200px; "
@@ -254,27 +255,28 @@ header section -->
                                                        style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
-                                            <br>
-                                            <div class="col-sm" id="modifBlock2">
-                                                <button type="button" id="modif2" class="btn btn-secondary pull-left">
+                                            <div class="float-sm-right mt-4 mb-5" id="modifBlock2">
+                                                <button type="button" id="modif2" class="btn btn-secondary pull-right">
                                                     Modifier le compte
                                                 </button>
                                             </div>
-                                            <div class="col-sm" id="saveBlock2" style="display: none">
+                                            <div class="float-sm-right mt-4 mb-5" id="saveBlock2" style="display: none">
                                                 <input type="submit" value="Enregistrer"
-                                                       class="btn btn-secondary pull-left">
+                                                       class="btn btn-secondary pull-right"/>
+                                                </input>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
-
                         </div>
-                    </div>
-                    <div class="tab-pane fade show active mt-5" id="profil" role="tabpanel" aria-labelledby="nav-home-tab">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading" style="font-size: 2.4rem">Mon Profil</div>
-                            <div class="panel-body">
+                    </section>
+                </div>
+                <div class="tab-pane fade " id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <section class="text-center">
+                        <div class="container">
+                            <h1 class="jumbotron-heading mb-4">Mon Profil</h1>
+                            <div class="row">
                                 <div class="col-sm-6">
                                     <form id="changeProfil" action="" method="post">
                                         <div class="row">
@@ -319,50 +321,54 @@ header section -->
 
                                             </div>
                                             <br>
-                                            <div class="col-sm" id="modifBlock">
+                                            <div class="col-sm-7 mt-5" id="modifBlock">
                                                 <button type="button" id="modif" class="btn btn-secondary pull-left">
                                                     Modifier le compte
                                                 </button>
                                             </div>
-                                            <div class="col-sm" id="saveBlock" style="display: none">
+                                            <div class="col-sm-7 mt-5" id="saveBlock" style="display: none">
                                                 <input type="submit" value="Enregistrer"
                                                        class="btn btn-secondary pull-left">
                                             </div>
-                                            <div class="col-sm">
-                                                <button type="button" id="supp" class="btn btn-danger pull-right">
-                                                    Supprimer
-                                                    le compte
-                                                </button>
-                                            </div>
                                         </div>
                                     </form>
+                                    <div class="float-sm-left mt-5" id="supp">
+                                        <button type="button" id="cancelEventBooked"
+                                                class="btn btn-danger pull-left">
+                                            Supprimer le compte
+                                        </button>
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
-                    </div>
+                    </section>
                 </div>
-
-
             </div>
         </div>
-    </section><!-- end of about section -->
+    </section>
 </main>
 
 
 <div class="modal fade" id="modalSupp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
-    <div class="modal-dialog" role="document">
-        <form class="form-signin" id="suppForm" action="" method="post">
-            <h4>Suppression définitive de votre compte</h4>
-            <p>Attention, cette action est définitive et irréversible!</p>
-            <input type="password" class="form-control" name="mdp" id="mdp2" placeholder="Mot de passe" required=""
-                   autofocus=""/>
-            <input type="token" id="token2" class="form-control" name="token" placeholder="token" required=""
-                   autofocus="" style="display: none"/>
-            <br>
-            <button class="btn btn-lg btn-danger btn-block" type="submit">Supprimer mon compte</button>
-        </form>
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Suppression définitive de votre compte</h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="suppForm" action="" method="post">
+                    <p>Attention, cette action est définitive et irréversible!</p>
+                    <input type="password" class="form-control" name="mdp" id="mdp2" placeholder="Mot de passe"
+                           required=""
+                           autofocus=""/>
+                    <input type="token" id="token2" class="form-control" name="token" placeholder="token" required=""
+                           autofocus="" style="display: none"/>
+                    <br>
+                    <button class="btn btn-lg btn-danger btn-block" type="submit">Supprimer mon compte</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -370,28 +376,34 @@ header section -->
 <!-- Popup Add Patient -->
 
 <div class="modal fade" id="popupAddPatient" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
-    <div class="modal-dialog event-popup" role="document">
-        <div class="wrapper">
-            <form class="form-signin" id="eventAddPatient" method="POST">
-                <h3 id="eventCanceledTitle"></h3>
-                <div id="CanceledEvent" class="daySelectect">
-                    <input type="text" id="namePat" class="form-control" name="nom" placeholder="Nom" required=""
-                           oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
-                    <br>
-                    <input type="text" id="prenomPat" class="form-control" name="prenom" placeholder="Prenom"
-                           required=""
-                           oninput="setCustomValidity(this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
-                    <br>
-                    <input type="tel" id="telPat" class="form-control" name="tel" id="tel" pattern="[0][76][0-9]{8}$"
-                           placeholder="Téléphone : ex 0637849203" required="" autofocus=""
-                           oninput="setCustomValidity(this.validity.patternMismatch ? 'Numéro de téléphone incorrecte' : '')"/>
-                    <br>
-                    <div class="col-sm">
-                        <button type="button" id="savePatient" class="btn btn-danger pull-right">Enregistrer</button>
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered event-popup" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter un nouveau patient</h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventAddPatient" method="POST">
+                    <div id="CanceledEvent" class="daySelectect">
+                        <input type="text" id="namePat" class="form-control" name="nom" placeholder="Nom" required=""
+                               oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                        <br>
+                        <input type="text" id="prenomPat" class="form-control" name="prenom" placeholder="Prenom"
+                               required=""
+                               oninput="setCustomValidity(this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                        <br>
+                        <input type="tel" id="telPat" class="form-control" name="tel" id="tel"
+                               pattern="[0][76][0-9]{8}$"
+                               placeholder="Téléphone : ex 0637849203" required="" autofocus=""
+                               oninput="setCustomValidity(this.validity.patternMismatch ? 'Numéro de téléphone incorrecte' : '')"/>
+                        <br>
+                        <div class="col-sm">
+                            <button type="button" id="savePatient" class="btn btn-danger pull-right">Enregistrer
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -403,10 +415,6 @@ header section -->
 
 <!-- script tags
 ============================================================= -->
-<script src="js/jquery-2.1.1.js"></script>
-<script src="js/smoothscroll.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/custom.js"></script>
 <script type="text/javascript">
 
 
@@ -474,10 +482,18 @@ header section -->
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });
-        jQuery('#modifBlock').css("display", "block");
-        jQuery('#saveBlock').css("display", "none");
-        $('#num').attr('readonly', true);
-        $('#mdp').attr('readonly', true);
+        jQuery('#modifBlock2').css("display", "block");
+        jQuery('#saveBlock2').css("display", "none");
+        $('#nomcab').attr('readonly', true);
+        $('#prescab').attr('readonly', true);
+        $('#numcab').attr('readonly', true);
+        $('#mailcab').attr('readonly', true);
+        $('#rue').attr('readonly', true);
+        $('#paiement').attr('readonly', true);
+        $('#codepostal').attr('readonly', true);
+        $('#vitale').attr('readonly', true);
+        $('#tarifs').attr('readonly', true);
+        $('#convention').attr('readonly', true);
         return false; // cancel original event to prevent form submitting
     });
 

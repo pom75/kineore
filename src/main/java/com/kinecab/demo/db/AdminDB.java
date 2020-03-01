@@ -26,7 +26,7 @@ public class AdminDB {
     public static void saveAdmin(Admin admin) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction trx = session.beginTransaction();
-            session.save(admin);
+            session.saveOrUpdate(admin);
             trx.commit();
         }
     }

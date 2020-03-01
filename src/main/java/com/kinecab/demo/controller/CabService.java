@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.result.view.RedirectView;
 
+import javax.servlet.http.HttpServletResponse;
+
 
 @Controller
 public class CabService {
@@ -93,20 +95,19 @@ public class CabService {
 
     @GetMapping(value = "/cab/{url}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public RedirectView redirect(@PathVariable("url") String url) {
+    public void redirect(@PathVariable("url") String url, HttpServletResponse httpServletResponse) {
         try {
             List<Cab> cabByUrl = getCabByUrl(url);
-            RedirectView redirectView = new RedirectView();
             if (!cabByUrl.isEmpty()) {
                 Cab cab = cabByUrl.get(0);
-                redirectView.setUrl("/cabinet.html?id=" + cab.getId());
+                httpServletResponse.setHeader("Location", "/cabinet.html?id=" + cab.getId());
+                httpServletResponse.setStatus(302);
             } else {
-                redirectView.setUrl("/notfound");
+                httpServletResponse.setHeader("Location", "/index.html");
+                httpServletResponse.setStatus(302);
             }
-            return redirectView;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
     }
 
