@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Aurelie Orellana, Cabinet Kiné à Aulnay-sous-bois</title>
-    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <title>KinéCab - Site de rendez-vous en ligne pour les Kinésithérapeute</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,800,700,300' rel='stylesheet'
-          type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=BenchNine:300,400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="icon" type="image/png" href="img/ck.png"/>
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script>
         window.onload = redirect;
 
@@ -25,9 +26,9 @@
                     success: function (data, textStatus, jqXHR) {
                         var jsonData = JSON.parse(data);
                         $('#nomcab').text(jsonData.name);
-                        $('#addresse').html('<i class="glyphicon glyphicon-map-marker"> </i>' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal);
+                        $('#addresse').html('<i class="fa fa-map-marker"> </i> ' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal);
                         $('#pres').html(jsonData.pres.replace(/\n/g, '<br>'));
-                        $('#rest').html('<i class="glyphicon glyphicon-phone"></i> '+jsonData.phone+' <br/> <i class="glyphicon glyphicon-envelope"></i> '+jsonData.email+'<br/> <a id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : '+jsonData.paiment+' <br>Carte Vitale Accepté : '+jsonData.cartevital+' <br> Tarifs : '+jsonData.tarif+' <br> Conventionné : '+jsonData.convention+'"> <i class="glyphicon glyphicon-info-sign"></i> Plus d\'infos </a>');
+                        $('#rest').html('<i class="fa fa-mobile-phone"></i> '+jsonData.phone+' <br/> <i class="fa fa-envelope-o"></i> '+jsonData.email+'<br/> <a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : '+jsonData.paiment+' <br>Carte Vitale Accepté : '+jsonData.cartevital+' <br> Tarifs : '+jsonData.tarif+' <br> Conventionné : '+jsonData.convention+'"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>');
                         $('#popinfo').popover({
                             container: 'body'
                         });
@@ -46,9 +47,9 @@
                     success: function (data, textStatus, jqXHR) {
                         var jsonData = JSON.parse(data);
                         $('#nomcab').text(jsonData.name);
-                        $('#addresse').html('<i class="glyphicon glyphicon-map-marker"> </i>' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal);
+                        $('#addresse').html('<i class="fa fa-map-marker"> </i> ' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal);
                         $('#pres').html(jsonData.pres.replace(/\n/g, '<br>'));
-                        $('#rest').html('<i class="glyphicon glyphicon-phone"></i> '+jsonData.phone+' <br/> <i class="glyphicon glyphicon-envelope"></i> '+jsonData.email+'<br/> <a id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : '+jsonData.paiment+' <br>Carte Vitale Accepté : '+jsonData.cartevital+' <br> Tarifs : '+jsonData.tarif+' <br> Conventionné : '+jsonData.convention+'"> <i class="glyphicon glyphicon-info-sign"></i> Plus d\'infos </a>');
+                        $('#rest').html('<i class="fa fa-mobile-phone"></i> '+jsonData.phone+' <br/> <i class="fa fa-envelope-o"></i> '+jsonData.email+'<br/> <a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : '+jsonData.paiment+' <br>Carte Vitale Accepté : '+jsonData.cartevital+' <br> Tarifs : '+jsonData.tarif+' <br> Conventionné : '+jsonData.convention+'"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>');
                         $('#popinfo').popover({
                             container: 'body'
                         });
@@ -83,79 +84,54 @@
             window.location.href = ("/rendez-vous.html");
         }
     </script>
-    <script src="js/modernizr.js"></script>
-    <!--[if lt IE 9]>
-    <script src="js/html5shiv.js"></script>
-    <script src="js/respond.min.js"></script>
-    <![endif]-->
-
 </head>
 <body>
 
 <!-- ====================================================
 header section -->
-<header class="top-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-3 header-logo">
-            </div>
+<header style="padding-bottom: 70px;">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
+        <img src="img/ck.png" width="30" height="30">
+        <a class="navbar-brand" href="index.html">&nbspKinécab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="col-md-9">
-                <nav class="navbar navbar-default">
-                    <div class="container-fluid nav-bar">
-                        <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                    data-target="#bs-example-navbar-collapse-1">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        </div>
-
-                        <!-- Collect the nav links, forms, and other content for toggling -->
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a class="menu" href="moncalendrier.html">Mon Calendrier</a></li>
-                                <li><a class="menu active" href="#">Mon Cabinet</a></li>
-                                <li><a class="menu" href="profiladmin.html">Mon Compte</a></li>
-                                <li><a class="menu" href="#" onclick="delete_cookie('session')">Deconnexion</a></li>
-                            </ul>
-                        </div><!-- /navbar-collapse -->
-                    </div><!-- / .container-fluid -->
-                </nav>
-            </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="moncalendrier.html">Mon Calendrier</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="#">Gestion Du Calendrier</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right active" href="#">Mon Compte</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session')" href="#">Deconnexion</a>
+                </li>
+            </ul>
         </div>
-    </div>
+    </nav>
 </header> <!-- end of header area -->
-
-<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
-    <div class="modal-dialog" role="document">
-        <form class="form-signin">
-            <h3>Veuillez patienter</h3>
-            <span id="dialog_title_span"></span>
-        </form>
-    </div>
-</div>
 
 
 <!-- about section -->
 <section class="about" id="about">
     <div class="container">
         <div class="row">
-            <div class="panel panel-primary" style="margin-top: 100px">
-                <div class="panel-heading text-center" style="font-size: 2.4rem" id="nomcab"></div>
-                <div class="panel-body">
+            <div class="card" style="margin-top: 20px">
+                <div class="card-header text-center" style="font-size: 1.4rem" id="nomcab"></div>
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-4" style="max-width: 230px">
                             <div class="well well-sm">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12">
                                         <img src="/img/member1.jpg" alt="" class="img-rounded img-responsive"
-                                             height="250" width="120"/>
+                                             height="160" width="160"/>
                                     </div>
                                     <div class="col-sm-12 col-md-12">
                                         <br>
@@ -165,7 +141,7 @@ header section -->
                                         </p>
                                         <br>
                                         <p>
-                                            <a href="" id="rdvlink"><b> <i class="glyphicon glyphicon-calendar"></i> Prendre rendez-vous</b></a>
+                                            <a href="" id="rdvlink"><b> <i class="fa fa-calendar"></i> Prendre rendez-vous</b></a>
                                         </p>
                                     </div>
                                 </div>
@@ -212,7 +188,7 @@ header section -->
                                             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                                             <span class="sr-only">Previous</span>
                                         </a>
-                                        <a class="right carousel-control" href="#carousel-example-generic" role="button"
+                                        <a class="right carousel-control mb-5" href="#carousel-example-generic" role="button"
                                            data-slide="next">
                                             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                             <span class="sr-only">Next</span>
@@ -231,22 +207,6 @@ header section -->
 </section><!-- end of about section -->
 
 
-<div class="modal fade" id="modalSupp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" style="padding-top: 100px">
-    <div class="modal-dialog" role="document">
-        <form class="form-signin" id="suppForm" action="" method="post">
-            <h4>Suppression définitive de votre compte</h4>
-            <p>Attention, cette action est définitive et irréversible!</p>
-            <input type="password" class="form-control" name="mdp" id="mdp" placeholder="Mot de passe" required=""
-                   autofocus=""/>
-            <input type="token" id="token2" class="form-control" name="token" placeholder="token" required=""
-                   autofocus="" style="display: none"/>
-            <br>
-            <button class="btn btn-lg btn-danger btn-block" type="submit">Supprimer mon compte</button>
-        </form>
-    </div>
-</div>
-
 
 <!-- footer starts here -->
 <nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
@@ -255,10 +215,6 @@ header section -->
 
 <!-- script tags
 ============================================================= -->
-<script src="js/jquery-2.1.1.js"></script>
-<script src="js/smoothscroll.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/custom.js"></script>
 <script type="text/javascript">
 
 
