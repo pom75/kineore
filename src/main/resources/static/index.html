@@ -9,10 +9,73 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Kin&eacute;Cab - Site de rendez-vous en ligne pour les Kin&eacute;sithérapeute</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/custom.css">
+	<link rel="stylesheet" href="js/jquery-ui.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/custom.css">
 	<link rel="icon" type="image/png" href="img/ck.png" />
+	<script src="js/jquery-2.1.1.js"></script>
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap-autocomplete.min.js"></script>
+	<script src="js/moment.js"></script>
 </head>
+<script>
+	function readCookie(name) {
+		var i, c, ca, nameEQ = name + "=";
+		ca = document.cookie.split(';');
+		for (i = 0; i < ca.length; i++) {
+			c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1, c.length);
+			}
+			if (c.indexOf(nameEQ) == 0) {
+				return c.substring(nameEQ.length, c.length);
+			}
+		}
+		return '';
+	}
+
+	function delete_cookie(name) {
+		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+		window.location.href = ("/index.html");
+	}
+
+	var idAdminMap = {};
+
+	function getAdmin() {
+		$.ajax({
+			data: {},
+			type: 'POST',
+			url: '/admin/getadmin',
+			success: function (data, textStatus, jqXHR) {
+				var jsonData = JSON.parse(data);
+				var idName = []
+				for (var i = 0; i < jsonData.admins.length; i++) {
+					idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
+					var obj = {};
+					var value = "value";
+					var label = "label";
+					obj[value] = jsonData.admins[i].id;
+					obj[label] = jsonData.admins[i].nom + " " + jsonData.admins[i].prenom;
+					idName.push(obj);
+
+				}
+				$('#nameKine').autocomplete({
+					'source': idName, delay: 0,
+					select: function (event, ui) {
+						event.preventDefault();
+						$("#nameKine").val(ui.item.label);
+						$("#nameKine").attr('name', ui.item.value);
+					}
+				});
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				$('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+			}
+		});
+	}
+	getAdmin();
+</script>
 <body>
 
 <!-- ====================================================
@@ -52,7 +115,7 @@ header section -->
 	<section class="text-center" style="margin-top: 100px">
 		<div class="container">
 			<form class="navbar-form navbar-left">
-				<input type="text" class="form-control col-lg-12" placeholder="Trouver un Kin&eacute;sith&eacute;rapeute">
+				<input id="nameKine" type="text" class="form-control col-lg-12" placeholder="Trouver un Kin&eacute;sith&eacute;rapeute">
 			</form>
 		</div>
 	</section>
@@ -65,9 +128,5 @@ header section -->
 	&copy; 2020 Copyright
 </nav>
 
-<!-- script tags
-============================================================= -->
-<script src="js/jquery-2.1.1.js"></script>
-<script src="js/bootstrap.min.js"></script>
 </body>
 </html>

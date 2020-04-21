@@ -4,11 +4,12 @@ package com.kinecab.demo.controller;
 import java.util.List;
 
 import static com.kinecab.demo.controller.LoginService.validateEmailStandard;
-import static com.kinecab.demo.db.AdminDB.getAdminByToken;
-import static com.kinecab.demo.db.AdminDB.saveAdmin;
+import static com.kinecab.demo.db.AdminDB.*;
 import static com.kinecab.demo.db.CabDB.*;
 import com.kinecab.demo.db.LoginDB;
 import com.kinecab.demo.db.entity.*;
+import com.kinecab.demo.json.GetAdmin;
+import com.kinecab.demo.json.GetPerson;
 import com.kinecab.demo.json.Message;
 
 import org.springframework.http.MediaType;
@@ -79,6 +80,19 @@ public class AdminService {
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Impossible d'ajouter un patient.");
+        }
+    }
+
+    @PostMapping(value = "/admin/getadmin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getPersonIdAdmin() {
+        try {
+            List<Admin> admins= getAdmins();
+            admins.forEach(admin -> {admin.setPassword("");admin.setEmail("");});
+            return new GetAdmin("OK", "RAS", admins);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("OK", "Erreur pendant le chargement des admins.");
         }
     }
 

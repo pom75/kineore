@@ -73,6 +73,13 @@ public class AdminDB {
         }
     }
 
+    public static List<Admin> getAdmins() {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from ADMIN ;");
+                return sqlQuery.addEntity(Admin.class).list();
+            }
+        }
+
     public static List<Admin> checkPasswordByEmailAdmin(String email, String password) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from ADMIN where ADMIN.password = '" + password + "' and  ADMIN.email = '" + email + "';");

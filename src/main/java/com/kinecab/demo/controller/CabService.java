@@ -12,7 +12,6 @@ import com.kinecab.demo.json.Message;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.result.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 
