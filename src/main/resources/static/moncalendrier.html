@@ -600,6 +600,10 @@ header section -->
                 var events = getEvents(moment(info.start).format("YYYY-MM-DD HH:mm:ss"), moment(info.end).format("YYYY-MM-DD HH:mm:ss"));
                 successCallback(events);
             },
+            eventDrop: function(info) {
+                saveEvents([createJsonEvent(info.event)]);
+                calendar.getEventById(info.event.id).remove();
+            }
         });
         calendar.setOption('locale', 'fr');
         calendar.render();
@@ -977,6 +981,7 @@ header section -->
             end: end,
             color: color,
             editable: true,
+            durationEditable: false,
             data: {
                 status: status,
                 idPatient: idPatient,
@@ -1000,6 +1005,7 @@ header section -->
             end: moment(event.end).format("YYYY-MM-DD HH:mm:ss"),
             color: event.backgroundColor,
             editable: true,
+            durationEditable: false,
             data: {
                 status: event.extendedProps.data.status,
                 idPatient: event.extendedProps.data.idPatient,
