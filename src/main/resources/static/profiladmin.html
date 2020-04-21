@@ -12,6 +12,16 @@
     <script src="js/jquery-2.1.1.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
+        window.onload = redirect;
+
+        function redirect() {
+            if (readCookie('session') == '') {
+                window.location.href = ("/index.html");
+            }
+            if (readCookie('admin') == '0') {
+                window.location.href = ("/index.html");
+            }
+        }
 
 
         $.ajax({
@@ -74,7 +84,7 @@
 
         function delete_cookie(name) {
             document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-            window.location.href = ("/rendez-vous.html");
+            window.location.href = ("/index.html");
         }
     </script>
     <script src="js/jquery-2.1.1.js"></script>

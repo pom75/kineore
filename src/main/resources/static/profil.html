@@ -14,7 +14,7 @@
 
         function redirect() {
             if (readCookie('session') == '') {
-                window.location.href = ("/rendez-vous.html");
+                window.location.href = ("/index.html");
             }
             if (readCookie('admin') == '1') {
                 window.location.href = ("/profiladmin.html");
@@ -56,7 +56,7 @@
 
         function delete_cookie(name) {
             document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-            window.location.href = ("/rendez-vous.html");
+            window.location.href = ("/index.html");
         }
     </script>
     <script src="js/modernizr.js"></script>
@@ -95,7 +95,7 @@ header section -->
 
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a class="menu" href="index.html">Présentation</a></li>
-                                <li><a class="menu" href="rendez-vous.html">Rendez-vous</a></li>
+                                <li><a class="menu" href="index.html">Rendez-vous</a></li>
                                 <li><a class="menu active" href="profil.html">Mon Profil</a></li>
                                 <li><a class="menu" href="#" onclick="delete_cookie('session')">Deconnexion</a></li>
                                 <li><a class="menu" href="contact.html">Contact</a></li>

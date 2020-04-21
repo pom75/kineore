@@ -13,8 +13,11 @@
         window.onload = redirect;
 
         function redirect() {
+            if (readCookie('admin') == '1') {
+                window.location.href = ("/moncalendrier.html");
+            }
             if (readCookie('session') != '') {
-                window.location.href = ("/calendrier.html");
+                window.location.href = ("/index.html");
             }
         }
 
@@ -173,7 +176,7 @@ header section -->
                         if (jsonData.admin == 1) {
                             window.location.href = "moncalendrier.html";
                         } else {
-                            window.location.href = "calendrier.html";
+                            window.location.href = "index.html";
                         }
                     }, 2000);
                 }
