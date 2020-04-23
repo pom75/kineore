@@ -1,6 +1,11 @@
 
 package com.kinecab.demo.controller;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class RDVService {
+    public static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
@@ -65,6 +71,31 @@ public class RDVService {
             e.printStackTrace();
             return new Message("OK", "Erreur pendant le chargement des rendez-vous.");
         }
+    }
+
+    @PostMapping(value = "/rdv/getrdvfree", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getRDVFree(
+                          @RequestParam("idAdmin") String idAdmin) {
+        try {
+            String start = getStart();
+            String end = getEnd();
+            final List<Event> rdvs = RDVDB.getRdvFreeByTime(start, end, Integer.parseInt(idAdmin.replace("#","")));
+            return new GetRDV("OK", "RAS", rdvs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("OK", "Erreur pendant le chargement des rendez-vous.");
+        }
+    }
+
+    private String getEnd() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 1);
+        return FORMAT.format(cal.getTime());
+    }
+
+    private String getStart() {
+        return FORMAT.format( new Date());
     }
 
     @PostMapping(value = "/rdv/removerdv", produces = MediaType.APPLICATION_JSON_VALUE)

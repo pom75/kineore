@@ -22,6 +22,18 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
 </head>
 <script>
+
+	window.onload = redirect;
+
+	function redirect() {
+		//from url redirection
+		if ($_GET('id')) {
+
+		}{
+
+		}
+	}
+
 	function readCookie(name) {
 		var i, c, ca, nameEQ = name + "=";
 		ca = document.cookie.split(';');
@@ -76,8 +88,8 @@ header section -->
 <main role="main">
 	<section class="text-center">
 		<div class="container">
-			<h1 class="jumbotron-heading">Bienvenue sur Kin&eacute;cab</h1>
-			<p class="lead text-muted">Prise de rendez-vous en ligne et Gestion de calendrier.</p>
+			<h1 class="jumbotron-heading">Rendez-vous</h1>
+			<p class="lead text-muted">Veuillez choisir une date.</p>
 		</div>
 	</section>
 
@@ -86,34 +98,15 @@ header section -->
 			<div style="overflow:hidden;">
 				<div class="form-group">
 					<div class="row">
+						<div class="col-md-2">
+							<div id="calendrierPick"></div>
+						</div>
 						<div class="col-md-8">
-							<div id="datetimepicker13"></div>
+							<p class="lead" id="titleDate">Aucune date selectionné.</p>
 						</div>
 					</div>
 				</div>
-				<script type="text/javascript">
-					$(function () {
-						$('#datetimepicker13').datetimepicker({
-							inline: true,
-							format: 'L',
-							sideBySide: true,
-							locale: test,
-							minDate: new Date(),
-							maxDate: new Date(new Date().setMonth(new Date().getMonth()+1)),
-							disabledDates: [
-								moment("04/25/20")
-							]
-						});
-						$("#datetimepicker13").on("change.datetimepicker", function (e) {
-							console.log(e);//On pick date
-						});
-					});
-				</script>
 			</div>
-			<form class="navbar-form navbar-left">
-				<input id="nameKine" type="text" class="form-control col-lg-12" placeholder="Trouver un Kin&eacute;sith&eacute;rapeute">
-				<br>
-			</form>
 		</div>
 	</section>
 
@@ -127,6 +120,59 @@ header section -->
 
 </body>
 </html>
+<script type="text/javascript">
+	var listEvent = [];
+
+	$(function () {
+		$('#calendrierPick').datetimepicker({
+			inline: true,
+			format: 'L',
+			sideBySide: true,
+			locale: test,
+			minDate: new Date(),
+			maxDate: new Date(new Date().setMonth(new Date().getMonth()+1)),
+			disabledDates: [
+				moment("04/25/20")
+			]
+		});
+		$("#calendrierPick").on("change.datetimepicker", function (e) {
+			console.log(e);//On pick date
+		});
+	});
+
+	function getEvents() {
+		$.ajax({
+			data: 'idAdmin=' + $_GET('id'),
+			type: 'POST',
+			url: '/rdv/getrdvfree',
+			success: function (data, textStatus, jqXHR) {
+				var jsonData = JSON.parse(data);
+				jsonData.rdvs.forEach(event => listEvent.push(event));
+				console.log(listEvent);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				$('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+			}
+		});
+	}
+	getEvents();
+
+	function $_GET(param) {
+		var vars = {};
+		window.location.href.replace(location.hash, '').replace(
+				/[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+				function (m, key, value) { // callback
+					vars[key] = value !== undefined ? value : '';
+				}
+		);
+
+		if (param) {
+			return vars[param] ? vars[param] : null;
+		}
+		return vars;
+	}
+
+</script>
 <script>
 	var test = moment.locale('fr', {
 		months: 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_'),
