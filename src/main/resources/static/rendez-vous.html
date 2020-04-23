@@ -18,6 +18,8 @@
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/bootstrap-autocomplete.min.js"></script>
 	<script src="js/moment.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
 </head>
 <script>
 	function readCookie(name) {
@@ -81,6 +83,33 @@ header section -->
 
 	<section class="text-center" style="margin-top: 100px">
 		<div class="container">
+			<div style="overflow:hidden;">
+				<div class="form-group">
+					<div class="row">
+						<div class="col-md-8">
+							<div id="datetimepicker13"></div>
+						</div>
+					</div>
+				</div>
+				<script type="text/javascript">
+					$(function () {
+						$('#datetimepicker13').datetimepicker({
+							inline: true,
+							format: 'L',
+							sideBySide: true,
+							locale: test,
+							minDate: new Date(),
+							maxDate: new Date(new Date().setMonth(new Date().getMonth()+1)),
+							disabledDates: [
+								moment("04/25/20")
+							]
+						});
+						$("#datetimepicker13").on("change.datetimepicker", function (e) {
+							console.log(e);//On pick date
+						});
+					});
+				</script>
+			</div>
 			<form class="navbar-form navbar-left">
 				<input id="nameKine" type="text" class="form-control col-lg-12" placeholder="Trouver un Kin&eacute;sith&eacute;rapeute">
 				<br>
@@ -98,3 +127,60 @@ header section -->
 
 </body>
 </html>
+<script>
+	var test = moment.locale('fr', {
+		months: 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_'),
+		monthsShort: 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
+		monthsParseExact: true,
+		weekdays: 'Dimanche_Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi'.split('_'),
+		weekdaysShort: 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
+		weekdaysMin: 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+		weekdaysParseExact: true,
+		longDateFormat: {
+			LT: 'HH:mm',
+			LTS: 'HH:mm:ss',
+			L: 'DD/MM/YYYY',
+			LL: 'D MMMM YYYY',
+			LLL: 'D MMMM YYYY HH:mm',
+			LLLL: 'dddd D MMMM YYYY HH:mm'
+		},
+		calendar: {
+			sameDay: '[Aujourd’hui à] LT',
+			nextDay: '[Demain à] LT',
+			nextWeek: 'dddd [à] LT',
+			lastDay: '[Hier à] LT',
+			lastWeek: 'dddd [dernier à] LT',
+			sameElse: 'L'
+		},
+		relativeTime: {
+			future: 'dans %s',
+			past: 'il y a %s',
+			s: 'quelques secondes',
+			m: 'une minute',
+			mm: '%d minutes',
+			h: 'une heure',
+			hh: '%d heures',
+			d: 'un jour',
+			dd: '%d jours',
+			M: 'un mois',
+			MM: '%d mois',
+			y: 'un an',
+			yy: '%d ans'
+		},
+		dayOfMonthOrdinalParse: /\d{1,2}(er|e)/,
+		ordinal: function (number) {
+			return number + (number === 1 ? 'er' : 'e');
+		},
+		meridiemParse: /PD|MD/,
+		isPM: function (input) {
+			return input.charAt(0) === 'M';
+		},
+		meridiem: function (hours, minutes, isLower) {
+			return hours < 12 ? 'PD' : 'MD';
+		},
+		week: {
+			dow: 1, // Monday is the first day of the week.
+			doy: 4  // Used to determine first week of the year.
+		}
+	});
+</script>
