@@ -1,8 +1,10 @@
 
 package com.kinecab.demo.db;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import com.kinecab.demo.db.entity.Admin;
 import com.kinecab.demo.db.entity.Cab;
 import com.kinecab.demo.db.entity.CabAdmin;
 import com.kinecab.demo.db.entity.CabPerson;
@@ -34,9 +36,27 @@ public class CabDB {
     }
 
     public static List<Cab> getCabByID(String id) {
+        System.out.println(id);
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB where CAB.id = '" + id + "' ;");
             return sqlQuery.addEntity(Cab.class).list();
+        }
+    }
+
+    public static List<Admin> getAdminsByIdCab(String id) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB_ADMIN where CAB_ADMIN.idCab = '" + id + "' ;");
+            List<CabAdmin> list = sqlQuery.addEntity(CabAdmin.class).list();
+            List<Admin> admins = new LinkedList();
+            list.forEach(cab ->{
+                NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * from ADMIN where ADMIN.id = '" + cab.getIdAdmin() + "' ;");
+                Admin admin = (Admin) sqlQuery2.addEntity(Admin.class).list().get(0);
+                System.out.println(admin.getNom());
+                admin.setPassword("");
+                admin.setEmail("");
+                admins.add(admin);
+            });
+            return admins;
         }
     }
 

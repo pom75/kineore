@@ -7,6 +7,7 @@ import static com.kinecab.demo.db.AdminDB.getAdminByToken;
 import static com.kinecab.demo.db.CabDB.*;
 import com.kinecab.demo.db.entity.Admin;
 import com.kinecab.demo.db.entity.Cab;
+import com.kinecab.demo.json.GetAdmin;
 import com.kinecab.demo.json.Message;
 
 import org.springframework.http.MediaType;
@@ -67,6 +68,7 @@ public class CabService {
         }
     }
 
+    //TODO : to remove
     @PostMapping(value = "/cab/getcabprofil", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Cab getCabProfil(@RequestParam("token") String token) {
@@ -86,6 +88,21 @@ public class CabService {
                 return null;
             }
             return cabs.get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping(value = "/cab/getAdminsCab", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public GetAdmin getAdminsCab(@RequestParam("id") String id) {
+        try {
+            List<Admin> admins = getAdminsByIdCab(id.replace("#",""));
+            if (admins.isEmpty()) {
+                return null;
+            }
+            return new GetAdmin("OK", "RAS", admins);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

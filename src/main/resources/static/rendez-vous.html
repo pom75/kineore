@@ -20,41 +20,28 @@
 	<script src="js/moment.js"></script>
 </head>
 <script>
-	var idAdminMap = {};
-
-	function getAdmin() {
-		$.ajax({
-			data: {},
-			type: 'POST',
-			url: '/admin/getadmin',
-			success: function (data, textStatus, jqXHR) {
-				var jsonData = JSON.parse(data);
-				var idName = [];
-				for (var i = 0; i < jsonData.admins.length; i++) {
-					idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
-					var obj = {};
-					var value = "value";
-					var label = "label";
-					obj[value] = jsonData.admins[i].id;
-					obj[label] = jsonData.admins[i].nom + " " + jsonData.admins[i].prenom;
-					idName.push(obj);
-
-				}
-				$('#nameKine').autocomplete({
-					'source': idName, delay: 0,
-					select: function (event, ui) {
-						event.preventDefault();
-						$("#nameKine").val(ui.item.label);
-						$("#nameKine").attr('name', ui.item.value);
-					}
-				});
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				$('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+	function readCookie(name) {
+		var i, c, ca, nameEQ = name + "=";
+		ca = document.cookie.split(';');
+		for (i = 0; i < ca.length; i++) {
+			c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1, c.length);
 			}
-		});
+			if (c.indexOf(nameEQ) == 0) {
+				return c.substring(nameEQ.length, c.length);
+			}
+		}
+		return '';
 	}
-	getAdmin();
+
+	function delete_cookie(name) {
+		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+		window.location.href = ("/index.html");
+	}
+
+
+
 </script>
 <body>
 
@@ -97,10 +84,6 @@ header section -->
 			<form class="navbar-form navbar-left">
 				<input id="nameKine" type="text" class="form-control col-lg-12" placeholder="Trouver un Kin&eacute;sith&eacute;rapeute">
 				<br>
-				<div class="float-sm-center" id="modifBlock">
-					<button type="button" id="gotordv" class="btn btn-secondary pull-center">Prendre rendez-vous
-					</button>
-				</div>
 			</form>
 		</div>
 	</section>
@@ -115,10 +98,3 @@ header section -->
 
 </body>
 </html>
-<script>
-	$("#gotordv").click(function () {
-		if($('#nameKine').attr("name") != null) {
-			window.location.href = ("/rendez-vous.html?id="+$('#nameKine').attr("name"));
-		}
-	});
-</script>
