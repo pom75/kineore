@@ -130,6 +130,18 @@ public class RDVService {
         }
     }
 
+    @PostMapping(value = "/rdv/getmotifid", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getMotifId(@RequestParam("idAdmin") String idAdmin) {
+        try {
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdAdmin(Integer.parseInt(idAdmin.replace("#","")));
+            return new GetMotif("OK", "RAS", motifByIdAdmin);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
     @PostMapping(value = "/rdv/getpersonidadmin", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getPersonIdAdmin(@RequestParam("tokenAdmin") String tokenAdmin) {

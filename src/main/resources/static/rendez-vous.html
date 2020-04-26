@@ -57,7 +57,6 @@
         window.location.href = ("/index.html");
     }
 
-
 </script>
 <body>
 
@@ -92,7 +91,14 @@ header section -->
     <section class="text-center">
         <div class="container">
             <h1 class="jumbotron-heading">Rendez-vous</h1>
-            <p class="lead text-muted">Veuillez choisir une date.</p>
+            <br>
+            <div class="row justify-content-md-center">
+                <div class="col-md-4">
+                    <select class="form-control mx-sm-3 mb-2" id="eventMotifSelection">
+                        <option value="default" selected>Veuillez faire un choix</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -160,10 +166,11 @@ header section -->
                             <div class="btn-group mt-3" role="group" aria-label="Third group">
                                 <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
                             </div>
-							<div class="float-sm-center mt-3 mb-5" id="modifBlock">
-								<button type="button" id="gotordv" class="btn btn-secondary pull-center">Prendre rendez-vous
-								</button>
-							</div>
+                            <div class="float-sm-center mt-3 mb-5" id="modifBlock">
+                                <button type="button" id="gotordv" class="btn btn-secondary pull-center">Prendre
+                                    rendez-vous
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -213,15 +220,27 @@ header section -->
         )
     }
 
-    function getFreeRdvsFromDate(date) {
-        var filteredEvents;
-        listEvent.forEach(event => {
-                if (moment(event.start).isSame(moment(date), 'day')) {
-                    filteredEvents.push(event);
+    var idMotifMap = {};
+
+    function getMotif() {
+        $.ajax({
+            data: 'idAdmin=' + $_GET('id'),
+            type: 'POST',
+            url: '/rdv/getmotifid',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                for (var i = 0; i < jsonData.motif.length; i++) {
+                    idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
+                    $('#eventMotifSelection').append("<option value=\"" + jsonData.motif[i].id + "\">" + jsonData.motif[i].motif + "</option>");
                 }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
-        )
+        });
     }
+
+    getMotif();
 
 
     function getEvents() {

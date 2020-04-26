@@ -90,7 +90,7 @@ public class AdminDB {
     public static List<Person> getPersonByIdAdmin(int IdAdmin) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<Person> people = new ArrayList<>();
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_ADMIN WHERE  CAB_ADMIN.idAdmin = '" + IdAdmin + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_ADMIN WHERE CAB_ADMIN.idAdmin = '" + IdAdmin + "';");
             final CabAdmin cabAdmin = (CabAdmin) sqlQuery.addEntity(CabAdmin.class).list().get(0); //TODO one admin in multiple cab
 
             sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + cabAdmin.getIdCab() + "';");
