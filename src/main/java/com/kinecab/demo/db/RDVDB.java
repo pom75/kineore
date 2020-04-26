@@ -3,9 +3,7 @@ package com.kinecab.demo.db;
 
 import java.sql.Timestamp;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.util.HibernateUtil;
@@ -47,9 +45,9 @@ public class RDVDB {
                 idPatient = Integer.parseInt((String) idPatObj);
             }
             final Event event = new Event(adminId, Timestamp.valueOf((String) currentEvent.get("start")), Timestamp.valueOf((String) currentEvent.get("end")),
-                Status.stringToStatus((String) ((JSONObject) currentEvent.get("data")).get("status")), idPatient, (Integer) ((JSONObject) currentEvent.get("data")).get("idMotif"),
+                Status.stringToStatus((String) ((JSONObject) currentEvent.get("data")).get("status")), idPatient, (String) ((JSONObject) currentEvent.get("data")).get("idMotif"),
                 (Integer) ((JSONObject) currentEvent.get("data")).get("duration"), (String) ((JSONObject) currentEvent.get("data")).get("info"), (boolean) ((JSONObject) currentEvent.get("data")).get("pointe"),
-                (boolean) ((JSONObject) currentEvent.get("data")).get("paye"), (String) ((JSONObject) currentEvent.get("data")).get("nomPatient"));
+                (boolean) ((JSONObject) currentEvent.get("data")).get("paye"), (String) ((JSONObject) currentEvent.get("data")).get("nomPatient"), (String) ((JSONObject) currentEvent.get("data")).get("listIdMotif"));
             if ((currentEvent.get("id") != null) && (Integer.parseInt(String.valueOf(currentEvent.get("id"))) != 0)) { //TODO DIRTY
                 event.setId(Integer.parseInt(String.valueOf(currentEvent.get("id"))));
             }
@@ -84,10 +82,16 @@ public class RDVDB {
         }
     }
 
-    public static List<Motif> getMotifByIdAdmin(int id) {
+    public static List<MotifCab> getMotifByIdAdmin(int id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF WHERE  MOTIF.idAdmin = '" + id + "';");
-            return sqlQuery.addEntity(Motif.class).list();
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_ADMIN WHERE  MOTIF_ADMIN.idAdmin = '" + id + "';");
+            List<MotifAdmin> list = sqlQuery.addEntity(MotifAdmin.class).list();
+            List<MotifCab> motifCabs = new LinkedList<>();
+            list.forEach(motifAdmin -> {
+                NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + motifAdmin.getIdMotifCab() + "';");
+                motifCabs.add((MotifCab) sqlQuery2.addEntity(MotifCab.class).list().get(0));
+            });
+            return motifCabs;
         }
     }
 }

@@ -36,7 +36,10 @@ public class Event {
     private int idPatient;
 
     @Column
-    private int idMotif;
+    private String idMotif;
+
+    @Column
+    private String listIdMotif;
 
     @Column
     private int duration;
@@ -58,7 +61,7 @@ public class Event {
     //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public Event(int idAdmin, Timestamp start, Timestamp end, Status status, int idPatient, int idMotif, int duration, String info, boolean pointe, boolean paye, String nomPrenom) {
+    public Event(int idAdmin, Timestamp start, Timestamp end, Status status, int idPatient, String idMotif, int duration, String info, boolean pointe, boolean paye, String nomPrenom, String listIdMotif) {
         this.idAdmin = idAdmin;
         this.start = start;
         this.end = end;
@@ -70,6 +73,7 @@ public class Event {
         this.pointe = pointe;
         this.paye = paye;
         this.nomPrenom = nomPrenom;
+        this.listIdMotif=listIdMotif;
     }
 
     public Event() {
@@ -152,11 +156,11 @@ public class Event {
         this.idPatient = idPatient;
     }
 
-    public int getIdMotif() {
+    public String getIdMotif() {
         return idMotif;
     }
 
-    public void setIdMotif(int idMotif) {
+    public void setIdMotif(String idMotif) {
         this.idMotif = idMotif;
     }
 
@@ -174,6 +178,14 @@ public class Event {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public String getListIdMotif() {
+        return listIdMotif;
+    }
+
+    public void setListIdMotif(String listIdMotif) {
+        this.listIdMotif = listIdMotif;
     }
 
     @Override

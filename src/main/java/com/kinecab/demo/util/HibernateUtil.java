@@ -51,7 +51,8 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(Person.class);
                 configuration.addAnnotatedClass(PersonTemp.class);
                 configuration.addAnnotatedClass(Token.class);
-                configuration.addAnnotatedClass(Motif.class);
+                configuration.addAnnotatedClass(MotifCab.class);
+                configuration.addAnnotatedClass(MotifAdmin.class);
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             } catch (Exception e) {

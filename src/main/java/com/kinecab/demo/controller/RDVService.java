@@ -2,8 +2,6 @@
 package com.kinecab.demo.controller;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +13,7 @@ import static com.kinecab.demo.db.AdminDB.getPersonByIdAdmin;
 import com.kinecab.demo.db.RDVDB;
 import com.kinecab.demo.db.entity.Admin;
 import com.kinecab.demo.db.entity.Event;
-import com.kinecab.demo.db.entity.Motif;
+import com.kinecab.demo.db.entity.MotifCab;
 import com.kinecab.demo.db.entity.Person;
 import com.kinecab.demo.json.*;
 
@@ -124,7 +122,7 @@ public class RDVService {
             if (adminByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<Motif> motifByIdAdmin = RDVDB.getMotifByIdAdmin(adminByToken.get(0).getId());
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdAdmin(adminByToken.get(0).getId());
             return new GetMotif("OK", "RAS", motifByIdAdmin);
         } catch (Exception e) {
             e.printStackTrace();

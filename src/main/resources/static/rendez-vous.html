@@ -3,57 +3,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <head>
     <meta charset="UTF-8">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Kin&eacute;Cab - Site de rendez-vous en ligne pour les Kin&eacute;sithérapeute</title>
-	<link rel="stylesheet" href="js/jquery-ui.css">
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/custom.css">
-	<link rel="icon" type="image/png" href="img/ck.png" />
-	<script src="js/jquery-2.1.1.js"></script>
-	<script src="js/jquery-ui.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/bootstrap-autocomplete.min.js"></script>
-	<script src="js/moment.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="js/jquery-ui.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="icon" type="image/png" href="img/ck.png"/>
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-autocomplete.min.js"></script>
+    <script src="js/moment.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css"/>
 </head>
 <script>
 
-	window.onload = redirect;
+    window.onload = redirect;
 
-	function redirect() {
-		//from url redirection
-		if ($_GET('id')) {
+    function redirect() {
+        //from url redirection
+        if ($_GET('id')) {
 
-		}{
+        }
+        {
 
-		}
-	}
+        }
+    }
 
-	function readCookie(name) {
-		var i, c, ca, nameEQ = name + "=";
-		ca = document.cookie.split(';');
-		for (i = 0; i < ca.length; i++) {
-			c = ca[i];
-			while (c.charAt(0) == ' ') {
-				c = c.substring(1, c.length);
-			}
-			if (c.indexOf(nameEQ) == 0) {
-				return c.substring(nameEQ.length, c.length);
-			}
-		}
-		return '';
-	}
+    function readCookie(name) {
+        var i, c, ca, nameEQ = name + "=";
+        ca = document.cookie.split(';');
+        for (i = 0; i < ca.length; i++) {
+            c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1, c.length);
+            }
+            if (c.indexOf(nameEQ) == 0) {
+                return c.substring(nameEQ.length, c.length);
+            }
+        }
+        return '';
+    }
 
-	function delete_cookie(name) {
-		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-		window.location.href = ("/index.html");
-	}
-
+    function delete_cookie(name) {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        window.location.href = ("/index.html");
+    }
 
 
 </script>
@@ -62,171 +64,253 @@
 <!-- ====================================================
 header section -->
 <header style="padding-bottom: 70px;">
-	<nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
-		<img src="img/ck.png" width="30" height="30">
-		<a class="navbar-brand" href="#" >&nbsp;Kin&eacute;cab</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
+        <img src="img/ck.png" width="30" height="30">
+        <a class="navbar-brand" href="#">&nbsp;Kin&eacute;cab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="nav navbar-nav ml-auto">
-				<li class="nav-item navbar-right">
-					<a class="nav-link navbar-right" href="connexion.html">Se connecter</a>
-				</li>
-				<li class="nav-item navbar-right">
-					<a class="nav-link navbar-right" href="presentation.html">Professionel de sant&eacute;</a>
-				</li>
-				<li class="nav-item navbar-right">
-					<a class="nav-link navbar-right" href="#">Qui somme nous?</a>
-				</li>
-			</ul>
-		</div>
-	</nav>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="connexion.html">Se connecter</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="presentation.html">Professionel de sant&eacute;</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="#">Qui somme nous?</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </header> <!-- end of header area -->
 
 <main role="main">
-	<section class="text-center">
-		<div class="container">
-			<h1 class="jumbotron-heading">Rendez-vous</h1>
-			<p class="lead text-muted">Veuillez choisir une date.</p>
-		</div>
-	</section>
+    <section class="text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Rendez-vous</h1>
+            <p class="lead text-muted">Veuillez choisir une date.</p>
+        </div>
+    </section>
 
-	<section class="text-center" style="margin-top: 100px">
-		<div class="container">
-			<div style="overflow:hidden;">
-				<div class="form-group">
-					<div class="row">
-						<div class="col-md-2">
-							<div id="calendrierPick"></div>
-						</div>
-						<div class="col-md-8">
-							<p class="lead" id="titleDate">Aucune date selectionné.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+    <section class="text-center" style="margin-top: 100px">
+        <div class="container">
+            <div style="overflow:hidden;">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div id="calendrierPick"></div>
+                        </div>
+                        <div class="col-md-8">
+                            <p class="lead" id="titleDate">Aucune date selectionné.</p>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+                            <div class="btn-group mt-3" role="group" aria-label="Third group">
+                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            </div>
+							<div class="float-sm-center mt-3 mb-5" id="modifBlock">
+								<button type="button" id="gotordv" class="btn btn-secondary pull-center">Prendre rendez-vous
+								</button>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 </main>
 
 
 <!-- footer starts here -->
 <nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
-	&copy; 2020 Copyright
+    &copy; 2020 Copyright
 </nav>
 
 </body>
 </html>
 <script type="text/javascript">
-	var listEvent = [];
+    var listEvent = [];
 
-	$(function () {
-		$('#calendrierPick').datetimepicker({
-			inline: true,
-			format: 'L',
-			sideBySide: true,
-			locale: test,
-			minDate: new Date(),
-			maxDate: new Date(new Date().setMonth(new Date().getMonth()+1)),
-			disabledDates: [
-				moment("04/25/20")
-			]
-		});
-		$("#calendrierPick").on("change.datetimepicker", function (e) {
-			console.log(e);//On pick date
-		});
-	});
+    $(function () {
+        $('#calendrierPick').datetimepicker({
+            inline: true,
+            format: 'L',
+            sideBySide: true,
+            locale: test,
+            minDate: new Date(),
+            maxDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+            disabledDates: [
+                moment("04/25/20")
+            ]
+        });
+        $("#calendrierPick").on("change.datetimepicker", function (e) {
+            var filteredFreeRdvs = getFreeRdvsFromDate(e.date);
+            showFreeRdvs(filteredFreeRdvs);
 
-	function getEvents() {
-		$.ajax({
-			data: 'idAdmin=' + $_GET('id'),
-			type: 'POST',
-			url: '/rdv/getrdvfree',
-			success: function (data, textStatus, jqXHR) {
-				var jsonData = JSON.parse(data);
-				jsonData.rdvs.forEach(event => listEvent.push(event));
-				console.log(listEvent);
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				$('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-			}
-		});
-	}
-	getEvents();
+        });
+    });
 
-	function $_GET(param) {
-		var vars = {};
-		window.location.href.replace(location.hash, '').replace(
-				/[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
-				function (m, key, value) { // callback
-					vars[key] = value !== undefined ? value : '';
-				}
-		);
+    function getFreeRdvsFromDate(date) {
+        var filteredEvents;
+        listEvent.forEach(event => {
+                if (moment(event.start).isSame(moment(date), 'day')) {
+                    filteredEvents.push(event);
+                }
+            }
+        )
+    }
 
-		if (param) {
-			return vars[param] ? vars[param] : null;
-		}
-		return vars;
-	}
+    function getFreeRdvsFromDate(date) {
+        var filteredEvents;
+        listEvent.forEach(event => {
+                if (moment(event.start).isSame(moment(date), 'day')) {
+                    filteredEvents.push(event);
+                }
+            }
+        )
+    }
+
+
+    function getEvents() {
+        $.ajax({
+            data: 'idAdmin=' + $_GET('id'),
+            type: 'POST',
+            url: '/rdv/getrdvfree',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                jsonData.rdvs.forEach(event => listEvent.push(event));
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+    }
+
+    getEvents();
+
+    function $_GET(param) {
+        var vars = {};
+        window.location.href.replace(location.hash, '').replace(
+            /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+            function (m, key, value) { // callback
+                vars[key] = value !== undefined ? value : '';
+            }
+        );
+
+        if (param) {
+            return vars[param] ? vars[param] : null;
+        }
+        return vars;
+    }
 
 </script>
 <script>
-	var test = moment.locale('fr', {
-		months: 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_'),
-		monthsShort: 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
-		monthsParseExact: true,
-		weekdays: 'Dimanche_Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi'.split('_'),
-		weekdaysShort: 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
-		weekdaysMin: 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
-		weekdaysParseExact: true,
-		longDateFormat: {
-			LT: 'HH:mm',
-			LTS: 'HH:mm:ss',
-			L: 'DD/MM/YYYY',
-			LL: 'D MMMM YYYY',
-			LLL: 'D MMMM YYYY HH:mm',
-			LLLL: 'dddd D MMMM YYYY HH:mm'
-		},
-		calendar: {
-			sameDay: '[Aujourd’hui à] LT',
-			nextDay: '[Demain à] LT',
-			nextWeek: 'dddd [à] LT',
-			lastDay: '[Hier à] LT',
-			lastWeek: 'dddd [dernier à] LT',
-			sameElse: 'L'
-		},
-		relativeTime: {
-			future: 'dans %s',
-			past: 'il y a %s',
-			s: 'quelques secondes',
-			m: 'une minute',
-			mm: '%d minutes',
-			h: 'une heure',
-			hh: '%d heures',
-			d: 'un jour',
-			dd: '%d jours',
-			M: 'un mois',
-			MM: '%d mois',
-			y: 'un an',
-			yy: '%d ans'
-		},
-		dayOfMonthOrdinalParse: /\d{1,2}(er|e)/,
-		ordinal: function (number) {
-			return number + (number === 1 ? 'er' : 'e');
-		},
-		meridiemParse: /PD|MD/,
-		isPM: function (input) {
-			return input.charAt(0) === 'M';
-		},
-		meridiem: function (hours, minutes, isLower) {
-			return hours < 12 ? 'PD' : 'MD';
-		},
-		week: {
-			dow: 1, // Monday is the first day of the week.
-			doy: 4  // Used to determine first week of the year.
-		}
-	});
+    var test = moment.locale('fr', {
+        months: 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_'),
+        monthsShort: 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
+        monthsParseExact: true,
+        weekdays: 'Dimanche_Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi'.split('_'),
+        weekdaysShort: 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
+        weekdaysMin: 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+        weekdaysParseExact: true,
+        longDateFormat: {
+            LT: 'HH:mm',
+            LTS: 'HH:mm:ss',
+            L: 'DD/MM/YYYY',
+            LL: 'D MMMM YYYY',
+            LLL: 'D MMMM YYYY HH:mm',
+            LLLL: 'dddd D MMMM YYYY HH:mm'
+        },
+        calendar: {
+            sameDay: '[Aujourd’hui à] LT',
+            nextDay: '[Demain à] LT',
+            nextWeek: 'dddd [à] LT',
+            lastDay: '[Hier à] LT',
+            lastWeek: 'dddd [dernier à] LT',
+            sameElse: 'L'
+        },
+        relativeTime: {
+            future: 'dans %s',
+            past: 'il y a %s',
+            s: 'quelques secondes',
+            m: 'une minute',
+            mm: '%d minutes',
+            h: 'une heure',
+            hh: '%d heures',
+            d: 'un jour',
+            dd: '%d jours',
+            M: 'un mois',
+            MM: '%d mois',
+            y: 'un an',
+            yy: '%d ans'
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}(er|e)/,
+        ordinal: function (number) {
+            return number + (number === 1 ? 'er' : 'e');
+        },
+        meridiemParse: /PD|MD/,
+        isPM: function (input) {
+            return input.charAt(0) === 'M';
+        },
+        meridiem: function (hours, minutes, isLower) {
+            return hours < 12 ? 'PD' : 'MD';
+        },
+        week: {
+            dow: 1, // Monday is the first day of the week.
+            doy: 4  // Used to determine first week of the year.
+        }
+    });
 </script>

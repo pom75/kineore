@@ -8,8 +8,8 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "MOTIF")
-public class Motif {
+@Table(name = "MOTIF_CAB")
+public class MotifCab {
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Instance fields
@@ -18,23 +18,25 @@ public class Motif {
     @Id
     private int id;
 
-
     @Column
-    private int idAdmin;
+    private int idCab;
 
     @Column
     private String motif;
+
+    @Column
+    private int resource;
 
 
 //~ ----------------------------------------------------------------------------------------------------------------
     //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public Motif() {
+    public MotifCab() {
     }
 
-    public Motif(int idAdmin, String motif) {
-        this.idAdmin = idAdmin;
+    public MotifCab(int idCab, String motif) {
+        this.idCab = idCab;
         this.motif = motif;
     }
 
@@ -57,11 +59,11 @@ public class Motif {
         this.id = id;
     }
 
-    public int getIdAdmin() {
-        return idAdmin;
+    public int getIdCab() {
+        return idCab;
     }
 
-    public void setIdAdmin(int idAdmin) {
-        this.idAdmin = idAdmin;
+    public void setIdCab(int idAdmin) {
+        this.idCab = idAdmin;
     }
 }

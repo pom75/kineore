@@ -67,7 +67,8 @@
                     var jsonData = JSON.parse(data);
                     for (var i = 0; i < jsonData.motif.length; i++) {
                         idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
-                        $('#eventMotifSelection').append("<option value=\"" + jsonData.motif[i].id + "\">" + jsonData.motif[i].motif + "</option>");
+                        $('#selectListIdMotif').append('<input class="form-check-input" name="day" type="checkbox" value="'+ jsonData.motif[i].id+'" id="'+ jsonData.motif[i].id+'"> <label class="form-check-label" for="'+jsonData.motif[i].id+'">'+jsonData.motif[i].motif+' </label><br>');
+                        $('#selectListIdMotif2').append('<input class="form-check-input" name="month" type="checkbox" value="'+ jsonData.motif[i].id+'" id="'+ jsonData.motif[i].id+'"> <label class="form-check-label" for="'+jsonData.motif[i].id+'">'+jsonData.motif[i].motif+' </label><br>');
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -169,6 +170,9 @@ header section -->
                         <select class="form-control" id="finDaySelection">
                         </select>
                         <br>
+                        <div class="form-check" id="selectListIdMotif2">
+                        </div>
+                        <br>
                         <button id="createListRdvDay" class="btn btn-lg btn-primary btn-block" type="submit">Enregistrer
                         </button>
                     </div>
@@ -192,7 +196,6 @@ header section -->
                     <select class="form-control" id="timeGridSelect">
                         <option value="default" selected>Veuillez faire un choix</option>
                         <option value="createListRDV">Créer des crénos libre</option>
-                        <option value="rdvClient">Créer un rendez-vous client</option>
                         <option value="suppRDV">Supprimer les rendez-vous</option>
                     </select>
 
@@ -213,27 +216,11 @@ header section -->
                             <option value="60">1 h</option>
                         </select>
                         <br>
+                        <div class="form-check" id="selectListIdMotif">
+                        </div>
+                        <br>
                         <button id="createListRdvHour" class="btn btn-lg btn-primary btn-block" type="submit">
                             Enregistrer
-                        </button>
-                    </div>
-                    <div id="rdvClient" class="daySelectect2" style="display:none">
-                        <h4>Duree d'un rendez-vous : </h4>
-                        <select class="form-control" id="dureeSelectionClient">
-                            <option selected></option>
-                            <option value="15">15 min</option>
-                            <option value="20">20 min</option>
-                            <option value="30">30 min</option>
-                            <option value="60">1 h</option>
-                        </select>
-                        <h4>Nom du Patient</h4>
-                        <input type="text" class="form-control" name="nom" id="namePatient"
-                               placeholder="Nom du Patient"/>
-                        <h4>Information du rendez-vous </h4>
-                        <textarea class="form-control input-lg" placeholder="Information client" rows="5"
-                                  id="commentRdv"></textarea>
-                        <br>
-                        <button class="btn btn-lg btn-primary btn-block" type="submit" id="createRdvClient">Enregistrer
                         </button>
                     </div>
                 </form>
@@ -546,7 +533,6 @@ header section -->
             },
             eventClick: function (info) {
                 currentEvent = info;
-                //TODO Switch PopUp Event Status ( free booked waiting canceled)
                 var data = info.event.extendedProps.data;
                 var status = data.status;
                 if (status.toUpperCase().localeCompare("BOOKED") == 0) {
@@ -578,7 +564,12 @@ header section -->
                 if (status.toUpperCase().localeCompare("FREE") == 0) {
                     $('#namePat').val("");
                     $("#eventMotifSelection").val("default").change();
-                    ;
+                    var motifs = data.listIdMotif.split(',');
+                    $('#eventMotifSelection').empty();
+                    $('#eventMotifSelection').append('<option value="default" selected>Veuillez faire un choix</option>');
+                    motifs.forEach(motif => {
+                        $('#eventMotifSelection').append("<option value=\"" + motif + "\">" + idMotifMap[motif]+ "</option>");
+                    })
                     $('#eventFreeTitle').html(moment(info.event.start).format("dddd D MMMM") + "   " + moment(info.event.start).format("HH:mm") + " à " + moment(info.event.end).format("HH:mm"));
                     $('#popupSingleEvent').modal('show');
                 }
@@ -647,7 +638,7 @@ header section -->
             title = data.nomPrenom;
             color = '#b23421';
         }
-        return createNewEvent(data.id, title, moment(startD).format("YYYY-MM-DD HH:mm:ss"), moment(endD).format("YYYY-MM-DD HH:mm:ss"), color, data.status, data.idPatient, data.nomPrenom, data.idMotif, data.motif, data.duration, data.info, data.pointe, data.paye);
+        return createNewEvent(data.id, title, moment(startD).format("YYYY-MM-DD HH:mm:ss"), moment(endD).format("YYYY-MM-DD HH:mm:ss"), color, data.status, data.idPatient, data.nomPrenom, data.idMotif, data.motif, data.duration, data.info, data.pointe, data.paye, data.listIdMotif);
     }
 
 
@@ -728,6 +719,20 @@ header section -->
 
     //On Save
     $("#createListRdvDay").click(function () {
+        checked = $("input[name='month']:checked").length;
+        if(!checked) {
+            $('#dialog_title_span').html("Vous devez selectionner au moins 1 motif.");
+            $('#modalMessage').modal('toggle');// catch the form's submit event
+            return false;
+        }
+
+        var listIdMotif = "";
+        $.each($("input[name='month']:checked"), function(){
+            listIdMotif += $(this).val();
+            listIdMotif += ",";
+        });
+        listIdMotif = listIdMotif.substring(0, listIdMotif.length - 1); //remove coma
+
         $('#MonthSelectionModal').modal('hide');
         var currentDayStart = moment(startDayList);
         var currentDayStop = moment(startDayList);
@@ -736,7 +741,7 @@ header section -->
 
         var currentWritter = moment(currentDayStart);
 
-        var i = 0
+        var i = 0;
         var listEvent = [];
         while (endDayList.diff(currentWritter) >= 0) {
             var currentWritter = moment(currentDayStart);
@@ -744,7 +749,8 @@ header section -->
             var currentWritterStop = moment(currentDayStop);
             currentWritterStop.add(i, "days");
             while (currentWritterStop.diff(currentWritter) >= 0) {
-                listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", 0, 0, durationRDV, "", false, false));
+                var integer = parseInt(durationRDV, 10);
+                listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, listIdMotif));
             }
             i++;
         }
@@ -775,9 +781,6 @@ header section -->
             if ($(this).val() == "createListRDV") {
                 $('#createDay2').show();
             }
-            if ($(this).val() == "rdvClient") {
-                $('#rdvClient').show();
-            }
         });
 
     });
@@ -791,12 +794,30 @@ header section -->
 
     //On save free event
     $("#createListRdvHour").click(function () {
+        checked = $("input[name='day']:checked").length;
+        if(!checked) {
+            $('#dialog_title_span').html("Vous devez selectionner au moins 1 motif.");
+            $('#modalMessage').modal('toggle');// catch the form's submit event
+            return false;
+        }
+        if(!durationRDV) {
+            $('#dialog_title_span').html("Vous devez selectionner au moins 1 motif.");
+            $('#modalMessage').modal('toggle');// catch the form's submit event
+            return false;
+        }
+        var listIdMotif = "";
+        $.each($("input[name='day']:checked"), function(){
+            listIdMotif += $(this).val();
+            listIdMotif += ",";
+        });
+        listIdMotif = listIdMotif.substring(0, listIdMotif.length - 1); //remove coma
+
         $('#timeGrid').modal('hide');
         var currentWritter = moment(startDay);
         var listEvent = [];
         while (endDay.diff(currentWritter) > 0) {
             var integer = parseInt(durationRDV, 10);
-            listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", 0, 0, integer, "", false, false));
+            listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, listIdMotif));
         }
         saveEvents(listEvent);
     });
@@ -819,13 +840,6 @@ header section -->
             }
         });
     }
-
-    //On save booked event
-    $("#createRdvClient").click(function () {
-        $('#timeGrid').modal('hide');
-        myNewEvent = createNewEvent(0, $("#namePatient").val(), startDay.format("YYYY-MM-DD HH:mm:ss"), endDay.format("YYYY-MM-DD HH:mm:ss"), '#3687b2', "free", "0", 0, 0, $("#dureeSelectionClient").val($("#commentRdv").val()));
-        calendar.addEvent(myNewEvent);
-    });
 
     //On delete events
     $("#suppHour").click(function () {
@@ -870,7 +884,7 @@ header section -->
         event.extendedProps.data.nomPatient = $('#namePat').val();
         event.extendedProps.data.idPatient = $('#namePat').attr("name");
         event.extendedProps.data.motif = $("#eventMotifSelection option:selected").text();
-        event.extendedProps.data.idMotif = parseInt($("#eventMotifSelection").val(), 10);
+        event.extendedProps.data.idMotif = $("#eventMotifSelection").val();
         event.extendedProps.data.info = $("#commentEvent").val();
         event.extendedProps.title = $('#namePat').val();
         event.extendedProps.data.id = event.id;
@@ -928,7 +942,7 @@ header section -->
         currentEvent.event.setProp("title", "RDV Libre");
         currentEvent.event.extendedProps.data.status = "FREE";
         currentEvent.event.extendedProps.data.idPatient = 0;
-        currentEvent.event.extendedProps.data.idMotif = 0;
+        currentEvent.event.extendedProps.data.idMotif = "";
         currentEvent.event.extendedProps.data.nomPatient = "";
         currentEvent.event.extendedProps.data.info = "";
         currentEvent.event.extendedProps.data.id = 0;
@@ -973,7 +987,7 @@ header section -->
 
     /* ------------------ Global functions ---------------------*/
 
-    function createNewEvent(idEvent, title, start, end, color, status, idPatient, nomPatient, idMotif, motif, duration, info, pointe, paye) {
+    function createNewEvent(idEvent, title, start, end, color, status, idPatient, nomPatient, idMotif, motif, duration, info, pointe, paye, listIdMotif) {
         return {
             id: idEvent,
             title: title,
@@ -992,7 +1006,8 @@ header section -->
                 info: info,
                 pointe: pointe,
                 id: idEvent,
-                paye: paye
+                paye: paye,
+                listIdMotif: listIdMotif
             }
         }
     }
@@ -1016,7 +1031,8 @@ header section -->
                 info: event.extendedProps.data.info,
                 pointe: event.extendedProps.data.pointe,
                 id: event.extendedProps.data.id,
-                paye: event.extendedProps.data.paye
+                paye: event.extendedProps.data.paye,
+                listIdMotif: event.extendedProps.data.listIdMotif
             }
         }
     }
@@ -1035,7 +1051,6 @@ header section -->
         $("#timeGridSelect").val("default").change();
         $("#suppRDV").hide();
         $("#createListRDV").hide();
-        $("#rdvClient").hide();
         $('.daySelectect2').hide();
         $('#timeGrid').modal('show');
     }
