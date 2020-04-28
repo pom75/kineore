@@ -535,6 +535,9 @@ header section -->
     });
 
     $("#addPatient").click(function () {
+        $('#namePat').val('');
+        $('#prenomPat').val('');
+        $('#telPat').val('');
         $('#popupAddPatient').modal('show');
     });
 
@@ -558,6 +561,7 @@ header section -->
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur ");

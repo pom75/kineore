@@ -484,6 +484,7 @@ header section -->
                 week: 'week',
                 day: 'day',
             },
+            longPressDelay: 10,
             titleFormat: {month: 'long', day: 'numeric'},
             fixedWeekCount: false,
             allDaySlot: false,
@@ -619,8 +620,9 @@ header section -->
     }
 
     function createEventWithData(data) {
-        startD = new Date(data.start);
-        endD = new Date(data.end);
+        startD = new Date(moment(data.start).format());
+        endD = new Date(moment(data.end).format());
+
 
         //Default Free
         var title = "RDV Libre";

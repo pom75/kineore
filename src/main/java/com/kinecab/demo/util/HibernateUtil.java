@@ -39,9 +39,12 @@ public class HibernateUtil {
                 settings.put(Environment.HBM2DDL_AUTO, "validate");
                 settings.put(Environment.AUTOCOMMIT, "true");
                 settings.put(Environment.C3P0_MIN_SIZE, 5); //TODO add utf8 unicode
-                settings.put(Environment.C3P0_MAX_SIZE, 20);
+                settings.put(Environment.C3P0_MAX_SIZE, 51);
+                settings.put("hibernate.c3p0.testConnectionOnCheckOut", "true");
                 settings.put(Environment.C3P0_ACQUIRE_INCREMENT, 20);
                 settings.put(Environment.C3P0_TIMEOUT, 1800);
+                settings.put(Environment.C3P0_MAX_STATEMENTS, 50);
+                settings.put(Environment.C3P0_IDLE_TEST_PERIOD, 3000);
                 configuration.setProperties(settings);
                 configuration.addAnnotatedClass(Admin.class);
                 configuration.addAnnotatedClass(Cab.class);
