@@ -102,7 +102,7 @@ header section -->
         </div>
     </section>
 
-    <section class="text-center" style="margin-top: 100px">
+    <section class="text-center" id="suiteChoice"style="margin-top: 100px;display:none">
         <div class="container">
             <div style="overflow:hidden;">
                 <div class="form-group">
@@ -112,59 +112,8 @@ header section -->
                         </div>
                         <div class="col-md-8">
                             <p class="lead" id="titleDate">Aucune date selectionné.</p>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
-                            </div>
-                            <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                <button type="button" class="btn btn-success" onclick="console.log('ok')">12h30</button>
+                            <div id="listHour">
+
                             </div>
                             <div class="float-sm-center mt-3 mb-5" id="modifBlock">
                                 <button type="button" id="gotordv" class="btn btn-secondary pull-center">Prendre
@@ -178,6 +127,24 @@ header section -->
         </div>
     </section>
 
+    <!-- Modal -->
+    <div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modaleMessageTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span id="dialog_title_span"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 
@@ -190,6 +157,10 @@ header section -->
 </html>
 <script type="text/javascript">
     var listEvent = [];
+    var currentMotif = 0;
+    var currentDate = new Date();
+
+    filterAndShowRdv(currentDate);//Show RDV initialisation current day
 
     $(function () {
         $('#calendrierPick').datetimepicker({
@@ -200,24 +171,48 @@ header section -->
             minDate: new Date(),
             maxDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
             disabledDates: [
-                moment("04/25/20")
+                moment("04/25/20")//TODO disable day sans RDV
             ]
         });
         $("#calendrierPick").on("change.datetimepicker", function (e) {
-            var filteredFreeRdvs = getFreeRdvsFromDate(e.date);
-            showFreeRdvs(filteredFreeRdvs);
-
+            currentDate = e.date;
+            filterAndShowRdv(e.date);
         });
     });
 
-    function getFreeRdvsFromDate(date) {
-        var filteredEvents;
+    function filterAndShowRdv(date) {
+        var filteredFreeRdvs = getFreeRdvsFromDateAndIdMotif(date);
+        showFreeRdvs(filteredFreeRdvs);
+    }
+
+    function getFreeRdvsFromDateAndIdMotif(date) {
+        var filteredEvents = [];
         listEvent.forEach(event => {
                 if (moment(event.start).isSame(moment(date), 'day')) {
-                    filteredEvents.push(event);
+                    var split = event.listIdMotif.split(',');
+                    split.forEach(idMotif => {
+                        if(idMotif === currentMotif){
+                            filteredEvents.push(event);
+                            console.log(event);
+                        }
+                    });
                 }
             }
-        )
+        );
+        return filteredEvents;
+    }
+
+    function showFreeRdvs(events) {
+        $('#listHour').empty();
+        if(events.length <= 0){
+            $('#titleDate').text("Aucun rendez-vous disponible à la date selectionnée.");
+        }
+        events.forEach(event =>{
+            $('#titleDate').text("");
+            var heur = moment(event.start).format("HH:mm");
+            heur = heur.replace(":","h");
+            $('#listHour').append('<div class="btn-group mt-3 px-2" role="group" aria-label="Third group"> <button type="button" class="btn btn-success" onclick="console.log("'+event.id+'")">'+heur+'</button> </div>');
+        })
     }
 
     var idMotifMap = {};
@@ -273,6 +268,40 @@ header section -->
             return vars[param] ? vars[param] : null;
         }
         return vars;
+    }
+
+    $('#eventMotifSelection').change(function () {
+        if($(this).val() === "default"){
+            $('#suiteChoice').hide();
+            $('#modifBlock').hide();
+        }else{
+            currentMotif = $(this).val();
+            $('#suiteChoice').show();
+            $('#modifBlock').show();
+            filterAndShowRdv(currentDate);
+        }
+        console.log($(this).val());
+    });
+
+    function saveRDV(idRDV) {
+        $('#dialog_title_span').text("");
+        $('#modaleMessageTitle').text("Veuillez patienter");
+        $('#modalMessage').modal('toggle');// catch the form's submit event
+        $.ajax({
+            data: {idRDV: id, tokenPat: readCookie('session')},
+            type: 'POST',
+            url: '/rdv/bookrdvfrompat',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                for (var i = 0; i < jsonData.motif.length; i++) {
+                    idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
+                    $('#eventMotifSelection').append("<option value=\"" + jsonData.motif[i].id + "\">" + jsonData.motif[i].motif + "</option>");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
     }
 
 </script>
