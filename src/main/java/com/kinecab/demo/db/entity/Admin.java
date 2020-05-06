@@ -1,6 +1,7 @@
 
 package com.kinecab.demo.db.entity;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import com.google.common.hash.Hashing;
 
 
 @Entity
-public class Admin {
+public class Admin implements Serializable {
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Instance fields

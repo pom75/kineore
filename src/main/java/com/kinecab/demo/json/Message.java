@@ -1,7 +1,6 @@
 
 package com.kinecab.demo.json;
 
-import org.springframework.context.annotation.Bean;
 
 import java.io.Serializable;
 

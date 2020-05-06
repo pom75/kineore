@@ -25,6 +25,9 @@ public class MotifCab {
     private String motif;
 
     @Column
+    private String color;
+
+    @Column
     private int resource;
 
 
@@ -38,6 +41,22 @@ public class MotifCab {
     public MotifCab(int idCab, String motif) {
         this.idCab = idCab;
         this.motif = motif;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public int getResource() {
+        return resource;
+    }
+
+    public void setResource(int resource) {
+        this.resource = resource;
     }
 
     //~ ----------------------------------------------------------------------------------------------------------------

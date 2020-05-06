@@ -116,7 +116,7 @@ header section -->
 
                             </div>
                             <div class="float-sm-center mt-3 mb-5" id="modifBlock">
-                                <button type="button" id="gotordv" class="btn btn-secondary pull-center">Prendre
+                                <button type="button" id="gotordv" class="btn btn-secondary pull-center" onclick="saveRDV()">Prendre
                                     rendez-vous
                                 </button>
                             </div>
@@ -193,7 +193,6 @@ header section -->
                     split.forEach(idMotif => {
                         if(idMotif === currentMotif){
                             filteredEvents.push(event);
-                            console.log(event);
                         }
                     });
                 }
@@ -206,13 +205,16 @@ header section -->
         $('#listHour').empty();
         if(events.length <= 0){
             $('#titleDate').text("Aucun rendez-vous disponible à la date selectionnée.");
+            $('#modifBlock').hide();
+        }else {
+            $('#modifBlock').show();
+            events.forEach(event => {
+                $('#titleDate').text("");
+                var heur = moment(event.start).format("HH:mm");
+                heur = heur.replace(":", "h");
+                $('#listHour').append('<div class="btn-group mt-3 px-2" role="group" aria-label="Third group"> <button type="button" class="btn btn-success" onclick="setCurrentRdv(\'' + event.id + '\')">' + heur + '</button> </div>');
+            })
         }
-        events.forEach(event =>{
-            $('#titleDate').text("");
-            var heur = moment(event.start).format("HH:mm");
-            heur = heur.replace(":","h");
-            $('#listHour').append('<div class="btn-group mt-3 px-2" role="group" aria-label="Third group"> <button type="button" class="btn btn-success" onclick="console.log("'+event.id+'")">'+heur+'</button> </div>');
-        })
     }
 
     var idMotifMap = {};
@@ -280,22 +282,36 @@ header section -->
             $('#modifBlock').show();
             filterAndShowRdv(currentDate);
         }
-        console.log($(this).val());
     });
 
-    function saveRDV(idRDV) {
+    var currentIdEvent = 0;
+    function setCurrentRdv(id) {
+        currentIdEvent = id;
+    }
+
+    function saveRDV() {
         $('#dialog_title_span').text("");
         $('#modaleMessageTitle').text("Veuillez patienter");
         $('#modalMessage').modal('toggle');// catch the form's submit event
         $.ajax({
-            data: {idRDV: id, tokenPat: readCookie('session')},
+            data: {idEvent: currentIdEvent, tokenPat: readCookie('session'),idMotif : currentMotif},
             type: 'POST',
             url: '/rdv/bookrdvfrompat',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                for (var i = 0; i < jsonData.motif.length; i++) {
-                    idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
-                    $('#eventMotifSelection').append("<option value=\"" + jsonData.motif[i].id + "\">" + jsonData.motif[i].motif + "</option>");
+                if (jsonData.status === "OK") {
+                    $('#modaleMessageTitle').text("Rendez-vous bien prit en compte. Il va etre confirmer par le kiné prochainement.");
+                    window.setTimeout(function () {
+                        // Move to a new location or you can do something else
+                        if (jsonData.admin == 1) {
+                            window.location.href = "moncalendrier.html";
+                        } else {
+                            window.location.href = "index.html";
+                        }
+                    }, 2000);
+                }
+                else{
+                    $('#modaleMessageTitle').text("Un erreur s'est produite, veuillez contacter un administrateur.");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {

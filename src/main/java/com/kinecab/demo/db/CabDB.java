@@ -4,10 +4,7 @@ package com.kinecab.demo.db;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.kinecab.demo.db.entity.Admin;
-import com.kinecab.demo.db.entity.Cab;
-import com.kinecab.demo.db.entity.CabAdmin;
-import com.kinecab.demo.db.entity.CabPerson;
+import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.util.HibernateUtil;
 
 import org.hibernate.Session;
@@ -47,7 +44,7 @@ public class CabDB {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB_ADMIN where CAB_ADMIN.idCab = '" + id + "' ;");
             List<CabAdmin> list = sqlQuery.addEntity(CabAdmin.class).list();
-            List<Admin> admins = new LinkedList();
+            List<Admin> admins = new LinkedList<>();
             list.forEach(cab ->{
                 NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * from ADMIN where ADMIN.id = '" + cab.getIdAdmin() + "' ;");
                 Admin admin = (Admin) sqlQuery2.addEntity(Admin.class).list().get(0);
@@ -88,6 +85,18 @@ public class CabDB {
             Transaction trx = session.beginTransaction();
             session.saveOrUpdate(cab);
             trx.commit();
+        }
+    }
+
+    public static void addCabPersonIfNotPresent(int idPerson,int idAdmin) {
+        Cab cab = getCabByAdminID(idAdmin+"").get(0);
+        CabPerson cabPerson = new CabPerson(cab.getId(),idPerson);
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + cab.getId() + "' AND CAB_PERSON.idPerson = '" + idPerson + "';");
+            List<CabPerson> cabPersons = (List<CabPerson>) sqlQuery.addEntity(CabPerson.class).list();
+            if(cabPersons.isEmpty()){
+                saveCabPerson(cabPerson);
+            }
         }
     }
 }

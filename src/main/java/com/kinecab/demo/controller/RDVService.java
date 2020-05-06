@@ -2,19 +2,16 @@
 package com.kinecab.demo.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.kinecab.demo.db.AdminDB.getAdminByToken;
 import static com.kinecab.demo.db.AdminDB.getPersonByIdAdmin;
+
+import com.kinecab.demo.db.CabDB;
+import com.kinecab.demo.db.PatientDB;
 import com.kinecab.demo.db.RDVDB;
-import com.kinecab.demo.db.entity.Admin;
-import com.kinecab.demo.db.entity.Event;
-import com.kinecab.demo.db.entity.MotifCab;
-import com.kinecab.demo.db.entity.Person;
+import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.json.*;
 
 import org.json.JSONArray;
@@ -37,7 +34,7 @@ public class RDVService {
     @PostMapping(value = "/rdv/bookrdv", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message bookRDV(@RequestParam("events") String events,
-        @RequestParam("tokenAdmin") String tokenAdmin) {
+                           @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
             List<Admin> adminByToken = getAdminByToken(tokenAdmin);
             if (adminByToken.isEmpty()) {
@@ -56,8 +53,8 @@ public class RDVService {
     @PostMapping(value = "/rdv/getrdv", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getRDV(@RequestParam("start") String start,
-        @RequestParam("end") String end,
-        @RequestParam("tokenAdmin") String tokenAdmin) {
+                          @RequestParam("end") String end,
+                          @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
             List<Admin> adminByToken = getAdminByToken(tokenAdmin);
             if (adminByToken.isEmpty()) {
@@ -74,11 +71,11 @@ public class RDVService {
     @PostMapping(value = "/rdv/getrdvfree", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getRDVFree(
-                          @RequestParam("idAdmin") String idAdmin) {
+            @RequestParam("idAdmin") String idAdmin) {
         try {
             String start = getStart();
             String end = getEnd();
-            final List<Event> rdvs = RDVDB.getRdvFreeByTime(start, end, Integer.parseInt(idAdmin.replace("#","")));
+            final List<Event> rdvs = RDVDB.getRdvFreeByTime(start, end, Integer.parseInt(idAdmin.replace("#", "")));
             return new GetRDV("OK", "RAS", rdvs);
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,13 +90,13 @@ public class RDVService {
     }
 
     private String getStart() {
-        return FORMAT.format( new Date());
+        return FORMAT.format(new Date());
     }
 
     @PostMapping(value = "/rdv/removerdv", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message removeRDV(@RequestParam("idEvents") String idEvents,
-        @RequestParam("tokenAdmin") String tokenAdmin) {
+                             @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
             List<Admin> adminByToken = getAdminByToken(tokenAdmin);
             if (adminByToken.isEmpty()) {
@@ -134,7 +131,7 @@ public class RDVService {
     @ResponseBody
     public Message getMotifId(@RequestParam("idAdmin") String idAdmin) {
         try {
-            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdAdmin(Integer.parseInt(idAdmin.replace("#","")));
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdAdmin(Integer.parseInt(idAdmin.replace("#", "")));
             return new GetMotif("OK", "RAS", motifByIdAdmin);
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,4 +154,44 @@ public class RDVService {
             return new Message("OK", "Erreur pendant le chargement des patients.");
         }
     }
+
+    @PostMapping(value = "/rdv/bookrdvfrompat", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message bookRDVFromPat(@RequestParam("idEvent") String idEvent,
+                                  @RequestParam("tokenPat") String tokenPat,
+                                  @RequestParam("idMotif") String idMotif) {
+        try {
+            Person person = PatientDB.getPatientByToken(tokenPat);
+            List<Event> rdvFreeById = RDVDB.getRdvFreeById(idEvent);
+            if (rdvFreeById.isEmpty()) {
+                return new Message("FAIL", "Ce rendez-vous n'est plus dispoblible.");
+            }
+            Event curentEvent = rdvFreeById.get(0);
+            if(!idMotifIsPresentInEvent(idMotif, curentEvent)){
+                return new Message("FAIL", "Ce rendez-vous n'est plus dispoblible.");
+            }
+            curentEvent.setIdMotif(idMotif);
+            curentEvent.setStatus(Status.WAITING);
+            curentEvent.setIdPatient(person.getId());
+            curentEvent.setNomPrenom(person.getNom()+" "+person.getPrenom());
+            RDVDB.saveRDV(Collections.singletonList(curentEvent));
+            CabDB.addCabPersonIfNotPresent(person.getId(),curentEvent.getIdAdmin());
+            //TODO controle now + 1 month
+            return new Message("OK", "RAS");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("OK", "Erreur pendant la création des rendez-vous.");
+        }
+    }
+
+    private boolean idMotifIsPresentInEvent(String idMotif, Event curentEvent) {
+        String[] split = curentEvent.getListIdMotif().split(",");
+        for (String id : split) {
+            if(id.contentEquals(idMotif)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

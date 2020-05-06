@@ -484,12 +484,12 @@ header section -->
                 week: 'week',
                 day: 'day',
             },
-            longPressDelay: 10,
+            longPressDelay: 700,
             titleFormat: {month: 'long', day: 'numeric'},
             fixedWeekCount: false,
             allDaySlot: false,
             slotEventOverlap: true,
-            slotDuration: '00:15:00',
+            slotDuration: '00:30:00',
             minTime: "07:00:00",
             maxTime: "21:00:00",
             droppable: true,
@@ -535,6 +535,7 @@ header section -->
                 currentEvent = info;
                 var data = info.event.extendedProps.data;
                 var status = data.status;
+                console.log(idPersonMap)
                 if (status.toUpperCase().localeCompare("BOOKED") == 0) {
                     $('#eventBookedTitle').html(moment(info.event.start).format("dddd D MMMM") + "   " + moment(info.event.start).format("HH:mm") + " à " + moment(info.event.end).format("HH:mm"));
                     $('#namePatBooked').val(data.nomPatient);
@@ -920,7 +921,7 @@ header section -->
         currentEvent.event.setProp("title", "RDV Libre");
         currentEvent.event.extendedProps.data.status = "FREE";
         currentEvent.event.extendedProps.data.idPatient = 0;
-        currentEvent.event.extendedProps.data.idMotif = 0;
+        currentEvent.event.extendedProps.data.idMotif = "";
         currentEvent.event.extendedProps.data.nomPatient = "";
         currentEvent.event.extendedProps.data.info = "";
         saveEvents([createJsonEvent(currentEvent.event)]);

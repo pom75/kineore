@@ -94,4 +94,11 @@ public class RDVDB {
             return motifCabs;
         }
     }
+
+    public static List<Event> getRdvFreeById(String id) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "' AND Event.status = 'FREE';");
+            return sqlQuery.addEntity(Event.class).list();
+        }
+    }
 }
