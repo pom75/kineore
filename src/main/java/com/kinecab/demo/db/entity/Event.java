@@ -80,7 +80,23 @@ public class Event {
 
     }
 
-    //~ ----------------------------------------------------------------------------------------------------------------
+    //Create same event but free
+    public Event(Event other) {
+        this.idAdmin = other.idAdmin;
+        this.start = other.start;
+        this.end = other.end;
+        this.status = Status.FREE;
+        this.idPatient = 0;
+        this.idMotif = "0";
+        this.listIdMotif = other.listIdMotif;
+        this.duration = other.duration;
+        this.info = "";
+        this.pointe = false;
+        this.paye = false;
+        this.nomPrenom = "";
+    }
+
+//~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 

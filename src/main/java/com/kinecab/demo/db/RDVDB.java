@@ -95,9 +95,31 @@ public class RDVDB {
         }
     }
 
+    public static List<MotifCab> getMotif() {//TODO overkill
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB;");
+            List<MotifCab> list = sqlQuery.addEntity(MotifCab.class).list();
+            return list;
+        }
+    }
+
     public static List<Event> getRdvFreeById(String id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "' AND Event.status = 'FREE';");
+            return sqlQuery.addEntity(Event.class).list();
+        }
+    }
+
+    public static List<Event> getRdvbyIdClient(int id) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idPatient = '" + id + "';");
+            return sqlQuery.addEntity(Event.class).list();
+        }
+    }
+
+    public static List<Event> getRdvbyId(int id) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "';");
             return sqlQuery.addEntity(Event.class).list();
         }
     }

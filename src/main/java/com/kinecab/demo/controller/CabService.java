@@ -5,9 +5,13 @@ import java.util.List;
 
 import static com.kinecab.demo.db.AdminDB.getAdminByToken;
 import static com.kinecab.demo.db.CabDB.*;
+import static com.kinecab.demo.db.RDVDB.getMotif;
+
 import com.kinecab.demo.db.entity.Admin;
 import com.kinecab.demo.db.entity.Cab;
+import com.kinecab.demo.db.entity.MotifCab;
 import com.kinecab.demo.json.GetAdmin;
+import com.kinecab.demo.json.GetMotif;
 import com.kinecab.demo.json.Message;
 
 import org.springframework.http.MediaType;
@@ -103,6 +107,18 @@ public class CabService {
                 return null;
             }
             return new GetAdmin("OK", "RAS", admins);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping(value = "/cab/motifs", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public GetMotif getMotifs() {
+        try {
+            List<MotifCab> motif = getMotif();
+            return new GetMotif("OK", "RAS", motif);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

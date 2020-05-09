@@ -27,13 +27,12 @@ public class CabDB {
 
     public static List<Cab> getCabByAdminID(String id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB where CAB.adminid = '" + id + "' ;");
-            return sqlQuery.addEntity(Cab.class).list();
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB_ADMIN where CAB_ADMIN.idAdmin = '" + id + "' ;");
+            return getCabByID(((CabAdmin)sqlQuery.addEntity(CabAdmin.class).list().get(0)).getIdCab());
         }
     }
 
     public static List<Cab> getCabByID(String id) {
-        System.out.println(id);
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB where CAB.id = '" + id + "' ;");
             return sqlQuery.addEntity(Cab.class).list();

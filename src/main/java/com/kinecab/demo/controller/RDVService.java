@@ -1,12 +1,11 @@
 
 package com.kinecab.demo.controller;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.kinecab.demo.db.AdminDB.getAdminByToken;
-import static com.kinecab.demo.db.AdminDB.getPersonByIdAdmin;
 
 import com.kinecab.demo.db.CabDB;
 import com.kinecab.demo.db.PatientDB;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import static com.kinecab.demo.db.AdminDB.*;
 
 
 @Controller
@@ -183,6 +184,51 @@ public class RDVService {
             return new Message("OK", "Erreur pendant la création des rendez-vous.");
         }
     }
+
+    @PostMapping(value = "/rdv/mesrdv", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getMesRDV(
+            @RequestParam("tokenPat") String tokenPat) {
+        try {
+            Person person = PatientDB.getPatientByToken(tokenPat);
+            final List<Event> rdvs = RDVDB.getRdvbyIdClient(person.getId());
+            return new GetRDV("OK", "RAS", rdvs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("OK", "Erreur pendant le chargement des rendez-vous.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/cancelRDV", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message cancelRDV(
+            @RequestParam("tokenPat") String tokenPat,@RequestParam("idEvent") String idEvent) {
+        try {
+            Person person = PatientDB.getPatientByToken(tokenPat);
+            Event rdv = RDVDB.getRdvbyId(Integer.parseInt(idEvent)).get(0);
+            if(checkRdv(person,rdv)){
+                rdv.setStatus(Status.CANCELED);
+                RDVDB.saveRDV(Collections.singletonList(rdv));
+                RDVDB.saveRDV(Collections.singletonList(new Event(rdv)));
+                return new Message("OK", "RAS");
+            }else{
+                return new Message("OK", "Impossible d'annuler le rendez-vous. Veuillez contacter votre praticien");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("OK", "Erreur pendant le chargement des rendez-vous.");
+        }
+    }
+
+    private boolean checkRdv(Person person, Event rdv) {
+        if(rdv.getIdPatient() != person.getId() || rdv.getStatus() == Status.FREE || rdv.getStatus() == Status.CANCELED ||
+                rdv.getStart().before(Timestamp.valueOf(LocalDateTime.now().plusDays(1)))){
+            return false;
+        }
+        return true;
+    }
+
 
     private boolean idMotifIsPresentInEvent(String idMotif, Event curentEvent) {
         String[] split = curentEvent.getListIdMotif().split(",");

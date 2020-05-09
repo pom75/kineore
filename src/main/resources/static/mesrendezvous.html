@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>KinéCab - Site de rendez-vous en ligne pour les Kinésithérapeute</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="icon" type="image/png" href="img/ck.png"/>
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/moment.js"></script>
+    <script>
+        //window.onload = redirect;
+
+        function redirect() {
+            if (readCookie('session') == '') {
+                window.location.href = ("/index.html");
+            }
+            if (readCookie('admin') == '1') {
+                window.location.href = ("/index.html");
+            }
+        }
+
+
+        function readCookie(name) {
+            var i, c, ca, nameEQ = name + "=";
+            ca = document.cookie.split(';');
+            for (i = 0; i < ca.length; i++) {
+                c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1, c.length);
+                }
+                if (c.indexOf(nameEQ) == 0) {
+                    return c.substring(nameEQ.length, c.length);
+                }
+            }
+            return '';
+        }
+
+        function delete_cookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            window.location.href = ("/index.html");
+        }
+    </script>
+
+</head>
+<body>
+
+<!-- ====================================================
+header section -->
+<header style="padding-bottom: 70px;">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
+        <img src="img/ck.png" width="30" height="30">
+        <a class="navbar-brand" href="index.html">&nbspKinécab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="#">Mes rendez-vous</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="profil.html">Mon Profil</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')" href="#">Deconnexion</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header> <!-- end of header area -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaleMessageTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span id="dialog_title_span"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<main role="main">
+    <section class="text-center">
+        <div class="container">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+                       aria-controls="nav-home" aria-selected="true">Mes rendez-vous</a>
+                </div>
+            </nav>
+            <div class="tab-content justify-content-md-center" id="nav-tabContent">
+                <div class="tab-pane fade show active mt-5" id="nav-home" role="tabpanel"
+                     aria-labelledby="nav-home-tab">
+                    <section class="text-center">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6 mb-3" id="mycab">
+                                    <h3 class="text-left">Mes prochains rendez-vous</h3>
+                                    <div class="text-left">
+                                        <div class="list-group" id="nextRDV">
+                                        </div>
+                                    </div>
+                                    <h3 class="text-left">Mes rendez-vous en attente de confirmation</h3>
+                                    <div class="text-left" >
+                                        <div class="list-group" id="waitRDV">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <h3 class="text-left">Mes rendez-vous passé</h3>
+                                    <div class="text-left" >
+                                        <div class="list-group" id="passedRDV">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+
+
+<!-- footer starts here -->
+<nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
+    © 2020 Copyright
+</nav>
+
+<!-- script tags
+============================================================= -->
+<script type="text/javascript">
+    var listEvent = [];
+    var idAdminMap = {};
+    var idMotifMap = {};
+
+    function getAdmin() {//TODO overkill getOnly cabs
+        $.ajax({
+            data: {},
+            type: 'POST',
+            url: '/admin/getadmin',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                for (var i = 0; i < jsonData.admins.length; i++) {
+                    idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+    }
+
+    function getMotifs() {
+        $.ajax({
+            type: 'POST',
+            url: '/cab/motifs',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                console.log(jsonData);
+                jsonData.motif.forEach(motif =>{ idMotifMap[motif.id] = motif;
+                });
+                console.log(idMotifMap);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+    }
+
+    function getRdvs() {
+        $.ajax({
+            data: {tokenPat: readCookie('session')},
+            type: 'POST',
+            url: '/rdv/mesrdv',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                console.log(jsonData);
+                jsonData.rdvs.forEach(event => listEvent.push(event));
+                showRDV();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+    }
+
+    getMotifs();
+    getAdmin();
+    getRdvs();
+
+    function showRDV() {
+        var waiting = 0;
+        var bookedF = 0;
+        var bookedP = 0;
+        console.log(idAdminMap);
+        listEvent.forEach(event =>{
+            if(moment(event.start) > moment() && event.status === "WAITING"){
+                waiting = 1;
+                $('#waitRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #FFD17D"> <p>Date: '+moment(event.start).format("YYYY-MM-DD à HH:mm")+'</p> <p>Motif: '+idMotifMap[event.idMotif].motif+'</p> <p>Nom du praticien: '+idAdminMap[event.idAdmin].nom+' '+idAdminMap[event.idAdmin].prenom+'</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
+                console.log(event + " evenement pas confirmé a venir");
+            }
+            if(moment(event.start) > moment() && event.status === "BOOKED"){
+                bookedF = 1;
+                $('#nextRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #C9F5FF"> <p>Date: '+moment(event.start).format("YYYY-MM-DD à HH:mm")+'</p> <p>Motif: '+idMotifMap[event.idMotif].motif+'</p> <p>Nom du praticien: '+idAdminMap[event.idAdmin].nom+' '+idAdminMap[event.idAdmin].prenom+'</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
+                console.log(event + " evenement  confirmé a venir");
+            }
+            if(moment(event.start) < moment() && event.status === "BOOKED"){
+                bookedP = 1;
+                $('#passedRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #5EC5F7"> <p>Date: '+moment(event.start).format("YYYY-MM-DD à HH:mm")+'</p> <p>Motif: '+idMotifMap[event.idMotif].motif+'</p> <p>Nom du praticien: '+idAdminMap[event.idAdmin].nom+' '+idAdminMap[event.idAdmin].prenom+'</p> <div class="float-sm-right" > </div> </a>');
+                console.log(event + " evenement  confirmé passé");
+            }
+        });
+    }
+
+
+    function cancelRDV(idEvent) {
+        $.ajax({
+            data: {tokenPat: readCookie('session'),idEvent : idEvent},
+            type: 'POST',
+            url: '/rdv/cancelRDV',
+            success: function (data, textStatus, jqXHR) {
+                console.log(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+    }
+
+
+
+
+</script>
+</body>
+</html>
