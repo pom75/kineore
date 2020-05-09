@@ -46,11 +46,11 @@ public class LoginService {
         try {
             List<Person> person = LoginDB.checkPasswordByEmailPerson(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
             if (!person.isEmpty()) {
-                return new CookieMessage("OK", "Connexion réussite", getTokenPerson(person.get(0)), "0");
+                return new CookieMessage("OK", "Connexion réussite", getTokenPerson(person.get(0)), "0","");//TODO FIX THIS
             } else {
                 List<Admin> admin = checkPasswordByEmailAdmin(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
                 if (!admin.isEmpty()) {
-                    return new CookieMessage("OK", "Connexion réussite", getTokenAdmin(admin.get(0)), "1");
+                    return new CookieMessage("OK", "Connexion réussite", getTokenAdmin(admin.get(0)), "1",admin.get(0).getId()+"");
                 } else {
                     return new Message("FAIL", "Email ou mot de passe incorrecte");
                 }

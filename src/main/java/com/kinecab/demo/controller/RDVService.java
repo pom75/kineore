@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import static com.kinecab.demo.db.AdminDB.*;
+import static com.kinecab.demo.db.PatientDB.getPatientById;
+import static com.kinecab.demo.util.MailUtil.*;
 
 
 @Controller
@@ -32,9 +34,9 @@ public class RDVService {
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    @PostMapping(value = "/rdv/bookrdv", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/addevent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message bookRDV(@RequestParam("events") String events,
+    public Message addEvent(@RequestParam("events") String events,
                            @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
             List<Admin> adminByToken = getAdminByToken(tokenAdmin);
@@ -42,9 +44,70 @@ public class RDVService {
                 return new Message("FAIL", "Token invalide");
             }
             final List<Event> rdvs = RDVDB.rdvJsonToRdvs(adminByToken.get(0).getId(), new JSONArray(events));
-            RDVDB.saveRDV(rdvs);
+            RDVDB.saveRDVs(rdvs);
             final Set<Integer> collect = rdvs.stream().map(Event::getId).collect(Collectors.toSet());
             return new BookRdv("OK", "RAS", collect);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("OK", "Erreur pendant la création des rendez-vous.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/changeoneevent", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message  changeOneEvent(@RequestParam("events") String events,
+                           @RequestParam("tokenAdmin") String tokenAdmin) {
+        try {
+            List<Admin> adminByToken = getAdminByToken(tokenAdmin);
+            if (adminByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            Event rdv = RDVDB.rdvJsonToRdvs(adminByToken.get(0).getId(), new JSONArray(events)).get(0);
+            Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
+            if(rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
+                RDVDB.saveRDV(rdv);
+                return new Message("OK", "RAS");
+            }else {
+                return new Message("OK", "Erreur pendant la création des rendez-vous.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("OK", "Erreur pendant la création des rendez-vous.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/changestatusevent", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message changeStatusRDV(@RequestParam("events") String events,
+                           @RequestParam("tokenAdmin") String tokenAdmin,
+                           @RequestParam String status,
+                           @RequestParam String idPat) {
+        try {
+            List<Admin> adminByToken = getAdminByToken(tokenAdmin);
+            if (adminByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            Event rdv = RDVDB.rdvJsonToRdvs(adminByToken.get(0).getId(), new JSONArray(events)).get(0);
+            Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
+            if(rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
+                RDVDB.saveRDV(rdv);
+                switch (status) {//Todo crete thread for mails
+                    case "BOOKED"://TODO ADD from Admin warninig fake email
+                        break;
+                    case "ACCEPTE":
+                        sendEmail(getPatientById(idPat).getEmail(), ACCEPTE_TITLE, ACCEPTE_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rdv.getStart())));
+                        break;
+                    case "REFUSE":
+                        sendEmail(getPatientById(idPat).getEmail(), REFUSE_TITLE, REFUSE_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rdv.getStart())));
+                        break;
+                    case "CANCEL":
+                        sendEmail(getPatientById(idPat).getEmail(), CANCELED_TITLE, CANCELED_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rdv.getStart())));
+                        break;
+                }
+                return new Message("OK", "RAS");
+            }else {
+                return new Message("OK", "Erreur pendant la création des rendez-vous.");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("OK", "Erreur pendant la création des rendez-vous.");
@@ -175,8 +238,9 @@ public class RDVService {
             curentEvent.setStatus(Status.WAITING);
             curentEvent.setIdPatient(person.getId());
             curentEvent.setNomPrenom(person.getNom()+" "+person.getPrenom());
-            RDVDB.saveRDV(Collections.singletonList(curentEvent));
+            RDVDB.saveRDVs(Collections.singletonList(curentEvent));
             CabDB.addCabPersonIfNotPresent(person.getId(),curentEvent.getIdAdmin());
+            sendEmail(person.getEmail(), TOOK_TITLE, TOOK_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(curentEvent.getStart())));
             //TODO controle now + 1 month
             return new Message("OK", "RAS");
         } catch (Exception e) {
@@ -205,11 +269,12 @@ public class RDVService {
             @RequestParam("tokenPat") String tokenPat,@RequestParam("idEvent") String idEvent) {
         try {
             Person person = PatientDB.getPatientByToken(tokenPat);
-            Event rdv = RDVDB.getRdvbyId(Integer.parseInt(idEvent)).get(0);
+            Event rdv = RDVDB.getRdvbyId(Integer.parseInt(idEvent));
             if(checkRdv(person,rdv)){
                 rdv.setStatus(Status.CANCELED);
-                RDVDB.saveRDV(Collections.singletonList(rdv));
-                RDVDB.saveRDV(Collections.singletonList(new Event(rdv)));
+                RDVDB.saveRDVs(Collections.singletonList(rdv));
+                RDVDB.saveRDVs(Collections.singletonList(new Event(rdv)));
+                sendEmail(person.getEmail(), CANCEL_TITLE, CANCEL_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rdv.getStart())));
                 return new Message("OK", "RAS");
             }else{
                 return new Message("OK", "Impossible d'annuler le rendez-vous. Veuillez contacter votre praticien");

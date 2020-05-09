@@ -22,7 +22,7 @@ public class RDVDB {
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static void saveRDV(List<Event> rdvs) {
+    public static void saveRDVs(List<Event> rdvs) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction trx = session.beginTransaction();
             for (Event rdv : rdvs) {
@@ -31,6 +31,15 @@ public class RDVDB {
             trx.commit();
         }
     }
+
+    public static void saveRDV(Event rdv) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+                session.saveOrUpdate(rdv);
+            trx.commit();
+        }
+    }
+
 
     public static List<Event> rdvJsonToRdvs(int adminId, JSONArray array) {
         final Iterator<Object> events = array.iterator();
@@ -117,10 +126,10 @@ public class RDVDB {
         }
     }
 
-    public static List<Event> getRdvbyId(int id) {
+    public static Event getRdvbyId(int id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "';");
-            return sqlQuery.addEntity(Event.class).list();
+            return (Event) sqlQuery.addEntity(Event.class).list().get(0);
         }
     }
 }

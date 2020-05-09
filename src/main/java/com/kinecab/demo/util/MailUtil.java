@@ -22,6 +22,22 @@ public class MailUtil {
     public static final String NEW_PERSON_TITLE = "Bienvenue sur KineCab !";
     public static final String NEW_PERSON_CONTENT =
         "Bonjour,\n Pour activer votre compte KineCab veuillez cicker sur le lient qui suit : http://kinecab.com/login/confirme?token=xxx \n\n Cordialement,\n Votre Service Client KineCab ";
+    public static final String CANCEL_TITLE = "KineCab - Confirmation d'annulation";
+    public static final String CANCEL_CONTENT =
+            "Bonjour,\n Votre rendez-vous du xxx à bien été annulé.\n\n Cordialement,\n Votre Service Client KineCab ";
+    public static final String TOOK_TITLE = "KineCab - Prise de rendez-vous confirmé";
+    public static final String TOOK_CONTENT =
+            "Bonjour,\n Votre rendez-vous du xxx à bien été prit. Une confirmation va vous etres envoyé d'ici peu.\n\n Cordialement,\n Votre Service Client KineCab ";
+    public static final String ACCEPTE_TITLE = "KineCab - Rendez-vous accepté";
+    public static final String ACCEPTE_CONTENT =
+            "Bonjour,\n Votre rendez-vous du xxx vient d'etre confirmé par le pratitien.\n\n Cordialement,\n Votre Service Client KineCab ";
+    public static final String REFUSE_TITLE = "KineCab - Rendez-vous refusé";
+    public static final String REFUSE_CONTENT =
+            "Bonjour,\n Votre rendez-vous du xxx vient d'etre refusé par le pratitien.\n\n Cordialement,\n Votre Service Client KineCab ";
+    public static final String CANCELED_TITLE = "KineCab - Rendez-vous annulé";
+    public static final String CANCELED_CONTENT =
+            "Bonjour,\n Votre rendez-vous du xxx vient d'etre annulé par le pratitien.\n\n Cordialement,\n Votre Service Client KineCab ";
+
 
     static {
         final String username = "no-reply@kinecab.com";

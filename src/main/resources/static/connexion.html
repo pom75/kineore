@@ -169,8 +169,9 @@ header section -->
                 $('#dialog_title_span').text(jsonData.message);
                 $('#modaleMessageTitle').text("Opération terminé");
                 if (jsonData.status == "OK") {
-                    writeCookie("session", jsonData.token, 30)
-                    writeCookie("admin", jsonData.admin, 30)
+                    writeCookie("session", jsonData.token, 30);
+                    writeCookie("admin", jsonData.admin, 30);
+                    writeCookie("idAdmin", jsonData.idAdmin, 30);
                     window.setTimeout(function () {
                         // Move to a new location or you can do something else
                         if (jsonData.admin == 1) {

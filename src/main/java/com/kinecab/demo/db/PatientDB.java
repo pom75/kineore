@@ -21,4 +21,11 @@ public class PatientDB {
         }
     }
 
+    public static Person getPatientById(String id) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.id = '" + id + "';");
+                return (Person) sqlQuery.addEntity(Person.class).list().get(0);
+            }
+        }
+
 }
