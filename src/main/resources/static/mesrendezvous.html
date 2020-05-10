@@ -63,13 +63,13 @@ header section -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" href="#">Mes rendez-vous</a>
+                    <a class="nav-link navbar-right active" href="#">Mes Rendez-vous</a>
                 </li>
                 <li class="nav-item navbar-right">
                     <a class="nav-link navbar-right" href="profil.html">Mon Profil</a>
                 </li>
                 <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')" href="#">Deconnexion</a>
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')" href="index.html">Deconnexion</a>
                 </li>
             </ul>
         </div>
@@ -224,6 +224,15 @@ header section -->
                 $('#passedRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #5EC5F7"> <p>Date: '+moment(event.start).format("YYYY-MM-DD à HH:mm")+'</p> <p>Motif: '+idMotifMap[event.idMotif].motif+'</p> <p>Nom du praticien: '+idAdminMap[event.idAdmin].nom+' '+idAdminMap[event.idAdmin].prenom+'</p> <div class="float-sm-right" > </div> </a>');
             }
         });
+        if(waiting === 0){
+            $('#waitRDV').append('<p>Aucun rendez-vous en attente de confirmation.</p>');
+        }
+        if(bookedF === 0){
+            $('#nextRDV').append('<p>Aucun rendez-vous prochainement.</p>');
+        }
+        if(bookedP === 0){
+            $('#passedRDV').append('<p>Aucun rendez-vous passé.</p>');
+        }
     }
 
 

@@ -11,6 +11,33 @@
 	<link rel="icon" type="image/png" href="img/ck.png" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+<script>
+	function readCookie(name) {
+		var i, c, ca, nameEQ = name + "=";
+		ca = document.cookie.split(';');
+		for (i = 0; i < ca.length; i++) {
+			c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1, c.length);
+			}
+			if (c.indexOf(nameEQ) == 0) {
+				return c.substring(nameEQ.length, c.length);
+			}
+		}
+		return '';
+	}
+
+	function onLoad() {
+		if (readCookie('admin') == '1') {
+			window.location.href = ("/moncalendrier.html");
+		}
+		if (readCookie('session') != '') {
+			$('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="index.html">Deconnexion</a></li></ul>');
+		}else {
+			$('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="connexion.html">Se connecter</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="presentation.html">Professionel de sant&eacute;</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Qui somme nous?</a></li></ul>');
+		}
+	}
+</script>
 <body>
 
 <!-- ====================================================
@@ -24,17 +51,6 @@ header section -->
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="nav navbar-nav ml-auto">
-				<li class="nav-item navbar-right">
-					<a class="nav-link navbar-right" href="connexion.html">Se connecter</a>
-				</li>
-				<li class="nav-item navbar-right">
-					<a class="nav-link active navbar-right" href="#">Professionel de santé</a>
-				</li>
-				<li class="nav-item navbar-right">
-					<a class="nav-link navbar-right" href="#">Qui somme nous?</a>
-				</li>
-			</ul>
 		</div>
 	</nav>
 </header> <!-- end of header area -->
@@ -132,5 +148,8 @@ header section -->
 ============================================================= -->
 <script src="js/jquery-2.1.1.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script>
+	onLoad();
+</script>
 </body>
 </html>

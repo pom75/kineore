@@ -28,14 +28,20 @@
     window.onload = redirect;
 
     function redirect() {
-        //from url redirection
-        if ($_GET('id')) {
-
-        }
-        {
-
+        if (readCookie('admin') === '1') {
+            window.location.href = ("/moncalendrier.html");
         }
     }
+
+
+    function onLoad() {
+        if (readCookie('session') != '') {
+            $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="index.html">Deconnexion</a></li></ul>');
+        }else {
+            $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="connexion.html">Se connecter</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="presentation.html">Professionel de sant&eacute;</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Qui somme nous?</a></li></ul>');
+        }
+    }
+
 
     function readCookie(name) {
         var i, c, ca, nameEQ = name + "=";
@@ -72,17 +78,6 @@ header section -->
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="nav navbar-nav ml-auto">
-                <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" href="connexion.html">Se connecter</a>
-                </li>
-                <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" href="presentation.html">Professionel de sant&eacute;</a>
-                </li>
-                <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" href="#">Qui somme nous?</a>
-                </li>
-            </ul>
         </div>
     </nav>
 </header> <!-- end of header area -->
@@ -159,6 +154,7 @@ header section -->
     var listEvent = [];
     var currentMotif = 0;
     var currentDate = new Date();
+    onLoad();
 
     filterAndShowRdv(currentDate);//Show RDV initialisation current day
 
