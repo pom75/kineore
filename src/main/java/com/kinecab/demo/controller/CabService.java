@@ -68,7 +68,7 @@ public class CabService {
             return new Message("OK", "Modifications enregistré.");
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Impossible de changer le Cabinet");
+            return new Message("FAIL", "Impossible de changer le Cabinet");
         }
     }
 
@@ -100,7 +100,7 @@ public class CabService {
 
     @PostMapping(value = "/cab/getAdminsCab", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public GetAdmin getAdminsCab(@RequestParam("id") String id) {
+    public Message getAdminsCab(@RequestParam("id") String id) {
         try {
             List<Admin> admins = getAdminsByIdCab(id.replace("#",""));
             if (admins.isEmpty()) {
@@ -109,19 +109,19 @@ public class CabService {
             return new GetAdmin("OK", "RAS", admins);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new Message("FAIL", "Une erreur s'est produite.");
         }
     }
 
     @PostMapping(value = "/cab/motifs", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public GetMotif getMotifs() {
+    public Message getMotifs() {
         try {
             List<MotifCab> motif = getMotif();
             return new GetMotif("OK", "RAS", motif);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new Message("FAIL", "Une erreur s'est produite.");
         }
     }
 

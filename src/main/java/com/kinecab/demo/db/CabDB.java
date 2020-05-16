@@ -47,7 +47,6 @@ public class CabDB {
             list.forEach(cab ->{
                 NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * from ADMIN where ADMIN.id = '" + cab.getIdAdmin() + "' ;");
                 Admin admin = (Admin) sqlQuery2.addEntity(Admin.class).list().get(0);
-                System.out.println(admin.getNom());
                 admin.setPassword("");
                 admin.setEmail("");
                 admins.add(admin);

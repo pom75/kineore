@@ -136,7 +136,7 @@ public class LoginService {
                 deletePersonTemp(personTemp);
                 return new Message("OK", "Votre compte a été validé, vous pouvez maintenant vous connecter.");
             }
-            return new Message("ERROR", "Token invalide.");
+            return new Message("FAIL", "Token invalide.");
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Impossible d'activer le compte");

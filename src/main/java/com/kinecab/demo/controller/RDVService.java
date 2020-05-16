@@ -49,7 +49,7 @@ public class RDVService {
             return new BookRdv("OK", "RAS", collect);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant la création des rendez-vous.");
+            return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
         }
     }
 
@@ -68,11 +68,11 @@ public class RDVService {
                 RDVDB.saveRDV(rdv);
                 return new Message("OK", "RAS");
             }else {
-                return new Message("OK", "Erreur pendant la création des rendez-vous.");
+                return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant la création des rendez-vous.");
+            return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
         }
     }
 
@@ -106,11 +106,11 @@ public class RDVService {
                 }
                 return new Message("OK", "RAS");
             }else {
-                return new Message("OK", "Erreur pendant la création des rendez-vous.");
+                return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant la création des rendez-vous.");
+            return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
         }
     }
 
@@ -128,7 +128,7 @@ public class RDVService {
             return new GetRDV("OK", "RAS", rdvs);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant le chargement des rendez-vous.");
+            return new Message("FAIL", "Erreur pendant le chargement des rendez-vous.");
         }
     }
 
@@ -143,7 +143,7 @@ public class RDVService {
             return new GetRDV("OK", "RAS", rdvs);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant le chargement des rendez-vous.");
+            return new Message("FAIL", "Erreur pendant le chargement des rendez-vous.");
         }
     }
 
@@ -215,7 +215,7 @@ public class RDVService {
             return new GetPerson("OK", "RAS", people);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant le chargement des patients.");
+            return new Message("FAIL", "Erreur pendant le chargement des patients.");
         }
     }
 
@@ -245,7 +245,7 @@ public class RDVService {
             return new Message("OK", "RAS");
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant la création des rendez-vous.");
+            return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
         }
     }
 
@@ -259,7 +259,7 @@ public class RDVService {
             return new GetRDV("OK", "RAS", rdvs);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant le chargement des rendez-vous.");
+            return new Message("FAIL", "Erreur pendant le chargement des rendez-vous.");
         }
     }
 
@@ -277,21 +277,18 @@ public class RDVService {
                 sendEmail(person.getEmail(), CANCEL_TITLE, CANCEL_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rdv.getStart())));
                 return new Message("OK", "RAS");
             }else{
-                return new Message("OK", "Impossible d'annuler le rendez-vous. Veuillez contacter votre praticien");
+                return new Message("FAIL", "Impossible d'annuler le rendez-vous. Veuillez contacter votre praticien");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant le chargement des rendez-vous.");
+            return new Message("FAIL", "Erreur pendant le chargement des rendez-vous.");
         }
     }
 
     private boolean checkRdv(Person person, Event rdv) {
-        if(rdv.getIdPatient() != person.getId() || rdv.getStatus() == Status.FREE || rdv.getStatus() == Status.CANCELED ||
-                rdv.getStart().before(Timestamp.valueOf(LocalDateTime.now().plusDays(1)))){
-            return false;
-        }
-        return true;
+        return rdv.getIdPatient() == person.getId() && rdv.getStatus() != Status.FREE && rdv.getStatus() != Status.CANCELED &&
+                !rdv.getStart().before(Timestamp.valueOf(LocalDateTime.now().plusDays(1)));
     }
 
 

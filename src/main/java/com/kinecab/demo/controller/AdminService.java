@@ -9,7 +9,6 @@ import static com.kinecab.demo.db.CabDB.*;
 import com.kinecab.demo.db.LoginDB;
 import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.json.GetAdmin;
-import com.kinecab.demo.json.GetPerson;
 import com.kinecab.demo.json.Message;
 
 import org.springframework.http.MediaType;
@@ -92,7 +91,7 @@ public class AdminService {
             return new GetAdmin("OK", "RAS", admins);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("OK", "Erreur pendant le chargement des admins.");
+            return new Message("FAIL", "Erreur pendant le chargement des admins.");
         }
     }
 
