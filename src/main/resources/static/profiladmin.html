@@ -25,7 +25,7 @@
 
 
         $.ajax({
-            url: '/login/getprofiladmin', // the file to call
+            url: '/login/getprofiladmin',
             type: 'POST',
             data: 'token=' + readCookie('session'),
             success: function (data, textStatus, jqXHR) {
@@ -44,7 +44,7 @@
         });
 
         $.ajax({
-            url: '/cab/getcabprofil', // the file to call
+            url: '/cab/getcabprofil',
             type: 'POST',
             data: 'token=' + readCookie('session'),
             success: function (data, textStatus, jqXHR) {
@@ -457,11 +457,11 @@ header section -->
 
     $('#changeProfil').submit(function () {
         $('#dialog_title_span').text("");
-        $('#modalMessage').modal('toggle');// catch the form's submit event
-        $.ajax({ // create an AJAX call...
-            data: $('#changeProfil').serialize(), // get the form data
+        $('#modalMessage').modal('toggle');
+        $.ajax({
+            data: $('#changeProfil').serialize(),
             type: 'POST',
-            url: '/login/changeprofiladmin', // the file to call
+            url: '/login/changeprofiladmin',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
@@ -479,11 +479,11 @@ header section -->
 
     $('#changeCabinet').submit(function () {
         $('#dialog_title_span').text("");
-        $('#modalMessage').modal('toggle');// catch the form's submit event
-        $.ajax({ // create an AJAX call...
-            data: $('#changeCabinet').serialize(), // get the form data
+        $('#modalMessage').modal('toggle');
+        $.ajax({
+            data: $('#changeCabinet').serialize(),
             type: 'POST',
-            url: '/cab/updatecab', // the file to call
+            url: '/cab/updatecab',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
@@ -515,11 +515,11 @@ header section -->
     $('#suppForm').submit(function () {
         $('#dialog_title_span').text("");
         $('#modalSupp').modal('hide');
-        $('#modalMessage').modal('toggle');// catch the form's submit event
-        $.ajax({ // create an AJAX call...
-            data: $('#suppForm').serialize(), // get the form data
+        $('#modalMessage').modal('toggle');
+        $.ajax({
+            data: $('#suppForm').serialize(),
             type: 'POST',
-            url: '/login/suppprofiladmin', // the file to call
+            url: '/login/suppprofiladmin',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
@@ -553,11 +553,11 @@ header section -->
     function addPatient(nom, prenom, tel) {
         $('#popupAddPatient').modal('hide');
         $('#dialog_title_span').text("");
-        $('#modalMessage').modal('toggle');// catch the form's submit event
-        $.ajax({ // create an AJAX call...
-            data: {nom: nom, prenom: prenom, tel: tel, tokenAdmin: readCookie('session')}, // get the form data
+        $('#modalMessage').modal('toggle');
+        $.ajax({
+            data: {nom: nom, prenom: prenom, tel: tel, tokenAdmin: readCookie('session')},
             type: 'POST',
-            url: '/admin/addpatient', // the file to call
+            url: '/admin/addpatient',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);

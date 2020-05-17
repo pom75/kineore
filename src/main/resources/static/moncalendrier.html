@@ -723,7 +723,7 @@ header section -->
         checked = $("input[name='month']:checked").length;
         if(!checked) {
             $('#dialog_title_span').html("Vous devez selectionner au moins 1 motif.");
-            $('#modalMessage').modal('toggle');// catch the form's submit event
+            $('#modalMessage').modal('toggle');
             return false;
         }
 
@@ -798,12 +798,12 @@ header section -->
         checked = $("input[name='day']:checked").length;
         if(!checked) {
             $('#dialog_title_span').html("Vous devez selectionner au moins 1 motif.");
-            $('#modalMessage').modal('toggle');// catch the form's submit event
+            $('#modalMessage').modal('toggle');
             return false;
         }
         if(!durationRDV) {
             $('#dialog_title_span').html("Vous devez selectionner au moins 1 motif.");
-            $('#modalMessage').modal('toggle');// catch the form's submit event
+            $('#modalMessage').modal('toggle');
             return false;
         }
         var listIdMotif = "";
@@ -825,10 +825,10 @@ header section -->
 
 
     function changeStatusEvents(listEvent,status,idPatient) {
-        $.ajax({ // create an AJAX call...
-            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status, idPat: idPatient}, // get the form data
+        $.ajax({
+            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status, idPat: idPatient},
             type: 'POST',
-            url: '/rdv/changestatusevent', // the file to call
+            url: '/rdv/changestatusevent',
             success: function (data, textStatus, jqXHR) {
                 calendar.addEventSource(listEvent);
             },
@@ -839,10 +839,10 @@ header section -->
     }
 
     function saveNewEvents(listEvent) {
-        $.ajax({ // create an AJAX call...
-            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status}, // get the form data
+        $.ajax({
+            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
             type: 'POST',
-            url: '/rdv/addevent', // the file to call
+            url: '/rdv/addevent',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 jsonData.collect.sort((a, b) => a - b);
@@ -858,10 +858,10 @@ header section -->
     }
 
     function changeOneEvent(listEvent) {
-        $.ajax({ // create an AJAX call...
-            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status}, // get the form data
+        $.ajax({
+            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
             type: 'POST',
-            url: '/rdv/changeoneevent', // the file to call
+            url: '/rdv/changeoneevent',
             success: function (data, textStatus, jqXHR) {
                 calendar.addEventSource(listEvent);
             },
@@ -898,7 +898,7 @@ header section -->
         }
         if (error) {
             $('#dialog_title_span').html(errorText);
-            $('#modalMessage').modal('toggle');// catch the form's submit event
+            $('#modalMessage').modal('toggle');
         } else {
             $('#popupSingleEvent').modal('hide');
             setEventPropFreeToBooked(currentEvent.event);

@@ -17,20 +17,20 @@
         window.onload = redirect;
 
         function onLoad() {
-            if (readCookie('session') != '') {
-                $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="index.html">Deconnexion</a></li></ul>');
-            }else if(readCookie('admin') == '1') {
+            if (readCookie('admin') === "1") {
                 $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="moncalendrier.html">Mon Calendrier</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Gestion Du Calendrier</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right active" href="#">Mon Compte</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="#">Deconnexion</a></li></ul>');
-            }else {
+            } else if (readCookie('session') != '') {
+                $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="index.html">Deconnexion</a></li></ul>');
+            } else {
                 $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="https://www.kinecab.com/connexion.html">Se connecter</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="presentation.html">Professionel de sant&eacute;</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Qui somme nous?</a></li></ul>');
             }
         }
 
         function redirect() {
             //from url redirection
-            if($_GET('id')){
+            if ($_GET('id')) {
                 $.ajax({
-                    url: '/cab/getcabid', // the file to call
+                    url: '/cab/getcabid',
                     type: 'POST',
                     data: 'id=' + $_GET('id'),
                     success: function (data, textStatus, jqXHR) {
@@ -38,7 +38,7 @@
                         $('#nomcab').text(jsonData.name);
                         $('#addresse').html('<i class="fa fa-map-marker"> </i> ' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal);
                         $('#pres').html(jsonData.pres.replace(/\n/g, '<br>'));
-                        $('#rest').html('<i class="fa fa-mobile-phone"></i> '+jsonData.phone+' <br/> <i class="fa fa-envelope-o"></i> '+jsonData.email+'<br/> <a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : '+jsonData.paiment+' <br>Carte Vitale Accepté : '+jsonData.cartevital+' <br> Tarifs : '+jsonData.tarif+' <br> Conventionné : '+jsonData.convention+'"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>');
+                        $('#rest').html('<i class="fa fa-mobile-phone"></i> ' + jsonData.phone + ' <br/> <i class="fa fa-envelope-o"></i> ' + jsonData.email + '<br/> <a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : ' + jsonData.paiment + ' <br>Carte Vitale Accepté : ' + jsonData.cartevital + ' <br> Tarifs : ' + jsonData.tarif + ' <br> Conventionné : ' + jsonData.convention + '"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>');
                         $('#popinfo').popover({
                             container: 'body'
                         });
@@ -48,7 +48,7 @@
                     }
                 });
                 $.ajax({
-                    url: '/cab/getAdminsCab', // the file to call
+                    url: '/cab/getAdminsCab',
                     type: 'POST',
                     data: 'id=' + $_GET('id'),
                     success: function (data, textStatus, jqXHR) {
@@ -61,10 +61,10 @@
                         $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                     }
                 });
-            }else { //from admin
+            } else { //from admin
                 window.location.href = ("/index.html");
                 $.ajax({
-                    url: '/cab/getcabprofil', // the file to call
+                    url: '/cab/getcabprofil',
                     type: 'POST',
                     data: {token: readCookie('session')},
                     success: function (data, textStatus, jqXHR) {
@@ -72,7 +72,7 @@
                         $('#nomcab').text(jsonData.name);
                         $('#addresse').html('<i class="fa fa-map-marker"> </i> ' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal);
                         $('#pres').html(jsonData.pres.replace(/\n/g, '<br>'));
-                        $('#rest').html('<i class="fa fa-mobile-phone"></i> '+jsonData.phone+' <br/> <i class="fa fa-envelope-o"></i> '+jsonData.email+'<br/> <a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : '+jsonData.paiment+' <br>Carte Vitale Accepté : '+jsonData.cartevital+' <br> Tarifs : '+jsonData.tarif+' <br> Conventionné : '+jsonData.convention+'"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>');
+                        $('#rest').html('<i class="fa fa-mobile-phone"></i> ' + jsonData.phone + ' <br/> <i class="fa fa-envelope-o"></i> ' + jsonData.email + '<br/> <a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : ' + jsonData.paiment + ' <br>Carte Vitale Accepté : ' + jsonData.cartevital + ' <br> Tarifs : ' + jsonData.tarif + ' <br> Conventionné : ' + jsonData.convention + '"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>');
                         $('#popinfo').popover({
                             container: 'body'
                         });
@@ -148,7 +148,8 @@ header section -->
                                         </p>
                                         <br>
                                         <p>
-                                            <a href="#" id="rdvlink"><b> <i class="fa fa-calendar"></i> Prendre rendez-vous</b></a>
+                                            <a href="#" id="rdvlink"><b> <i class="fa fa-calendar"></i> Prendre
+                                                rendez-vous</b></a>
                                         </p>
                                     </div>
                                 </div>
@@ -195,7 +196,8 @@ header section -->
                                             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                                             <span class="sr-only">Previous</span>
                                         </a>
-                                        <a class="right carousel-control mb-5" href="#carousel-example-generic" role="button"
+                                        <a class="right carousel-control mb-5" href="#carousel-example-generic"
+                                           role="button"
                                            data-slide="next">
                                             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                             <span class="sr-only">Next</span>
@@ -249,12 +251,12 @@ header section -->
 <script type="text/javascript">
     onLoad();
     $('#rdvlink').click(function () {
-        $('#selectKine').modal('toggle');// catch the form's submit event
+        $('#selectKine').modal('toggle');
     });
 
     $('#gotokine').click(function () {
         if (!$("#eventMotifSelection").val().toUpperCase().localeCompare("DEFAULT") == 0) {
-            window.location.href = ("/rendez-vous.html?id="+parseInt($("#eventMotifSelection").val(), 10));
+            window.location.href = ("/rendez-vous.html?id=" + parseInt($("#eventMotifSelection").val(), 10));
         }
     });
 

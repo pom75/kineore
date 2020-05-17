@@ -155,11 +155,11 @@ header section -->
 
     $('#inscription').submit(function () {
         $('#dialog_title_span').text("");
-        $('#modalMessage').modal('toggle');// catch the form's submit event
-        $.ajax({ // create an AJAX call...
-            data: $('#inscription').serialize(), // get the form data
+        $('#modalMessage').modal('toggle');
+        $.ajax({
+            data: $('#inscription').serialize(),
             type: 'POST', // GET or POST
-            url: '/login/inscription', // the file to call
+            url: '/login/inscription',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);

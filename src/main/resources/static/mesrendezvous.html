@@ -13,14 +13,14 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/moment.js"></script>
     <script>
-        //window.onload = redirect;
+        window.onload = redirect;
 
         function redirect() {
             if (readCookie('session') == '') {
                 window.location.href = ("/index.html");
             }
-            if (readCookie('admin') == '1') {
-                window.location.href = ("/index.html");
+            if (readCookie('admin') === "1") {
+                window.location.href = ("/moncalendrier.html");
             }
         }
 

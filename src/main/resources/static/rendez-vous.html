@@ -288,7 +288,7 @@ header section -->
     function saveRDV() {
         $('#dialog_title_span').text("");
         $('#modaleMessageTitle').text("Veuillez patienter");
-        $('#modalMessage').modal('toggle');// catch the form's submit event
+        $('#modalMessage').modal('toggle');
         $.ajax({
             data: {idEvent: currentIdEvent, tokenPat: readCookie('session'),idMotif : currentMotif},
             type: 'POST',

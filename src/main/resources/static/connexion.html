@@ -159,11 +159,11 @@ header section -->
     $('#connexion').submit(function () {
         $('#dialog_title_span').text("");
         $('#modaleMessageTitle').text("Veuillez patienter");
-        $('#modalMessage').modal('toggle');// catch the form's submit event
-        $.ajax({ // create an AJAX call...
-            data: $('#connexion').serialize(), // get the form data
+        $('#modalMessage').modal('toggle');
+        $.ajax({
+            data: $('#connexion').serialize(),
             type: 'POST', // GET or POST
-            url: '/login/connexion', // the file to call
+            url: '/login/connexion',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
@@ -192,13 +192,13 @@ header section -->
     $('#newPassword').click(function () {
         $('#dialog_title_span').text("");
         $('#modaleMessageTitle').text("Veuillez patienter");
-        $('#modalLoginFormMdp').modal('hide');// catch the form's submit event
-        $('#modalMessage').modal('toggle');// catch the form's submit event
+        $('#modalLoginFormMdp').modal('hide');
+        $('#modalMessage').modal('toggle');
         var email = $("#emailMdp").val();
-        $.ajax({ // create an AJAX call...
-            data: {email: email}, // get the form data
+        $.ajax({
+            data: {email: email},
             type: 'POST',
-            url: '/login/motdepasseoublier', // the file to call
+            url: '/login/motdepasseoublier',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#modaleMessageTitle').text("Opération terminé");

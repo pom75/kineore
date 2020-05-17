@@ -3,142 +3,171 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <head>
     <meta charset="UTF-8">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Kin&eacute;Cab - Site de rendez-vous en ligne pour les Kin&eacute;sithérapeute</title>
-	<link rel="stylesheet" href="js/jquery-ui.css">
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/custom.css">
-	<link rel="icon" type="image/png" href="img/ck.png" />
-	<script src="js/jquery-2.1.1.js"></script>
-	<script src="js/jquery-ui.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/bootstrap-autocomplete.min.js"></script>
-	<script src="js/moment.js"></script>
+    <link rel="stylesheet" href="js/jquery-ui.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="icon" type="image/png" href="img/ck.png"/>
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-autocomplete.min.js"></script>
+    <script src="js/moment.js"></script>
 </head>
 <script>
-	function readCookie(name) {
-		var i, c, ca, nameEQ = name + "=";
-		ca = document.cookie.split(';');
-		for (i = 0; i < ca.length; i++) {
-			c = ca[i];
-			while (c.charAt(0) == ' ') {
-				c = c.substring(1, c.length);
-			}
-			if (c.indexOf(nameEQ) == 0) {
-				return c.substring(nameEQ.length, c.length);
-			}
-		}
-		return '';
-	}
+    function readCookie(name) {
+        var i, c, ca, nameEQ = name + "=";
+        ca = document.cookie.split(';');
+        for (i = 0; i < ca.length; i++) {
+            c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1, c.length);
+            }
+            if (c.indexOf(nameEQ) == 0) {
+                return c.substring(nameEQ.length, c.length);
+            }
+        }
+        return '';
+    }
 
-	function onLoad() {
-		if (readCookie('admin') == '1') {
-			window.location.href = ("/moncalendrier.html");
-		}
-		if (readCookie('session') != '') {
-			$('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="index.html">Deconnexion</a></li></ul>');
-		}else {
-			$('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="https://www.kinecab.com/connexion.html">Se connecter</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="presentation.html">Professionel de sant&eacute;</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Qui somme nous?</a></li></ul>');
-		}
-	}
+    function onLoad() {
+        if (readCookie('admin') == '1') {
+            window.location.href = ("/moncalendrier.html");
+        }
+        if (readCookie('session') != '') {
+            $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="index.html">Deconnexion</a></li></ul>');
+        } else {
+            $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="https://www.kinecab.com/connexion.html">Se connecter</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="presentation.html">Professionel de sant&eacute;</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Qui somme nous?</a></li></ul>');
+        }
+    }
 
-	var idAdminMap = {};
+    var idAdminMap = {};
 
-	function getAdmin() {
-		$.ajax({
-			data: {},
-			type: 'POST',
-			url: '/admin/getadmin',
-			success: function (data, textStatus, jqXHR) {
-				var jsonData = JSON.parse(data);
-				var idName = [];
-				for (var i = 0; i < jsonData.admins.length; i++) {
-					idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
-					var obj = {};
-					var value = "value";
-					var label = "label";
-					obj[value] = jsonData.admins[i].id;
-					obj[label] = jsonData.admins[i].nom + " " + jsonData.admins[i].prenom;
-					idName.push(obj);
-
+    function getAdmin() {
+        $.ajax({
+            data: {},
+            type: 'POST',
+            url: '/admin/getadmin',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                if (data.status === "OK") {
+                    var idName = [];
+                    for (var i = 0; i < jsonData.admins.length; i++) {
+                        idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
+                        var obj = {};
+                        var value = "value";
+                        var label = "label";
+                        obj[value] = jsonData.admins[i].id;
+                        obj[label] = jsonData.admins[i].nom + " " + jsonData.admins[i].prenom;
+                        idName.push(obj);
+                    }
+                    $('#nameKine').autocomplete({
+                        'source': idName, delay: 0,
+                        select: function (event, ui) {
+                            event.preventDefault();
+                            $("#nameKine").val(ui.item.label);
+                            $("#nameKine").attr('name', ui.item.value);
+                        }
+                    });
+                }else{
+					$('#dialog_title_span').text("Erreur");
+					$('#modaleMessageTitle').text(data.message);
+					$('#modalMessage').modal('toggle');
 				}
-				$('#nameKine').autocomplete({
-					'source': idName, delay: 0,
-					select: function (event, ui) {
-						event.preventDefault();
-						$("#nameKine").val(ui.item.label);
-						$("#nameKine").attr('name', ui.item.value);
-					}
-				});
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				$('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-			}
-		});
-	}
-	getAdmin();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+				$('#dialog_title_span').text("Erreur");
+				$('#modaleMessageTitle').text("Un probleme est survenue veuillez contacter un administrateur");
+				$('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+    getAdmin();
 </script>
 <body>
 
 <!-- ====================================================
 header section -->
-<header style="padding-bottom: 70px" >
-	<nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
-		<img src="img/ck.png" width="30" height="30">
-		<a class="navbar-brand" href="#" >&nbsp;Kin&eacute;cab</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarSupportedContent" >
-		</div>
-	</nav>
+<header style="padding-bottom: 70px">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
+        <img src="img/ck.png" width="30" height="30">
+        <a class="navbar-brand" href="#">&nbsp;Kin&eacute;cab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        </div>
+    </nav>
 </header> <!-- end of header area -->
 
 <main role="main">
-	<section class="text-center">
-		<div class="container">
-			<h1 class="jumbotron-heading">Bienvenue sur Kin&eacute;cab</h1>
-			<p class="lead text-muted">Prise de rendez-vous en ligne et Gestion de calendrier.</p>
-		</div>
-	</section>
+    <section class="text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Bienvenue sur Kin&eacute;cab</h1>
+            <p class="lead text-muted">Prise de rendez-vous en ligne et Gestion de calendrier.</p>
+        </div>
+    </section>
 
-	<section class="text-center" style="margin-top: 100px">
-		<div class="container">
-			<form class="navbar-form navbar-left">
-				<input id="nameKine" type="text" class="form-control col-lg-12" placeholder="Trouver un Kin&eacute;sith&eacute;rapeute">
-				<br>
-				<div class="float-sm-center" id="modifBlock">
-					<button type="button" id="gotordv" class="btn btn-secondary pull-center">Prendre rendez-vous
-					</button>
-				</div>
-			</form>
-		</div>
-	</section>
+    <section class="text-center" style="margin-top: 100px">
+        <div class="container">
+            <form class="navbar-form navbar-left">
+                <input id="nameKine" type="text" class="form-control col-lg-12"
+                       placeholder="Trouver un Kin&eacute;sith&eacute;rapeute">
+                <br>
+                <div class="float-sm-center" id="modifBlock">
+                    <button type="button" id="gotordv" class="btn btn-secondary pull-center">Prendre rendez-vous
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
 
 </main>
+
+<!-- Modal -->
+<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+	 aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modaleMessageTitle"></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<span id="dialog_title_span"></span>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 <!-- footer starts here -->
 <nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
-	&copy; 2020 Copyright
+    &copy; 2020 Copyright
 </nav>
 
 </body>
 </html>
 <script>
-	$("#gotordv").click(function () {
-		if($('#nameKine').attr("name") != null) {
-			window.location.href = ("/rendez-vous.html?id="+$('#nameKine').attr("name"));
-		}
-	});
+    $("#gotordv").click(function () {
+        if ($('#nameKine').attr("name") != null) {
+            window.location.href = ("/rendez-vous.html?id=" + $('#nameKine').attr("name"));
+        }
+    });
 
-	function delete_cookie(name) {
-		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-		window.location.href = ("/index.html");
-	}
-	onLoad();
+    function delete_cookie(name) {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        window.location.href = ("/index.html");
+    }
+
+    onLoad();
 </script>
