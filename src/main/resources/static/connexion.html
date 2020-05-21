@@ -167,8 +167,8 @@ header section -->
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
-                $('#modaleMessageTitle').text("Opération terminé");
                 if (jsonData.status == "OK") {
+                    $('#modaleMessageTitle').text("Opération terminé");
                     writeCookie("session", jsonData.token, 30);
                     writeCookie("admin", jsonData.admin, 30);
                     writeCookie("idAdmin", jsonData.idAdmin, 30);
@@ -180,9 +180,12 @@ header section -->
                             window.location.href = "index.html";
                         }
                     }, 2000);
+                }else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                $('#modaleMessageTitle').text("Une erreur est survenue");
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });
@@ -201,10 +204,15 @@ header section -->
             url: '/login/motdepasseoublier',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                $('#modaleMessageTitle').text("Opération terminé");
                 $('#dialog_title_span').text(jsonData.message);
+                if (jsonData.status == "OK") {
+                    $('#modaleMessageTitle').text("Opération terminé");
+                }else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                $('#modaleMessageTitle').text("Une erreur est survenue");
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });

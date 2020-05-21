@@ -161,8 +161,14 @@ header section -->
             url: '/admin/getadmin',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                for (var i = 0; i < jsonData.admins.length; i++) {
-                    idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.admins.length; i++) {
+                        idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
+                    }
+                }else{
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {

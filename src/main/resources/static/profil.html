@@ -27,15 +27,23 @@
                 data: 'token=' + readCookie('session'),
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
-                    $('#mail').val(jsonData.email);
-                    $('#num').val(jsonData.tel);
-                    $('#nom').val(jsonData.nom);
-                    $('#prenom').val(jsonData.prenom);
-                    $('#token').val(readCookie('session'));
-                    $('#token2').val(readCookie('session'));
+                    if (jsonData.status == "OK") {
+                        $('#mail').val(jsonData.email);
+                        $('#num').val(jsonData.tel);
+                        $('#nom').val(jsonData.nom);
+                        $('#prenom').val(jsonData.prenom);
+                        $('#token').val(readCookie('session'));
+                        $('#token2').val(readCookie('session'));
+                    }else {
+                        $('#modaleMessageTitle').text("Une erreur est survenue");
+                        $('#dialog_title_span').text(jsonData.message);
+                        $('#modalMessage').modal('toggle');
+                    }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#modalMessage').modal('toggle');
                 }
             });
         }
@@ -241,7 +249,7 @@ header section -->
 
 
     $('#changeProfil').submit(function () {
-        $('#dialog_title_span').text("");
+        $('#modaleMessageTitle').text("Veuillez patienter");
         $('#modalMessage').modal('toggle');
         $.ajax({
             data: $('#changeProfil').serialize(),
@@ -249,9 +257,16 @@ header section -->
             url: '/login/changeprofil',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                $('#dialog_title_span').text(jsonData.message);
+                if (jsonData.status == "OK") {
+                    $('#dialog_title_span').text(jsonData.message);
+                }else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                }
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                $('#modaleMessageTitle').text("Une erreur est survenue");
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });
@@ -268,7 +283,7 @@ header section -->
     });
 
     $('#suppForm').submit(function () {
-        $('#dialog_title_span').text("");
+        $('#modaleMessageTitle').text("Veuillez patienter");
         $('#modalSupp').modal('hide');
         $('#modalMessage').modal('toggle');
         $.ajax({
@@ -278,12 +293,19 @@ header section -->
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
-                if(jsonData.status == "OK"){
+                if (jsonData.status == "OK") {
                     delete_cookie('session');
-                }else{
+                    $('#dialog_title_span').text(jsonData.message);
+                    window.setTimeout(function () {
+                            window.location.href = "index.html";
+                    }, 2000);
+                }else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                $('#modaleMessageTitle').text("Une erreur est survenue");
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });

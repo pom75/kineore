@@ -37,7 +37,7 @@
     function onLoad() {
         if (readCookie('session') != '') {
             $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="index.html">Deconnexion</a></li></ul>');
-        }else {
+        } else {
             $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="https://www.kinecab.com/connexion.html">Se connecter</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="presentation.html">Professionel de sant&eacute;</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Qui somme nous?</a></li></ul>');
         }
     }
@@ -97,7 +97,7 @@ header section -->
         </div>
     </section>
 
-    <section class="text-center" id="suiteChoice"style="margin-top: 100px;display:none">
+    <section class="text-center" id="suiteChoice" style="margin-top: 100px;display:none">
         <div class="container">
             <div style="overflow:hidden;">
                 <div class="form-group">
@@ -111,7 +111,8 @@ header section -->
 
                             </div>
                             <div class="float-sm-center mt-3 mb-5" id="modifBlock">
-                                <button type="button" id="gotordv" class="btn btn-secondary pull-center" onclick="saveRDV()">Prendre
+                                <button type="button" id="gotordv" class="btn btn-secondary pull-center"
+                                        onclick="saveRDV()">Prendre
                                     rendez-vous
                                 </button>
                             </div>
@@ -187,7 +188,7 @@ header section -->
                 if (moment(event.start).isSame(moment(date), 'day')) {
                     var split = event.listIdMotif.split(',');
                     split.forEach(idMotif => {
-                        if(idMotif === currentMotif){
+                        if (idMotif === currentMotif) {
                             filteredEvents.push(event);
                         }
                     });
@@ -199,10 +200,10 @@ header section -->
 
     function showFreeRdvs(events) {
         $('#listHour').empty();
-        if(events.length <= 0){
+        if (events.length <= 0) {
             $('#titleDate').text("Aucun rendez-vous disponible à la date selectionnée.");
             $('#modifBlock').hide();
-        }else {
+        } else {
             $('#modifBlock').show();
             events.forEach(event => {
                 $('#titleDate').text("");
@@ -222,13 +223,21 @@ header section -->
             url: '/rdv/getmotifid',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                for (var i = 0; i < jsonData.motif.length; i++) {
-                    idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
-                    $('#eventMotifSelection').append("<option value=\"" + jsonData.motif[i].id + "\">" + jsonData.motif[i].motif + "</option>");
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.motif.length; i++) {
+                        idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
+                        $('#eventMotifSelection').append("<option value=\"" + jsonData.motif[i].id + "\">" + jsonData.motif[i].motif + "</option>");
+                    }
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
             }
         });
     }
@@ -243,11 +252,18 @@ header section -->
             url: '/rdv/getrdvfree',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                jsonData.rdvs.forEach(event => listEvent.push(event));
+                if (jsonData.status === "OK") {
+                    jsonData.rdvs.forEach(event => listEvent.push(event));
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-            }
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');            }
         });
     }
 
@@ -269,10 +285,10 @@ header section -->
     }
 
     $('#eventMotifSelection').change(function () {
-        if($(this).val() === "default"){
+        if ($(this).val() === "default") {
             $('#suiteChoice').hide();
             $('#modifBlock').hide();
-        }else{
+        } else {
             currentMotif = $(this).val();
             $('#suiteChoice').show();
             $('#modifBlock').show();
@@ -281,6 +297,7 @@ header section -->
     });
 
     var currentIdEvent = 0;
+
     function setCurrentRdv(id) {
         currentIdEvent = id;
     }
@@ -290,7 +307,7 @@ header section -->
         $('#modaleMessageTitle').text("Veuillez patienter");
         $('#modalMessage').modal('toggle');
         $.ajax({
-            data: {idEvent: currentIdEvent, tokenPat: readCookie('session'),idMotif : currentMotif},
+            data: {idEvent: currentIdEvent, tokenPat: readCookie('session'), idMotif: currentMotif},
             type: 'POST',
             url: '/rdv/bookrdvfrompat',
             success: function (data, textStatus, jqXHR) {
@@ -305,8 +322,7 @@ header section -->
                             window.location.href = "index.html";
                         }
                     }, 2000);
-                }
-                else{
+                } else {
                     $('#modaleMessageTitle').text("Un erreur s'est produite, veuillez contacter un administrateur.");
                 }
             },

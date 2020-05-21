@@ -88,7 +88,9 @@ public class AdminService {
         try {
             List<Admin> admins= getAdmins();
             admins.forEach(admin -> {admin.setPassword("");admin.setEmail("");});
-            return new GetAdmin("OK", "RAS", admins);
+            GetAdmin getAdmin = new GetAdmin("OK", "RAS", admins);
+            getCab().forEach(cabAdmin -> getAdmin.addMapIdAdminIdCab(cabAdmin.getIdAdmin(),cabAdmin.getIdCab()));
+            return getAdmin;
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Erreur pendant le chargement des admins.");

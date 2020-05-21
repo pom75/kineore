@@ -97,4 +97,12 @@ public class CabDB {
             }
         }
     }
+
+    public static List<CabAdmin> getCab() {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB_ADMIN ;");
+            return sqlQuery.addEntity(CabAdmin.class).list();
+        }
+    }
+
 }

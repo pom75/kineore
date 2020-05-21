@@ -65,15 +65,22 @@
                 url: '/rdv/getmotif',
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
-                    for (var i = 0; i < jsonData.motif.length; i++) {
-                        idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
-                        $('#selectListIdMotif').append('<input class="form-check-input" name="day" type="checkbox" value="'+ jsonData.motif[i].id+'" id="'+ jsonData.motif[i].id+'"> <label class="form-check-label" for="'+jsonData.motif[i].id+'">'+jsonData.motif[i].motif+' </label><br>');
-                        $('#selectListIdMotif2').append('<input class="form-check-input" name="month" type="checkbox" value="'+ jsonData.motif[i].id+'" id="'+ jsonData.motif[i].id+'"> <label class="form-check-label" for="'+jsonData.motif[i].id+'">'+jsonData.motif[i].motif+' </label><br>');
+                    if (jsonData.status === "OK") {
+                        for (var i = 0; i < jsonData.motif.length; i++) {
+                            idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
+                            $('#selectListIdMotif').append('<input class="form-check-input" name="day" type="checkbox" value="' + jsonData.motif[i].id + '" id="' + jsonData.motif[i].id + '"> <label class="form-check-label" for="' + jsonData.motif[i].id + '">' + jsonData.motif[i].motif + ' </label><br>');
+                            $('#selectListIdMotif2').append('<input class="form-check-input" name="month" type="checkbox" value="' + jsonData.motif[i].id + '" id="' + jsonData.motif[i].id + '"> <label class="form-check-label" for="' + jsonData.motif[i].id + '">' + jsonData.motif[i].motif + ' </label><br>');
+                        }
+                    }else{
+                        $('#modaleMessageTitle').text("Une erreur est survenue");
+                        $('#dialog_title_span').text(jsonData.message);
+                        $('#modalMessage').modal('toggle');
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-                }
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#modalMessage').modal('toggle');                }
             });
         }
     </script>
@@ -434,28 +441,36 @@ header section -->
             url: '/rdv/getpersonidadmin',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                var idName = []
-                for (var i = 0; i < jsonData.people.length; i++) {
-                    idPersonMap[jsonData.people[i].id] = jsonData.people[i];
-                    var obj = {};
-                    var value = "value";
-                    var label = "label";
-                    obj[value] = jsonData.people[i].id;
-                    obj[label] = jsonData.people[i].nom + " " + jsonData.people[i].prenom;
-                    idName.push(obj);
+                if (jsonData.status === "OK") {
+                    var idName = []
+                    for (var i = 0; i < jsonData.people.length; i++) {
+                        idPersonMap[jsonData.people[i].id] = jsonData.people[i];
+                        var obj = {};
+                        var value = "value";
+                        var label = "label";
+                        obj[value] = jsonData.people[i].id;
+                        obj[label] = jsonData.people[i].nom + " " + jsonData.people[i].prenom;
+                        idName.push(obj);
 
-                }
-                $('#namePat').autocomplete({
-                    'source': idName, delay: 0,
-                    select: function (event, ui) {
-                        event.preventDefault();
-                        $("#namePat").val(ui.item.label);
-                        $("#namePat").attr('name', ui.item.value);
                     }
-                });
+                    $('#namePat').autocomplete({
+                        'source': idName, delay: 0,
+                        select: function (event, ui) {
+                            event.preventDefault();
+                            $("#namePat").val(ui.item.label);
+                            $("#namePat").attr('name', ui.item.value);
+                        }
+                    });
+                }else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
             }
         });
     }
@@ -610,10 +625,18 @@ header section -->
             url: '/rdv/getrdv',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                jsonData.rdvs.forEach(event => listEvent.push(createEventWithData(event)));
+                if (jsonData.status === "OK") {
+                    jsonData.rdvs.forEach(event => listEvent.push(createEventWithData(event)));
+                }else{
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
             }
         });
         return listEvent;
@@ -830,10 +853,19 @@ header section -->
             type: 'POST',
             url: '/rdv/changestatusevent',
             success: function (data, textStatus, jqXHR) {
-                calendar.addEventSource(listEvent);
+                var jsonData = JSON.parse(data);
+                if (jsonData.status === "OK") {
+                    calendar.addEventSource(listEvent);
+                }else{
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
             }
         });
     }
@@ -845,15 +877,22 @@ header section -->
             url: '/rdv/addevent',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                jsonData.collect.sort((a, b) => a - b);
-                for (var i = 0; i < jsonData.collect.length; i++) {
-                    listEvent[i].id = jsonData.collect[i];
+                if (jsonData.status === "OK") {
+                    jsonData.collect.sort((a, b) => a - b);
+                    for (var i = 0; i < jsonData.collect.length; i++) {
+                        listEvent[i].id = jsonData.collect[i];
+                    }
+                    calendar.addEventSource(listEvent);
+                }else{
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
                 }
-                calendar.addEventSource(listEvent);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-            }
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');            }
         });
     }
 
@@ -863,11 +902,19 @@ header section -->
             type: 'POST',
             url: '/rdv/changeoneevent',
             success: function (data, textStatus, jqXHR) {
-                calendar.addEventSource(listEvent);
+                var jsonData = JSON.parse(data);
+                if (jsonData.status === "OK") {
+                    calendar.addEventSource(listEvent);
+                }else{
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-            }
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');            }
         });
     }
 
@@ -1105,11 +1152,18 @@ header section -->
             url: '/rdv/removerdv',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                $('#dialog_title_span').text(jsonData.message);
+                if (jsonData.status === "OK") {
+                    //Nothing
+                }else{
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-            }
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');            }
         });
     }
 

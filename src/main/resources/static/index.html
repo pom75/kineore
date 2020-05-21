@@ -47,6 +47,7 @@
     }
 
     var idAdminMap = {};
+    var mapIdAdminIdCab;
 
     function getAdmin() {
         $.ajax({
@@ -55,7 +56,8 @@
             url: '/admin/getadmin',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                if (data.status === "OK") {
+                if (jsonData.status === "OK") {
+                    mapIdAdminIdCab = jsonData.mapIdAdminIdCab;
                     var idName = [];
                     for (var i = 0; i < jsonData.admins.length; i++) {
                         idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
@@ -75,14 +77,14 @@
                         }
                     });
                 }else{
-					$('#dialog_title_span').text("Erreur");
-					$('#modaleMessageTitle').text(data.message);
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+					$('#dialog_title_span').text(jsonData.message);
 					$('#modalMessage').modal('toggle');
 				}
             },
             error: function (jqXHR, textStatus, errorThrown) {
-				$('#dialog_title_span').text("Erreur");
-				$('#modaleMessageTitle').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+				$('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
 				$('#modalMessage').modal('toggle');
             }
         });
@@ -160,7 +162,7 @@ header section -->
 <script>
     $("#gotordv").click(function () {
         if ($('#nameKine').attr("name") != null) {
-            window.location.href = ("/rendez-vous.html?id=" + $('#nameKine').attr("name"));
+            window.location.href = ("/cabinet.html?id=" + mapIdAdminIdCab[$('#nameKine').attr("name")]);
         }
     });
 

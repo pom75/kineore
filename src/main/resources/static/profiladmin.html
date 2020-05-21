@@ -30,16 +30,24 @@
             data: 'token=' + readCookie('session'),
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                $('#mail').val(jsonData.email);
-                $('#num').val(jsonData.tel);
-                $('#nom').val(jsonData.nom);
-                $('#prenom').val(jsonData.prenom);
-                $('#token').val(readCookie('session'));
-                $('#token3').val(readCookie('session'));
-                $('#token2').val(readCookie('session'));
+                if (jsonData.status === "OK") {
+                    $('#mail').val(jsonData.email);
+                    $('#num').val(jsonData.tel);
+                    $('#nom').val(jsonData.nom);
+                    $('#prenom').val(jsonData.prenom);
+                    $('#token').val(readCookie('session'));
+                    $('#token3').val(readCookie('session'));
+                    $('#token2').val(readCookie('session'));
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
             }
         });
 
@@ -49,21 +57,28 @@
             data: 'token=' + readCookie('session'),
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                $('#vitale').val(jsonData.cartevital);
-                $('#codepostal').val(jsonData.codePostal);
-                $('#convention').val(jsonData.convention);
-                $('#mailcab').val(jsonData.email);
-                $('#nomcab').val(jsonData.name);
-                $('#rue').val(jsonData.nomRue);
-                $('#paiement').val(jsonData.paiment);
-                $('#numcab').val(jsonData.phone);
-                $('#tarifs').val(jsonData.tarif);
-                $('#prescab').val(jsonData.pres);
-                $('#urlcab').val(jsonData.url);
+                if (jsonData.status === "OK") {
+                    $('#vitale').val(jsonData.cartevital);
+                    $('#codepostal').val(jsonData.codePostal);
+                    $('#convention').val(jsonData.convention);
+                    $('#mailcab').val(jsonData.email);
+                    $('#nomcab').val(jsonData.name);
+                    $('#rue').val(jsonData.nomRue);
+                    $('#paiement').val(jsonData.paiment);
+                    $('#numcab').val(jsonData.phone);
+                    $('#tarifs').val(jsonData.tarif);
+                    $('#prescab').val(jsonData.pres);
+                    $('#urlcab').val(jsonData.url);
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-            }
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');            }
         });
 
 
@@ -468,7 +483,8 @@ header section -->
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-            }
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');            }
         });
         jQuery('#modifBlock').css("display", "block");
         jQuery('#saveBlock').css("display", "none");
@@ -490,7 +506,8 @@ header section -->
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-            }
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');            }
         });
         jQuery('#modifBlock2').css("display", "block");
         jQuery('#saveBlock2').css("display", "none");
@@ -530,7 +547,8 @@ header section -->
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-            }
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');            }
         });
     });
 
@@ -564,8 +582,9 @@ header section -->
 
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur ");
-            }
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');            }
         });
     }
 </script>
