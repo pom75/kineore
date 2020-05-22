@@ -69,7 +69,8 @@ header section -->
                     <a class="nav-link navbar-right" href="profil.html">Mon Profil</a>
                 </li>
                 <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')" href="index.html">Deconnexion</a>
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')"
+                       href="index.html">Deconnexion</a>
                 </li>
             </ul>
         </div>
@@ -118,14 +119,14 @@ header section -->
                                         </div>
                                     </div>
                                     <h3 class="text-left">Mes rendez-vous en attente de confirmation</h3>
-                                    <div class="text-left" >
+                                    <div class="text-left">
                                         <div class="list-group" id="waitRDV">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
                                     <h3 class="text-left">Mes rendez-vous passé</h3>
-                                    <div class="text-left" >
+                                    <div class="text-left">
                                         <div class="list-group" id="passedRDV">
                                         </div>
                                     </div>
@@ -138,8 +139,6 @@ header section -->
         </div>
     </section>
 </main>
-
-
 
 
 <!-- footer starts here -->
@@ -165,14 +164,16 @@ header section -->
                     for (var i = 0; i < jsonData.admins.length; i++) {
                         idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
                     }
-                }else{
+                } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
                     $('#modalMessage').modal('toggle');
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                $('#modaleMessageTitle').text("Une erreur est survenue");
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modalMessage').modal('toggle');
             }
         });
     }
@@ -183,10 +184,12 @@ header section -->
             url: '/cab/motifs',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                jsonData.motif.forEach(motif =>{ idMotifMap[motif.id] = motif;
+                jsonData.motif.forEach(motif => {
+                    idMotifMap[motif.id] = motif;
                 });
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                $('#modalMessage').modal('toggle');
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });
@@ -204,6 +207,7 @@ header section -->
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modalMessage').modal('toggle');
             }
         });
     }
@@ -216,46 +220,60 @@ header section -->
         var waiting = 0;
         var bookedF = 0;
         var bookedP = 0;
-        listEvent.forEach(event =>{
-            if(moment(event.start) > moment() && event.status === "WAITING"){
+        listEvent.forEach(event => {
+            if (moment(event.start) > moment() && event.status === "WAITING") {
                 waiting = 1;
-                $('#waitRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #FFD17D"> <p>Date: '+moment(event.start).format("YYYY-MM-DD à HH:mm")+'</p> <p>Motif: '+idMotifMap[event.idMotif].motif+'</p> <p>Nom du praticien: '+idAdminMap[event.idAdmin].nom+' '+idAdminMap[event.idAdmin].prenom+'</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
+                $('#waitRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #FFD17D"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p>Nom du praticien: ' + idAdminMap[event.idAdmin].nom + ' ' + idAdminMap[event.idAdmin].prenom + '</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
             }
-            if(moment(event.start) > moment() && event.status === "BOOKED"){
+            if (moment(event.start) > moment() && event.status === "BOOKED") {
                 bookedF = 1;
-                $('#nextRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #C9F5FF"> <p>Date: '+moment(event.start).format("YYYY-MM-DD à HH:mm")+'</p> <p>Motif: '+idMotifMap[event.idMotif].motif+'</p> <p>Nom du praticien: '+idAdminMap[event.idAdmin].nom+' '+idAdminMap[event.idAdmin].prenom+'</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
+                $('#nextRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #C9F5FF"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p>Nom du praticien: ' + idAdminMap[event.idAdmin].nom + ' ' + idAdminMap[event.idAdmin].prenom + '</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
             }
-            if(moment(event.start) < moment() && event.status === "BOOKED"){
+            if (moment(event.start) < moment() && event.status === "BOOKED") {
                 bookedP = 1;
-                $('#passedRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #5EC5F7"> <p>Date: '+moment(event.start).format("YYYY-MM-DD à HH:mm")+'</p> <p>Motif: '+idMotifMap[event.idMotif].motif+'</p> <p>Nom du praticien: '+idAdminMap[event.idAdmin].nom+' '+idAdminMap[event.idAdmin].prenom+'</p> <div class="float-sm-right" > </div> </a>');
+                $('#passedRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #5EC5F7"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p>Nom du praticien: ' + idAdminMap[event.idAdmin].nom + ' ' + idAdminMap[event.idAdmin].prenom + '</p> <div class="float-sm-right" > </div> </a>');
             }
         });
-        if(waiting === 0){
+        if (waiting === 0) {
             $('#waitRDV').append('<p>Aucun rendez-vous en attente de confirmation.</p>');
         }
-        if(bookedF === 0){
+        if (bookedF === 0) {
             $('#nextRDV').append('<p>Aucun rendez-vous prochainement.</p>');
         }
-        if(bookedP === 0){
+        if (bookedP === 0) {
             $('#passedRDV').append('<p>Aucun rendez-vous passé.</p>');
         }
     }
 
 
     function cancelRDV(idEvent) {
+        $('#dialog_title_span').text("");
+        $('#modaleMessageTitle').text("Veuillez patienter");
+        $('#modalMessage').modal('toggle');
         $.ajax({
-            data: {tokenPat: readCookie('session'),idEvent : idEvent},
+            data: {tokenPat: readCookie('session'), idEvent: idEvent},
             type: 'POST',
             url: '/rdv/cancelRDV',
             success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                if (jsonData.status == "OK") {
+                    $('#dialog_title_span').text("Le Rendez-vous a bien été annulé.");
+                    window.setTimeout(function () {
+                        // Move to a new location or you can do something else
+                        window.location.href = "mesrendezvous.html";
+                    }, 1500);
+                } else {
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                $('#modaleMessageTitle').text("Une erreur est survenue");
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modalMessage').modal('toggle');
             }
         });
     }
-
-
 
 
 </script>

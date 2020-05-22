@@ -71,7 +71,7 @@ header section -->
 <header style="padding-bottom: 70px;">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
         <img src="img/ck.png" width="30" height="30">
-        <a class="navbar-brand" href="#">&nbsp;Kin&eacute;cab</a>
+        <a class="navbar-brand" href="index.html">&nbsp;Kin&eacute;cab</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -143,6 +143,67 @@ header section -->
 
 </main>
 
+<!-- Popup Event CANCELED EVENT -->
+
+<div class="modal fade" id="popupSingin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog event-popup" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="eventCanceledTitle">Connexion</h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="connexion" method="POST">
+                    <div class="form-group">
+                        <label for="email" class="sr-only">Address email </label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Address email"
+                               required
+                               autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="sr-only">Mot de passe</label>
+                        <input type="password" id="password" name="password" class="form-control"
+                               placeholder="Mot de passe" required>
+                    </div>
+                    <div class="checkbox mb-3">
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
+                    <br>
+                    <a href="inscription.html" style="font-size: large">Inscription</a>
+                    <br>
+                    <a href="" data-toggle="modal" data-target="#modalLoginFormMdp" style="font-size: large">Mot de
+                        passe oublié</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal MDP Oublié-->
+<div class="modal fade" id="modalLoginFormMdp" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Mot de passe oublié</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin"  method="POST">
+                    <input type="email" class="form-control" name="email" id="emailMdp" placeholder="Adresse mail" required=""
+                           autofocus=""/>
+                    <div class="checkbox mb-3">
+                    </div>
+                    <button type="submit" id="newPassword" class="btn btn-primary" data-dismiss="modal">Envoyer un nouveau mot de passe
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- footer starts here -->
 <nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
@@ -303,34 +364,113 @@ header section -->
     }
 
     function saveRDV() {
-        $('#dialog_title_span').text("");
-        $('#modaleMessageTitle').text("Veuillez patienter");
-        $('#modalMessage').modal('toggle');
+        if (readCookie('session') != '') {
+            $('#dialog_title_span').text("");
+            $('#modaleMessageTitle').text("Veuillez patienter");
+            $('#modalMessage').modal('show');
+            $.ajax({
+                data: {idEvent: currentIdEvent, tokenPat: readCookie('session'), idMotif: currentMotif},
+                type: 'POST',
+                url: '/rdv/bookrdvfrompat',
+                success: function (data, textStatus, jqXHR) {
+                    var jsonData = JSON.parse(data);
+                    if (jsonData.status === "OK") {
+                        $('#modaleMessageTitle').text("Rendez-vous bien prit en compte. Il va etre confirmer par le kiné prochainement.");
+                        window.setTimeout(function () {
+                            // Move to a new location or you can do something else
+                            if (jsonData.admin == 1) {
+                                window.location.href = "moncalendrier.html";
+                            } else {
+                                window.location.href = "mesrendezvous.html";
+                            }
+                        }, 2000);
+                    } else {
+                        $('#modaleMessageTitle').text("Un erreur s'est produite, veuillez contacter un administrateur.");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                }
+            });
+        }else{
+            $('#popupSingin').modal('toggle');
+        }
+    }
+
+    function writeCookie(name, value, days) {
+        var date, expires;
+        if (days) {
+            date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toGMTString();
+        } else {
+            expires = "";
+        }
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    $('#connexion').submit(function () {
+        $('#popupSingin').modal('toggle');
         $.ajax({
-            data: {idEvent: currentIdEvent, tokenPat: readCookie('session'), idMotif: currentMotif},
-            type: 'POST',
-            url: '/rdv/bookrdvfrompat',
+            data: $('#connexion').serialize(),
+            type: 'POST', // GET or POST
+            url: '/login/connexion',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                if (jsonData.status === "OK") {
-                    $('#modaleMessageTitle').text("Rendez-vous bien prit en compte. Il va etre confirmer par le kiné prochainement.");
+                $('#dialog_title_span').text(jsonData.message);
+                if (jsonData.status == "OK") {
+                    $('#modaleMessageTitle').text("Opération terminé");
+                    writeCookie("session", jsonData.token, 30);
+                    writeCookie("admin", jsonData.admin, 30);
+                    writeCookie("idAdmin", jsonData.idAdmin, 30);
                     window.setTimeout(function () {
                         // Move to a new location or you can do something else
                         if (jsonData.admin == 1) {
                             window.location.href = "moncalendrier.html";
                         } else {
-                            window.location.href = "index.html";
+                            saveRDV();
                         }
-                    }, 2000);
-                } else {
-                    $('#modaleMessageTitle').text("Un erreur s'est produite, veuillez contacter un administrateur.");
+                    }, 600);
+                }else {
+                    $('#modalMessage').modal('toggle');
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                $('#modaleMessageTitle').text("Une erreur est survenue");
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });
-    }
+        return false; // cancel original event to prevent form submitting
+    });
+
+    $('#newPassword').click(function () {
+        $('#popupSingin').modal('toggle');
+        $('#popupSingin').modal('hide');
+        $('#dialog_title_span').text("");
+        $('#modaleMessageTitle').text("Veuillez patienter");
+        $('#modalMessage').modal('toggle');
+        var email = $("#emailMdp").val();
+        $.ajax({
+            data: {email: email},
+            type: 'POST',
+            url: '/login/motdepasseoublier',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                $('#dialog_title_span').text(jsonData.message);
+                if (jsonData.status == "OK") {
+                    $('#modaleMessageTitle').text("Opération terminé");
+                }else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            }
+        });
+        return false; // cancel original event to prevent form submitting
+    });
 
 </script>
 <script>
