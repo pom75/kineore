@@ -30,7 +30,6 @@
             data: 'token=' + readCookie('session'),
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                if (jsonData.status === "OK") {
                     $('#mail').val(jsonData.email);
                     $('#num').val(jsonData.tel);
                     $('#nom').val(jsonData.nom);
@@ -38,11 +37,6 @@
                     $('#token').val(readCookie('session'));
                     $('#token3').val(readCookie('session'));
                     $('#token2').val(readCookie('session'));
-                } else {
-                    $('#modaleMessageTitle').text("Une erreur est survenue");
-                    $('#dialog_title_span').text(jsonData.message);
-                    $('#modalMessage').modal('toggle');
-                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
@@ -57,7 +51,6 @@
             data: 'token=' + readCookie('session'),
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                if (jsonData.status === "OK") {
                     $('#vitale').val(jsonData.cartevital);
                     $('#codepostal').val(jsonData.codePostal);
                     $('#convention').val(jsonData.convention);
@@ -69,11 +62,6 @@
                     $('#tarifs').val(jsonData.tarif);
                     $('#prescab').val(jsonData.pres);
                     $('#urlcab').val(jsonData.url);
-                } else {
-                    $('#modaleMessageTitle').text("Une erreur est survenue");
-                    $('#dialog_title_span').text(jsonData.message);
-                    $('#modalMessage').modal('toggle');
-                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");

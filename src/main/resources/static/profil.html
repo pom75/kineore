@@ -27,18 +27,12 @@
                 data: 'token=' + readCookie('session'),
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
-                    if (jsonData.status == "OK") {
                         $('#mail').val(jsonData.email);
                         $('#num').val(jsonData.tel);
                         $('#nom').val(jsonData.nom);
                         $('#prenom').val(jsonData.prenom);
                         $('#token').val(readCookie('session'));
                         $('#token2').val(readCookie('session'));
-                    }else {
-                        $('#modaleMessageTitle').text("Une erreur est survenue");
-                        $('#dialog_title_span').text(jsonData.message);
-                        $('#modalMessage').modal('toggle');
-                    }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");

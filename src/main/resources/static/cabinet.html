@@ -35,19 +35,15 @@
                     data: 'id=' + $_GET('id'),
                     success: function (data, textStatus, jqXHR) {
                         var jsonData = JSON.parse(data);
-                        if (jsonData.status === "OK") {
-                            $('#nomcab').text(jsonData.name);
-                            $('#addresse').html('<i class="fa fa-map-marker"> </i> ' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal);
-                            $('#pres').html(jsonData.pres.replace(/\n/g, '<br>'));
-                            $('#rest').html('<i class="fa fa-mobile-phone"></i> ' + jsonData.phone + ' <br/> <i class="fa fa-envelope-o"></i> ' + jsonData.email + '<br/> <a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : ' + jsonData.paiment + ' <br>Carte Vitale Accepté : ' + jsonData.cartevital + ' <br> Tarifs : ' + jsonData.tarif + ' <br> Conventionné : ' + jsonData.convention + '"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>');
-                            $('#popinfo').popover({
-                                container: 'body'
-                            });
-                        }else{
-                            $('#modaleMessageTitle').text("Une erreur est survenue");
-                            $('#dialog_title_span').text(jsonData.message);
-                            $('#modalMessage').modal('toggle');
-                        }
+                        $('#nomcab').text(jsonData.name);
+                        $('#addresse').html('<i class="fa fa-map-marker"> </i> ' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal);
+                        $('#pres').html(jsonData.pres.replace(/\n/g, '<br>'));
+                        $('#rest').html('<i class="fa fa-mobile-phone"></i> ' + jsonData.phone + ' <br/> <i class="fa fa-envelope-o"></i> ' + jsonData.email +'<br/>');
+                        //TODO if != null var = html
+                        $('#rest').append('<a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : ' + jsonData.paiment + ' <br>Carte Vitale Accepté : ' + jsonData.cartevital + ' <br> Tarifs : ' + jsonData.tarif + ' <br> Conventionné : ' + jsonData.convention + '"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>')
+                        $('#popinfo').popover({
+                            container: 'body'
+                        });
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
@@ -65,7 +61,7 @@
                             for (var i = 0; i < jsonData.admins.length; i++) {
                                 $('#eventMotifSelection').append("<option value=\"" + jsonData.admins[i].id + "\">" + jsonData.admins[i].nom + " " + jsonData.admins[i].prenom + "</option>");
                             }
-                        }else{
+                        } else {
                             $('#modaleMessageTitle').text("Une erreur est survenue");
                             $('#dialog_title_span').text(jsonData.message);
                             $('#modalMessage').modal('toggle');
@@ -74,7 +70,8 @@
                     error: function (jqXHR, textStatus, errorThrown) {
                         $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                         $('#modaleMessageTitle').text("Une erreur est survenue");
-                        $('#modalMessage').modal('toggle');                    }
+                        $('#modalMessage').modal('toggle');
+                    }
                 });
             } else { //from admin
                 window.location.href = ("/index.html");
