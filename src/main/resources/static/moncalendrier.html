@@ -120,16 +120,14 @@ header section -->
 
 <!-- Body Calendar -->
 
-<section class="about text-center" id="calendare">
+<section class="about text-center mb-5" id="calendare">
     <div class="container">
-        <div class="row">
             <!-- Main Title -->
             <h2>Rendez-vous</h2>
             <div class="row">
 
                 <div id='calendar'></div>
             </div>
-        </div>
     </div>
 </section>
 
@@ -240,7 +238,7 @@ header section -->
 
 <div class="modal fade" id="popupSingleEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog event-popup" role="document">
+    <div class="modal-dialog event-popup mb-5" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="eventFreeTitle"></h3>
@@ -260,11 +258,11 @@ header section -->
                                   id="commentEvent"></textarea>
                         <br>
                         <div class="float-sm-right" id="modifBlock">
-                            <button type="button" id="saveEvent" class="btn btn-secondary pull-left">Sauvegarder
+                            <button type="button" id="saveEvent" class="btn btn-secondary float-left">Sauvegarder
                             </button>
                         </div>
                         <div class="float-sm-left">
-                            <button type="button" id="suppEvent" class="btn btn-danger pull-right">Supprimer</button>
+                            <button type="button" id="suppEvent" class="btn btn-danger float-right">Supprimer</button>
                         </div>
                     </div>
                 </form>
@@ -278,7 +276,7 @@ header section -->
 
 <div class="modal fade" id="popupSingleEventWaiting" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog event-popup" role="document">
+    <div class="modal-dialog event-popup mb-5" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="eventWaitingTitle"></h3>
@@ -299,11 +297,11 @@ header section -->
                                   id="commentEventWaiting" readonly> </textarea>
                         <br>
                         <div class="float-sm-right" id="modifBlockWaiting">
-                            <button type="button" id="accepteEventWaiting" class="btn btn-secondary pull-left">Accepter
+                            <button type="button" id="accepteEventWaiting" class="btn btn-secondary float-left">Accepter
                             </button>
                         </div>
                         <div class="float-sm-left">
-                            <button type="button" id="refuseEventWaiting" class="btn btn-danger pull-right">Refuser
+                            <button type="button" id="refuseEventWaiting" class="btn btn-danger float-right">Refuser
                             </button>
                         </div>
                     </div>
@@ -317,7 +315,7 @@ header section -->
 
 <div class="modal fade" id="popupSingleEventBooked" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog event-popup" role="document">
+    <div class="modal-dialog event-popup mb-5" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="eventBookedTitle"></h3>
@@ -350,18 +348,18 @@ header section -->
                             <label class="form-check-label" for="paye">
                                 Payé
                             </label>
-                            <button type="button" id="saveEventBooked" class="btn btn-secondary float-sm-right">
+                            <button type="button" id="saveEventBooked" class="btn btn-secondary float-right">
                                 Enregistrer
                             </button>
                         </div>
                         <br>
                         <br>
                         <div class="float-sm-right" id="modifBlockBooked">
-                            <button type="button" id="cancelEventBooked" class="btn btn-secondary pull-left">Annuler
+                            <button type="button" id="cancelEventBooked" class="btn btn-secondary float-left">Annuler
                             </button>
                         </div>
                         <div class="float-sm-left">
-                            <button type="button" id="suppEventBooked" class="btn btn-danger pull-right">Supprimer
+                            <button type="button" id="suppEventBooked" class="btn btn-danger float-right">Supprimer
                             </button>
                         </div>
                     </div>
@@ -376,7 +374,7 @@ header section -->
 
 <div class="modal fade" id="popupSingleEventCanceled" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog event-popup" role="document">
+    <div class="modal-dialog event-popup mb-5" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="eventCanceledTitle"></h3>
@@ -495,7 +493,6 @@ header section -->
             plugins: ['interaction', 'dayGrid', 'timeGrid'],
             header: {
                 left: 'prev,next today',
-                center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay',
                 today: 'todaay',
                 month: 'month',
@@ -503,7 +500,6 @@ header section -->
                 day: 'day',
             },
             longPressDelay: 700,
-            titleFormat: {month: 'long', day: 'numeric'},
             fixedWeekCount: false,
             allDaySlot: false,
             slotEventOverlap: true,
@@ -514,19 +510,21 @@ header section -->
             displayEventTime: false,
             nowIndicator: true,
             buttonText: {
-                today: 'aujourd\'hui',
+                today: 'now',
                 month: 'mois',
                 week: 'semaine',
-                day: 'journée',
+                day: 'jour',
             },
-            weekNumbers: true,
+            contentHeight: "auto",
+            height: "auto",
+            weekNumbers: false,
             weekNumbersWithinDays: true,
             selectable: true,
             defaultView: 'timeGridWeek',
             navLinks: true, // can click day/week names to navigate views
             editable: true,
             displayEventEnd: true,
-            columnHeaderFormat: {weekday: 'long', month: 'numeric', day: 'numeric', omitCommas: true},
+            columnHeaderFormat: {weekday: 'short', month: 'numeric', day: 'numeric', omitCommas: true},
             firstDay: 1,
             select: function (selectionInfo) {
                 //If Month view

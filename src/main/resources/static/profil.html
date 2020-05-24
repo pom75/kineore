@@ -27,12 +27,12 @@
                 data: 'token=' + readCookie('session'),
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
-                        $('#mail').val(jsonData.email);
-                        $('#num').val(jsonData.tel);
-                        $('#nom').val(jsonData.nom);
-                        $('#prenom').val(jsonData.prenom);
-                        $('#token').val(readCookie('session'));
-                        $('#token2').val(readCookie('session'));
+                    $('#mail').val(jsonData.email);
+                    $('#num').val(jsonData.tel);
+                    $('#nom').val(jsonData.nom);
+                    $('#prenom').val(jsonData.prenom);
+                    $('#token').val(readCookie('session'));
+                    $('#token2').val(readCookie('session'));
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
@@ -41,6 +41,7 @@
                 }
             });
         }
+
         onLoad();
 
         function readCookie(name) {
@@ -87,13 +88,13 @@ header section -->
                     <a class="nav-link navbar-right active" href="#">Mon Profil</a>
                 </li>
                 <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')" href="index.html">Deconnexion</a>
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')"
+                       href="index.html">Deconnexion</a>
                 </li>
             </ul>
         </div>
     </nav>
 </header> <!-- end of header area -->
-
 
 
 <!-- Modal -->
@@ -125,18 +126,19 @@ header section -->
                 </div>
             </nav>
             <div class="tab-content justify-content-md-center" id="nav-tabContent">
-                <div class="tab-pane fade show active mt-5" id="nav-home" role="tabpanel"
+                <div class="tab-pane fade show active mt-2" id="nav-home" role="tabpanel"
                      aria-labelledby="nav-home-tab">
                     <section class="text-center">
                         <div class="container">
                             <h1 class="jumbotron-heading mb-4">Mon Profil</h1>
                             <div class="panel-body">
-                                <div class="col-sm-6">
+                                <div class="col-sm-6 mb-5">
                                     <form id="changeProfil" action="" method="post">
                                         <div class="row">
                                             <div class="col-sm text-left">
                                                 <label class="text-left">Nom</label>
-                                                <input class="form-control" id="nom" value="" style="padding:5px;width: 200px; "
+                                                <input class="form-control" id="nom" value=""
+                                                       style="padding:5px;width: 200px; "
                                                        readonly>
                                             </div>
                                             <div class="col-sm text-left">
@@ -147,7 +149,8 @@ header section -->
                                             </div>
                                             <div class="col-sm text-left">
                                                 <label>Téléphone</label>
-                                                <input class="form-control btn-group-sm" id="num"  name="num" pattern="[0][76][0-9]{8}$" style="padding:5px;width: 200px; "
+                                                <input class="form-control btn-group-sm" id="num" name="num"
+                                                       pattern="[0][76][0-9]{8}$" style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
                                             <div class="col-sm text-left">
@@ -164,21 +167,31 @@ header section -->
                                             </div>
                                             <div class="col-sm text-left">
                                                 <label>Mot de passe</label>
-                                                <input class="form-control btn-group-sm" id="mdp" name="mdp" type="password" pattern="^\S{6,}$" style="padding:5px;width: 200px; " placeholder="*********"
+                                                <input class="form-control btn-group-sm" id="mdp" name="mdp"
+                                                       type="password" pattern="^\S{6,}$"
+                                                       style="padding:5px;width: 200px; " placeholder="*********"
                                                        value="" readonly>
-                                                <small id="mdpsmall" class="form-text text-muted">6 caractères minimum.</small>
+                                                <small id="mdpsmall" class="form-text text-muted">6 caractères
+                                                    minimum.</small>
 
                                             </div>
-                                            <br>
-                                            <div class="col-sm-7 mt-5" id="modifBlock">
-                                                <button type="button" id="modif" class="btn btn-secondary pull-left">Modifier le compte</button>
+
+                                        </div>
+                                        <div class="mt-2">
+                                            <div class="col-sm-7" id="modifBlock">
+                                                <button type="button" id="modif" class="btn btn-secondary float-left">
+                                                    Modifier
+                                                </button>
                                             </div>
-                                            <div class="col-sm-7 mt-5" style="display: none" id="saveBlock">
-                                                <input type="submit"  class="form-check-input btn btn-secondary pull-left" value="Enregistrer">
+                                            <div class="col-sm-7 " style="display: none" id="saveBlock">
+                                                <input type="submit"
+                                                       class="form-check-input btn btn-secondary float-left"
+                                                       value="Enregistrer">
                                             </div>
-                                            <div class="float-sm-left mt-5" >
+                                            <div class="float-sm-right">
                                                 <button type="button" id="supp"
-                                                        class="btn btn-danger pull-left">Supprimer le compte</button>
+                                                        class="btn btn-danger float-right">Supprimer
+                                                </button>
                                             </div>
                                         </div>
                                     </form>
@@ -192,7 +205,6 @@ header section -->
         </div>
     </section>
 </main>
-
 
 
 <div class="modal fade" id="modalSupp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -219,7 +231,6 @@ header section -->
 </div>
 
 
-
 <!-- footer starts here -->
 <nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
     © 2020 Copyright
@@ -231,8 +242,8 @@ header section -->
 
 
     $('#modif').click(function () {
-        jQuery('#modifBlock').css("display","none");
-        jQuery('#saveBlock').css("display","block");
+        jQuery('#modifBlock').css("display", "none");
+        jQuery('#saveBlock').css("display", "block");
         $('#num').removeAttr('readonly');
         $('#mdp').removeAttr('readonly');
     });
@@ -253,7 +264,7 @@ header section -->
                 var jsonData = JSON.parse(data);
                 if (jsonData.status == "OK") {
                     $('#dialog_title_span').text(jsonData.message);
-                }else {
+                } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
                 }
@@ -264,8 +275,8 @@ header section -->
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });
-        jQuery('#modifBlock').css("display","block");
-        jQuery('#saveBlock').css("display","none");
+        jQuery('#modifBlock').css("display", "block");
+        jQuery('#saveBlock').css("display", "none");
         $('#num').attr('readonly', true);
         $('#mdp').attr('readonly', true);
         return false; // cancel original event to prevent form submitting
@@ -291,9 +302,9 @@ header section -->
                     delete_cookie('session');
                     $('#dialog_title_span').text(jsonData.message);
                     window.setTimeout(function () {
-                            window.location.href = "index.html";
+                        window.location.href = "index.html";
                     }, 2000);
-                }else {
+                } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
                 }

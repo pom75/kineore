@@ -30,13 +30,13 @@
             data: 'token=' + readCookie('session'),
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                    $('#mail').val(jsonData.email);
-                    $('#num').val(jsonData.tel);
-                    $('#nom').val(jsonData.nom);
-                    $('#prenom').val(jsonData.prenom);
-                    $('#token').val(readCookie('session'));
-                    $('#token3').val(readCookie('session'));
-                    $('#token2').val(readCookie('session'));
+                $('#mail').val(jsonData.email);
+                $('#num').val(jsonData.tel);
+                $('#nom').val(jsonData.nom);
+                $('#prenom').val(jsonData.prenom);
+                $('#token').val(readCookie('session'));
+                $('#token3').val(readCookie('session'));
+                $('#token2').val(readCookie('session'));
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
@@ -51,22 +51,23 @@
             data: 'token=' + readCookie('session'),
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                    $('#vitale').val(jsonData.cartevital);
-                    $('#codepostal').val(jsonData.codePostal);
-                    $('#convention').val(jsonData.convention);
-                    $('#mailcab').val(jsonData.email);
-                    $('#nomcab').val(jsonData.name);
-                    $('#rue').val(jsonData.nomRue);
-                    $('#paiement').val(jsonData.paiment);
-                    $('#numcab').val(jsonData.phone);
-                    $('#tarifs').val(jsonData.tarif);
-                    $('#prescab').val(jsonData.pres);
-                    $('#urlcab').val(jsonData.url);
+                $('#vitale').val(jsonData.cartevital);
+                $('#codepostal').val(jsonData.codePostal);
+                $('#convention').val(jsonData.convention);
+                $('#mailcab').val(jsonData.email);
+                $('#nomcab').val(jsonData.name);
+                $('#rue').val(jsonData.nomRue);
+                $('#paiement').val(jsonData.paiment);
+                $('#numcab').val(jsonData.phone);
+                $('#tarifs').val(jsonData.tarif);
+                $('#prescab').val(jsonData.pres);
+                $('#urlcab').val(jsonData.url);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                 $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');            }
+                $('#modalMessage').modal('toggle');
+            }
         });
 
 
@@ -158,7 +159,7 @@ header section -->
                 </div>
             </nav>
             <div class="tab-content justify-content-md-center" id="nav-tabContent">
-                <div class="tab-pane fade show active mt-5" id="nav-home" role="tabpanel"
+                <div class="tab-pane fade show active mt-2" id="nav-home" role="tabpanel"
                      aria-labelledby="nav-home-tab">
                     <section class="text-center">
                         <div class="container">
@@ -167,7 +168,7 @@ header section -->
                                 <div class="col-sm-6" id="mycab">
                                     <h3 class="text-left">Ajouter un nouveau patient</h3>
                                     <div class="text-left" id="addPatientz">
-                                        <button type="button" id="addPatient" class="btn btn-primary pull-left">Ajouter
+                                        <button type="button" id="addPatient" class="btn btn-primary float-left">Ajouter
                                         </button>
                                     </div>
                                     <br>
@@ -268,29 +269,29 @@ header section -->
                                                        style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
+                                        </div>
                                             <div class="float-sm-right mt-4 mb-5" id="modifBlock2">
-                                                <button type="button" id="modif2" class="btn btn-secondary pull-right">
-                                                    Modifier le compte
+                                                <button type="button" id="modif2" class="btn btn-secondary float-right">
+                                                    Modifier
                                                 </button>
                                             </div>
                                             <div class="float-sm-right mt-4 mb-5" id="saveBlock2" style="display: none">
                                                 <input type="submit" value="Enregistrer"
-                                                       class="btn btn-secondary pull-right"/>
+                                                       class="btn btn-secondary float-right"/>
                                                 </input>
                                             </div>
-                                        </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </section>
                 </div>
-                <div class="tab-pane fade " id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div class="tab-pane fade mt-2" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <section class="text-center">
                         <div class="container">
                             <h1 class="jumbotron-heading mb-4">Mon Profil</h1>
                             <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-sm-6 mb-5">
                                     <form id="changeProfil" action="" method="post">
                                         <div class="row">
                                             <div class="col-sm text-left">
@@ -308,7 +309,7 @@ header section -->
                                             <div class="col-sm text-left">
                                                 <label>Téléphone</label>
                                                 <input class="form-control btn-group-sm" id="num" name="num"
-                                                       pattern="[0][76][0-9]{8}$" style="padding:5px;width: 200px; "
+                                                       pattern="[0][1ç76][0-9]{8}$" style="padding:5px;width: 200px; "
                                                        value="" readonly>
                                             </div>
                                             <div class="col-sm text-left">
@@ -333,31 +334,32 @@ header section -->
                                                 </small>
 
                                             </div>
-                                            <br>
-                                            <div class="col-sm-7 mt-5" id="modifBlock">
-                                                <button type="button" id="modif" class="btn btn-secondary pull-left">
-                                                    Modifier le compte
-                                                </button>
-                                            </div>
-                                            <div class="col-sm-7 mt-5" id="saveBlock" style="display: none">
-                                                <input type="submit" value="Enregistrer"
-                                                       class="btn btn-secondary pull-left">
-                                            </div>
                                         </div>
-                                    </form>
-                                    <div class="float-sm-left mt-5" id="supp">
-                                        <button type="button" id="cancelEventBooked"
-                                                class="btn btn-danger pull-left">
-                                            Supprimer le compte
-                                        </button>
-                                    </div>
-                                </div>
+                                        <br>
+                                        <div class="float-sm-right " id="modifBlock">
+                                            <button type="button" id="modif"
+                                                    class="btn btn-secondary float-right">
+                                                Modifier
+                                            </button>
+                                        </div>
+                                        <div class="float-sm-right" id="saveBlock" style="display: none">
+                                            <input type="submit" value="Enregistrer"
+                                                   class="btn btn-secondary float-right">
+                                        </div>
+                                        <div class="float-sm-left" id="supp">
+                                            <button type="button" id="cancelEventBooked"
+                                                    class="btn btn-danger float-left">
+                                                Supprimer
+                                            </button>
+                                        </div>
+                                </form>
                             </div>
                         </div>
-                    </section>
                 </div>
-            </div>
-        </div>
+    </section>
+    </div>
+    </div>
+    </div>
     </section>
 </main>
 
@@ -390,7 +392,7 @@ header section -->
 
 <div class="modal fade" id="popupAddPatient" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered event-popup" role="document">
+    <div class="modal-dialog modal-dialog-centered event-popup mb-5" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Ajouter un nouveau patient</h3>
@@ -411,7 +413,7 @@ header section -->
                                oninput="setCustomValidity(this.validity.patternMismatch ? 'Numéro de téléphone incorrecte' : '')"/>
                         <br>
                         <div class="col-sm">
-                            <button type="button" id="savePatient" class="btn btn-danger pull-right">Enregistrer
+                            <button type="button" id="savePatient" class="btn btn-secondary float-right">Enregistrer
                             </button>
                         </div>
                     </div>
@@ -472,7 +474,8 @@ header section -->
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                 $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');            }
+                $('#modalMessage').modal('toggle');
+            }
         });
         jQuery('#modifBlock').css("display", "block");
         jQuery('#saveBlock').css("display", "none");
@@ -495,7 +498,8 @@ header section -->
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                 $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');            }
+                $('#modalMessage').modal('toggle');
+            }
         });
         jQuery('#modifBlock2').css("display", "block");
         jQuery('#saveBlock2').css("display", "none");
@@ -536,7 +540,8 @@ header section -->
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                 $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');            }
+                $('#modalMessage').modal('toggle');
+            }
         });
     });
 
@@ -572,7 +577,8 @@ header section -->
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                 $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');            }
+                $('#modalMessage').modal('toggle');
+            }
         });
     }
 </script>
