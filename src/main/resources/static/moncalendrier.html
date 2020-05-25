@@ -580,6 +580,7 @@ header section -->
                 }
                 if (status.toUpperCase().localeCompare("FREE") == 0) {
                     $('#namePat').val("");
+                    $('#commentEvent').val("");
                     $("#eventMotifSelection").val("default").change();
                     var motifs = data.listIdMotif.split(',');
                     $('#eventMotifSelection').empty();
