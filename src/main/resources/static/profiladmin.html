@@ -570,15 +570,17 @@ header section -->
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
                 if (jsonData.status == "OK") {
+                    $('#modaleMessageTitle').text("Opération terminé");
                     $('#namePat').val('');
                     $('#prenomPat').val('');
                     $('#telPat').val('');
+                }else{
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                 $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');
             }
         });
     }

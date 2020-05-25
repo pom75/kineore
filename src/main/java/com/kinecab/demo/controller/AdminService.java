@@ -78,7 +78,7 @@ public class AdminService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("FAIL", "Impossible d'ajouter un patient.");
+            return new Message("FAIL", "Impossible d'ajouter un admin.");
         }
     }
 
