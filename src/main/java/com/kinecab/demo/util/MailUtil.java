@@ -62,6 +62,9 @@ public class MailUtil {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     public static void sendEmail(String mail, String title, String content) throws Exception {
+        if(!mail.contains("@")){
+            throw new EmailException("Erreur avec l'email "+mail);
+        }
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("no-reply@kinecab.com"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mail));
