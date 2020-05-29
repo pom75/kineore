@@ -334,7 +334,7 @@ header section -->
                         <br/>
                         <textarea class="form-control input-lg" style="resize:none" placeholder="Information client"
                                   rows="5"
-                                  id="commentEventBooked" readonly> </textarea>
+                                  id="commentEventBooked"> </textarea>
                         <br>
 
                         <div class="form-group form-check">
@@ -1058,6 +1058,7 @@ header section -->
         $('#popupSingleEventBooked').modal('hide');
         currentEvent.event.extendedProps.data.pointe = $('#pointe').is(":checked");
         currentEvent.event.extendedProps.data.paye = $('#paye').is(":checked");
+        currentEvent.event.extendedProps.data.info = $('#commentEventBooked').val();
         changeOneEvent([createJsonEvent(currentEvent.event)]);
         calendar.getEventById(currentEvent.event.id).remove();
     });

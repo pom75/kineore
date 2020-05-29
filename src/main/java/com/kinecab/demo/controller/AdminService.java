@@ -36,7 +36,7 @@ public class AdminService {
             if (adminByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            if (nom.isEmpty() || prenom.isEmpty() || !tel.matches("[0][76][0-9]{8}$")) {
+            if (nom.isEmpty() || prenom.isEmpty() || !tel.matches("[0][7691][0-9]{8}$")) {
                 return new Message("FAIL", "Un des champ est invalide");
             } else {
                 try {
