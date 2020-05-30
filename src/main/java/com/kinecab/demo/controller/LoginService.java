@@ -83,7 +83,7 @@ public class LoginService {
                     e.printStackTrace();
                     return new Message("FAIL", "Mail déjà utilisé " + e);
                 }
-                return new Message("OK", "Inscription Réussite. Vous allez recevoir un lien d'activation de votre compte par mail. Pensez a regarder dans vos spams.");
+                return new Message("OK", "Inscription réussite. Vous allez recevoir un lien d'activation de votre compte par mail. Pensez à regarder dans vos spams.");
 
             }
         } catch (Exception e) {
@@ -184,7 +184,7 @@ public class LoginService {
             }
             person.setTel(tel);
             savePerson(person);
-            return new Message("OK", "Modifications enregistré.");
+            return new Message("OK", "Modifications enregistrées.");
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Impossible de changer le profil.");
@@ -254,7 +254,7 @@ public class LoginService {
             }
             admin.setTel(tel);
             saveAdmin(admin);
-            return new Message("OK", "Modifications enregistré.");
+            return new Message("OK", "Modifications enregistrées.");
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Impossible de changer le profil.");

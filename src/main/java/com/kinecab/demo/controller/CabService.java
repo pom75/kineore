@@ -65,7 +65,7 @@ public class CabService {
             cab.setConvention(convention);
 
             saveCab(cab);
-            return new Message("OK", "Modifications enregistré.");
+            return new Message("OK", "Modifications enregistrées.");
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Impossible de changer le Cabinet");
