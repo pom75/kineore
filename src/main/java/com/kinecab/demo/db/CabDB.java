@@ -1,7 +1,6 @@
 
 package com.kinecab.demo.db;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.kinecab.demo.db.entity.*;
@@ -25,10 +24,10 @@ public class CabDB {
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static List<Cab> getCabByAdminID(String id) {
+    public static List<Cab> getCabByColabID(String id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB_ADMIN where CAB_ADMIN.idAdmin = '" + id + "' ;");
-            return getCabByID(((CabAdmin)sqlQuery.addEntity(CabAdmin.class).list().get(0)).getIdCab());
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from COLAB where COLAB.id = '" + id + "' ;");
+            return getCabByID(((Colab)sqlQuery.addEntity(Colab.class).list().get(0)).getIdCab()+"");
         }
     }
 
@@ -39,19 +38,10 @@ public class CabDB {
         }
     }
 
-    public static List<Admin> getAdminsByIdCab(String id) {
+    public static List<Colab> getColabsByIdCab(String id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB_ADMIN where CAB_ADMIN.idCab = '" + id + "' ;");
-            List<CabAdmin> list = sqlQuery.addEntity(CabAdmin.class).list();
-            List<Admin> admins = new LinkedList<>();
-            list.forEach(cab ->{
-                NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * from ADMIN where ADMIN.id = '" + cab.getIdAdmin() + "' ;");
-                Admin admin = (Admin) sqlQuery2.addEntity(Admin.class).list().get(0);
-                admin.setPassword("");
-                admin.setEmail("");
-                admins.add(admin);
-            });
-            return admins;
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from COLAB where COLAB.idCab = '" + id + "' ;");
+            return sqlQuery.addEntity(Colab.class).list();
         }
     }
 
@@ -63,13 +53,6 @@ public class CabDB {
         }
     }
 
-    public static void saveCabAdmin(CabAdmin person) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction trx = session.beginTransaction();
-            session.saveOrUpdate(person);
-            trx.commit();
-        }
-    }
 
     public static List<Cab> getCabByUrl(String url) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -86,8 +69,8 @@ public class CabDB {
         }
     }
 
-    public static void addCabPersonIfNotPresent(int idPerson,int idAdmin) {
-        Cab cab = getCabByAdminID(idAdmin+"").get(0);
+    public static void addCabPersonIfNotPresent(int idPerson,int idColab) {
+        Cab cab = getCabByColabID(idColab+"").get(0);
         CabPerson cabPerson = new CabPerson(cab.getId(),idPerson);
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + cab.getId() + "' AND CAB_PERSON.idPerson = '" + idPerson + "';");
@@ -95,13 +78,6 @@ public class CabDB {
             if(cabPersons.isEmpty()){
                 saveCabPerson(cabPerson);
             }
-        }
-    }
-
-    public static List<CabAdmin> getCab() {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB_ADMIN ;");
-            return sqlQuery.addEntity(CabAdmin.class).list();
         }
     }
 

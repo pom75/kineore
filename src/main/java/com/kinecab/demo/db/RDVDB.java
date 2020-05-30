@@ -91,13 +91,13 @@ public class RDVDB {
         }
     }
 
-    public static List<MotifCab> getMotifByIdAdmin(int id) {
+    public static List<MotifCab> getMotifByIdColab(int id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_ADMIN WHERE  MOTIF_ADMIN.idAdmin = '" + id + "';");
-            List<MotifAdmin> list = sqlQuery.addEntity(MotifAdmin.class).list();
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_COLAB WHERE  MOTIF_COLAB.idColab = '" + id + "';");
+            List<MotifColab> list = sqlQuery.addEntity(MotifColab.class).list();
             List<MotifCab> motifCabs = new LinkedList<>();
-            list.forEach(motifAdmin -> {
-                NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + motifAdmin.getIdMotifCab() + "';");
+            list.forEach(motifColab -> {
+                NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + motifColab.getIdMotifCab() + "';");
                 motifCabs.add((MotifCab) sqlQuery2.addEntity(MotifCab.class).list().get(0));
             });
             return motifCabs;

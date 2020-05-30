@@ -61,6 +61,18 @@ public class AdminDB {
         return token.getToken();
     }
 
+    public static List<Colab> getColabByToken(String token) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "';");
+            List<Token> list = sqlQuery.addEntity(Token.class).list();
+            if (!list.isEmpty()) {
+                sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idAdmin = '" + list.get(0).getId() + "';");
+                return sqlQuery.addEntity(Colab.class).list();
+            }
+            return Collections.emptyList();
+        }
+    }
+
     public static List<Admin> getAdminByToken(String token) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "';");
@@ -73,10 +85,10 @@ public class AdminDB {
         }
     }
 
-    public static List<Admin> getAdmins() {
+    public static List<Colab> getColabs() {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from ADMIN ;");
-                return sqlQuery.addEntity(Admin.class).list();
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from COLAB ;");
+                return sqlQuery.addEntity(Colab.class).list();
             }
         }
 
@@ -87,13 +99,10 @@ public class AdminDB {
         }
     }
 
-    public static List<Person> getPersonByIdAdmin(int IdAdmin) {
+    public static List<Person> getPersonByIdCab(int idCab) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<Person> people = new ArrayList<>();
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_ADMIN WHERE CAB_ADMIN.idAdmin = '" + IdAdmin + "';");
-            final CabAdmin cabAdmin = (CabAdmin) sqlQuery.addEntity(CabAdmin.class).list().get(0); //TODO one admin in multiple cab
-
-            sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + cabAdmin.getIdCab() + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + idCab + "';");
             List<CabPerson> cabPerson = (List<CabPerson>) sqlQuery.addEntity(CabPerson.class).list();
 
             cabPerson.stream().forEach(person -> {

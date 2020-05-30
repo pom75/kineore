@@ -55,8 +55,6 @@ public class Cab {
     @Column
     private String convention;
 
-    @Column
-    private String adminID;
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Constructors
@@ -77,7 +75,6 @@ public class Cab {
         this.cartevital = cartevital;
         this.tarif = tarif;
         this.convention = convention;
-        this.adminID = adminID;
         this.ville = ville;
     }
 
@@ -91,14 +88,6 @@ public class Cab {
 
     public void setVille(String ville) {
         this.ville = ville;
-    }
-
-    public String getAdminID() {
-        return adminID;
-    }
-
-    public void setAdminID(String adminID) {
-        this.adminID = adminID;
     }
 
     public int getId() {

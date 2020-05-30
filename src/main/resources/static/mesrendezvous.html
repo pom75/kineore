@@ -161,8 +161,8 @@ header section -->
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
-                    for (var i = 0; i < jsonData.admins.length; i++) {
-                        idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
+                    for (var i = 0; i < jsonData.colabs.length; i++) {
+                        idAdminMap[jsonData.colabs[i].id] = jsonData.colabs[i];
                     }
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
@@ -223,15 +223,15 @@ header section -->
         listEvent.forEach(event => {
             if (moment(event.start) > moment() && event.status === "WAITING") {
                 waiting = 1;
-                $('#waitRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #FFD17D"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p>Nom du praticien: ' + idAdminMap[event.idAdmin].nom + ' ' + idAdminMap[event.idAdmin].prenom + '</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
+                $('#waitRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #FFD17D"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p>Nom du praticien: ' + idAdminMap[event.idAdmin].name + '</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
             }
             if (moment(event.start) > moment() && event.status === "BOOKED") {
                 bookedF = 1;
-                $('#nextRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #C9F5FF"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p>Nom du praticien: ' + idAdminMap[event.idAdmin].nom + ' ' + idAdminMap[event.idAdmin].prenom + '</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
+                $('#nextRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #C9F5FF"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p>Nom du praticien: ' + idAdminMap[event.idAdmin].name + '</p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </a>');
             }
             if (moment(event.start) < moment() && event.status === "BOOKED") {
                 bookedP = 1;
-                $('#passedRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #5EC5F7"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p>Nom du praticien: ' + idAdminMap[event.idAdmin].nom + ' ' + idAdminMap[event.idAdmin].prenom + '</p> <div class="float-sm-right" > </div> </a>');
+                $('#passedRDV').append('<a href="#" class="list-group-item list-group-item-action mb-3" style="background-color: #5EC5F7"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p>Nom du praticien: ' + idAdminMap[event.idAdmin].name + '</p> <div class="float-sm-right" > </div> </a>');
             }
         });
         if (waiting === 0) {

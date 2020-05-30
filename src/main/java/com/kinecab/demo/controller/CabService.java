@@ -3,14 +3,14 @@ package com.kinecab.demo.controller;
 
 import java.util.List;
 
-import static com.kinecab.demo.db.AdminDB.getAdminByToken;
+import static com.kinecab.demo.db.AdminDB.getColabByToken;
 import static com.kinecab.demo.db.CabDB.*;
 import static com.kinecab.demo.db.RDVDB.getMotif;
 
-import com.kinecab.demo.db.entity.Admin;
 import com.kinecab.demo.db.entity.Cab;
+import com.kinecab.demo.db.entity.Colab;
 import com.kinecab.demo.db.entity.MotifCab;
-import com.kinecab.demo.json.GetAdmin;
+import com.kinecab.demo.json.GetColab;
 import com.kinecab.demo.json.GetMotif;
 import com.kinecab.demo.json.Message;
 
@@ -43,11 +43,11 @@ public class CabService {
         @RequestParam("tarifs") String tarifs,
         @RequestParam("convention") String convention) {
         try {
-            List<Admin> adminByToken = getAdminByToken(token);
-            if (adminByToken.isEmpty()) {
+            List<Colab> colabByToken = getColabByToken(token);
+            if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide.");
             }
-            List<Cab> cabByAdminID = getCabByAdminID(String.valueOf(adminByToken.get(0).getId()));
+            List<Cab> cabByAdminID = getCabByColabID(String.valueOf(colabByToken.get(0).getId()));
             if (cabByAdminID.isEmpty()) {
                 return new Message("FAIL", "Pas de Cabinet a ce nom.");
             }
@@ -76,11 +76,11 @@ public class CabService {
     @PostMapping(value = "/cab/getcabprofil", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Cab getCabProfil(@RequestParam("token") String token) {
-        List<Admin> adminByToken = getAdminByToken(token);
-        if (adminByToken.isEmpty()) {
+        List<Colab> colabByToken = getColabByToken(token);
+        if (colabByToken.isEmpty()) {
             return null;
         }
-        return getCabByAdminID(String.valueOf(adminByToken.get(0).getId())).get(0);
+        return getCabByColabID(String.valueOf(colabByToken.get(0).getId())).get(0);
     }
 
     @PostMapping(value = "/cab/getcabid", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -102,11 +102,11 @@ public class CabService {
     @ResponseBody
     public Message getAdminsCab(@RequestParam("id") String id) {
         try {
-            List<Admin> admins = getAdminsByIdCab(id.replace("#",""));
-            if (admins.isEmpty()) {
+            List<Colab> colabs = getColabsByIdCab(id.replace("#",""));
+            if (colabs.isEmpty()) {
                 return null;
             }
-            return new GetAdmin("OK", "RAS", admins);
+            return new GetColab("OK", "RAS", colabs);
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Une erreur s'est produite.");

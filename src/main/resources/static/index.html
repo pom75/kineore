@@ -46,8 +46,6 @@
         }
     }
 
-    var idAdminMap = {};
-    var mapIdAdminIdCab;
 
     function getAdmin() {
         $.ajax({
@@ -57,15 +55,13 @@
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
-                    mapIdAdminIdCab = jsonData.mapIdAdminIdCab;
                     var idName = [];
-                    for (var i = 0; i < jsonData.admins.length; i++) {
-                        idAdminMap[jsonData.admins[i].id] = jsonData.admins[i];
+                    for (var i = 0; i < jsonData.colabs.length; i++) {
                         var obj = {};
                         var value = "value";
                         var label = "label";
-                        obj[value] = jsonData.admins[i].id;
-                        obj[label] = jsonData.admins[i].nom + " " + jsonData.admins[i].prenom;
+                        obj[value] = jsonData.colabs[i].idCab;
+                        obj[label] = jsonData.colabs[i].name;
                         idName.push(obj);
                     }
                     $('#nameKine').autocomplete({
@@ -162,7 +158,7 @@ header section -->
 <script>
     $("#gotordv").click(function () {
         if ($('#nameKine').attr("name") != null) {
-            window.location.href = ("/cabinet.html?id=" + mapIdAdminIdCab[$('#nameKine').attr("name")]);
+            window.location.href = ("/cabinet.html?id=" + $('#nameKine').attr("name"));
         }
     });
 

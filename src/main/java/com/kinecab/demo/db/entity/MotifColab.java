@@ -5,8 +5,8 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "MOTIF_ADMIN")
-public class MotifAdmin {
+@Table(name = "MOTIF_COLAB")
+public class MotifColab {
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Instance fields
@@ -16,17 +16,17 @@ public class MotifAdmin {
     private int id;
 
     @Column
-    private int idAdmin;
+    private int idColab;
 
     @Column
     private int idMotifCab;
 
-    public MotifAdmin(int idAdmin,int idMotifCab) {
-        this.idAdmin=idAdmin;
+    public MotifColab(int idAdmin, int idMotifCab) {
+        this.idColab=idAdmin;
         this.idMotifCab = idMotifCab;
     }
 
-    public MotifAdmin() {
+    public MotifColab() {
     }
 
     public int getId() {
@@ -38,11 +38,11 @@ public class MotifAdmin {
     }
 
     public int getIdAdmin() {
-        return idAdmin;
+        return idColab;
     }
 
-    public void setIdAdmin(int idAdmin) {
-        this.idAdmin = idAdmin;
+    public void setIdAdmin(int idColab) {
+        this.idColab = idColab;
     }
 
     public int getIdMotifCab() {

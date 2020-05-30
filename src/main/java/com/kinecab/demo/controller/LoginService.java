@@ -69,7 +69,7 @@ public class LoginService {
                                @RequestParam("tel") String tel,
                                @RequestParam("password") String password) {
         try {
-            if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || !validateEmailStandard(email) || !tel.matches("[0][76][0-9]{8}$") || (password.length() < 6)) {
+            if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || !validateEmailStandard(email) || !tel.matches("[0][12345679][0-9]{8}$") || (password.length() < 6)) {
                 return new Message("FAIL", "Un des champ est invalide");
             } else {
                 if (!getPersonByEmail(email).isEmpty()) {
@@ -171,7 +171,7 @@ public class LoginService {
             if (personByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide.");
             }
-            if (tel.isEmpty() || !tel.matches("[0][7196][0-9]{8}$")) {
+            if (tel.isEmpty() || !tel.matches("[0][12345679][0-9]{8}$")) {
                 return new Message("FAIL", "Numéro de téléphone invalide.");
             }
             if ((mdp.length() >= 1) && (mdp.length() < 6)) {
@@ -241,7 +241,7 @@ public class LoginService {
             if (adminByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide.");
             }
-            if (tel.isEmpty() || !tel.matches("[0][7196][0-9]{8}$")) {
+            if (tel.isEmpty() || !tel.matches("[0][12345679][0-9]{8}$")) {
                 return new Message("FAIL", "Numéro de téléphone invalide.");
             }
             if ((mdp.length() >= 1) && (mdp.length() < 6)) {

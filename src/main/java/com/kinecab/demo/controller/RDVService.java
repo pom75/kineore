@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.mail.SendFailedException;
-
 import static com.kinecab.demo.db.AdminDB.*;
 import static com.kinecab.demo.db.PatientDB.getPatientById;
 import static com.kinecab.demo.util.MailUtil.*;
@@ -42,11 +40,11 @@ public class RDVService {
     public Message addEvent(@RequestParam("events") String events,
                             @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Admin> adminByToken = getAdminByToken(tokenAdmin);
-            if (adminByToken.isEmpty()) {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(adminByToken.get(0).getId(), new JSONArray(events));
+            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.get(0).getId(), new JSONArray(events));
             RDVDB.saveRDVs(rdvs);
             final Set<Integer> collect = rdvs.stream().map(Event::getId).collect(Collectors.toSet());
             return new BookRdv("OK", "RAS", collect);
@@ -61,11 +59,11 @@ public class RDVService {
     public Message changeOneEvent(@RequestParam("events") String events,
                                   @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Admin> adminByToken = getAdminByToken(tokenAdmin);
-            if (adminByToken.isEmpty()) {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            Event rdv = RDVDB.rdvJsonToRdvs(adminByToken.get(0).getId(), new JSONArray(events)).get(0);
+            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.get(0).getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
                 RDVDB.saveRDV(rdv);
@@ -86,11 +84,11 @@ public class RDVService {
                                    @RequestParam String status,
                                    @RequestParam String idPat) {
         try {
-            List<Admin> adminByToken = getAdminByToken(tokenAdmin);
-            if (adminByToken.isEmpty()) {
+            List<Colab> ColabByToken = getColabByToken(tokenAdmin);
+            if (ColabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            Event rdv = RDVDB.rdvJsonToRdvs(adminByToken.get(0).getId(), new JSONArray(events)).get(0);
+            Event rdv = RDVDB.rdvJsonToRdvs(ColabByToken.get(0).getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
                 RDVDB.saveRDV(rdv);
@@ -129,11 +127,11 @@ public class RDVService {
                           @RequestParam("end") String end,
                           @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Admin> adminByToken = getAdminByToken(tokenAdmin);
-            if (adminByToken.isEmpty()) {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<Event> rdvs = RDVDB.getRdvByTime(start, end, adminByToken.get(0).getId());
+            final List<Event> rdvs = RDVDB.getRdvByTime(start, end, colabByToken.get(0).getId());
             return new GetRDV("OK", "RAS", rdvs);
         } catch (Exception e) {
             e.printStackTrace();
@@ -171,11 +169,11 @@ public class RDVService {
     public Message removeRDV(@RequestParam("idEvents") String idEvents,
                              @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Admin> adminByToken = getAdminByToken(tokenAdmin);
-            if (adminByToken.isEmpty()) {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            RDVDB.removeRdvByIds(new JSONArray(idEvents), adminByToken.get(0).getId());
+            RDVDB.removeRdvByIds(new JSONArray(idEvents), colabByToken.get(0).getId());
             return new Message("OK", "Evenement supprimé");
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,11 +186,11 @@ public class RDVService {
     @ResponseBody
     public Message getMotif(@RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Admin> adminByToken = getAdminByToken(tokenAdmin);
-            if (adminByToken.isEmpty()) {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdAdmin(adminByToken.get(0).getId());
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(colabByToken.get(0).getId());
             return new GetMotif("OK", "RAS", motifByIdAdmin);
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,7 +202,7 @@ public class RDVService {
     @ResponseBody
     public Message getMotifId(@RequestParam("idAdmin") String idAdmin) {
         try {
-            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdAdmin(Integer.parseInt(idAdmin.replace("#", "")));
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(Integer.parseInt(idAdmin.replace("#", "")));
             return new GetMotif("OK", "RAS", motifByIdAdmin);
         } catch (Exception e) {
             e.printStackTrace();
@@ -216,11 +214,11 @@ public class RDVService {
     @ResponseBody
     public Message getPersonIdAdmin(@RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Admin> adminByToken = getAdminByToken(tokenAdmin);
-            if (adminByToken.isEmpty()) {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<Person> people = getPersonByIdAdmin(adminByToken.get(0).getId());
+            final List<Person> people = getPersonByIdCab(colabByToken.get(0).getIdCab());
             return new GetPerson("OK", "RAS", people);
         } catch (Exception e) {
             e.printStackTrace();
@@ -247,8 +245,8 @@ public class RDVService {
             curentEvent.setStatus(Status.WAITING);
             curentEvent.setIdPatient(person.getId());
             curentEvent.setNomPrenom(person.getNom() + " " + person.getPrenom());
-            RDVDB.saveRDVs(Collections.singletonList(curentEvent));
             CabDB.addCabPersonIfNotPresent(person.getId(), curentEvent.getIdAdmin());
+            RDVDB.saveRDVs(Collections.singletonList(curentEvent));
             sendEmail(person.getEmail(), TOOK_TITLE, TOOK_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(curentEvent.getStart())));
             //TODO controle now + 1 month
             return new Message("OK", "RAS");

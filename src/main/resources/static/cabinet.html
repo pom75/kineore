@@ -58,8 +58,8 @@
                     success: function (data, textStatus, jqXHR) {
                         var jsonData = JSON.parse(data);
                         if (jsonData.status === "OK") {
-                            for (var i = 0; i < jsonData.admins.length; i++) {
-                                $('#eventMotifSelection').append("<option value=\"" + jsonData.admins[i].id + "\">" + jsonData.admins[i].nom + " " + jsonData.admins[i].prenom + "</option>");
+                            for (var i = 0; i < jsonData.colabs.length; i++) {
+                                $('#eventMotifSelection').append("<option value=\"" + jsonData.colabs[i].id + "\">" + jsonData.colabs[i].name  +"</option>");
                             }
                         } else {
                             $('#modaleMessageTitle').text("Une erreur est survenue");
@@ -168,17 +168,17 @@ header section -->
                                         <!-- Wrapper for slides -->
                                         <div class="carousel-inner" role="listbox">
                                             <div class="item active">
-                                                <img src="/img/slide-one.jpg" alt="...">
+                                                <img src="" alt="...">
                                                 <div class="carousel-caption">
                                                 </div>
                                             </div>
                                             <div class="item">
-                                                <img src="/img/slide-two.jpg" alt="...">
+                                                <img src="" alt="...">
                                                 <div class="carousel-caption">
                                                 </div>
                                             </div>
                                             <div class="item">
-                                                <img src="/img/slide-three.jpg" alt="...">
+                                                <img src="" alt="...">
                                                 <div class="carousel-caption">
                                                 </div>
                                             </div>
