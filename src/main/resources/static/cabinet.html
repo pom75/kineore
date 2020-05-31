@@ -14,11 +14,15 @@
     <script src="js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script>
+        function isEmptyOrSpaces(str){
+            return str === null || str.match(/^ *$/) !== null ;
+        }
+
         window.onload = redirect;
 
         function onLoad() {
             if (readCookie('admin') === "1") {
-                $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="moncalendrier.html">Mon Calendrier</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Gestion Du Calendrier</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right active" href="#">Mon Compte</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="#">Deconnexion</a></li></ul>');
+                $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="moncalendrier.html">Mon Calendrier</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Gestion Du Calendrier</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right active" href="profiladmin.html">Mon Compte</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="#">Deconnexion</a></li></ul>');
             } else if (readCookie('session') != '') {
                 $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="index.html">Deconnexion</a></li></ul>');
             } else {
@@ -36,11 +40,38 @@
                     success: function (data, textStatus, jqXHR) {
                         var jsonData = JSON.parse(data);
                         $('#nomcab').text(jsonData.name);
-                        $('#addresse').html('<i class="fa fa-map-marker"> </i> ' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal);
+                        var add1 ='';
+                        if(!isEmptyOrSpaces(jsonData.nomRue) || !isEmptyOrSpaces(jsonData.ville) || !isEmptyOrSpaces(jsonData.codePostal)){
+                            add1 = '<i class="fa fa-map-marker"> </i> ' + jsonData.nomRue + ' <br> ' + jsonData.ville + ', ' + jsonData.codePostal;
+                        }
+                        $('#adresse').html(add1);
                         $('#pres').html(jsonData.pres.replace(/\n/g, '<br>'));
-                        $('#rest').html('<i class="fa fa-mobile-phone"></i> ' + jsonData.phone + ' <br/> <i class="fa fa-envelope-o"></i> ' + jsonData.email +'<br/>');
-                        //TODO if != null var = html
-                        $('#rest').append('<a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="Moyen de paiment : ' + jsonData.paiment + ' <br>Carte Vitale Accepté : ' + jsonData.cartevital + ' <br> Tarifs : ' + jsonData.tarif + ' <br> Conventionné : ' + jsonData.convention + '"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>')
+                        var phone='';
+                        if(!isEmptyOrSpaces(jsonData.phone)){
+                            phone = ' <i class="fa fa-mobile-phone"></i> ' + jsonData.phone + ' <br/> ';
+                        }
+                        var email='';
+                        if(!isEmptyOrSpaces(jsonData.email)){
+                            email =' <i class="fa fa-envelope-o"></i> ' + jsonData.email +'<br/>'
+                        }
+                        $('#rest').html(phone+email);
+                        var paiment='';
+                        if(!isEmptyOrSpaces(jsonData.paiment)){
+                            paiment = 'Moyen de paiment : ' + jsonData.paiment;
+                        }
+                        var carteVita='';
+                        if(!isEmptyOrSpaces(jsonData.cartevital)){
+                            carteVita = '<br>Carte Vitale Accepté : ' + jsonData.cartevital;
+                        }
+                        var tarrif='';
+                        if(!isEmptyOrSpaces(jsonData.tarif)){
+                            tarrif = '<br>Tarifs : ' + jsonData.tarif;
+                        }
+                        var conv='';
+                        if(!isEmptyOrSpaces(jsonData.convention)){
+                            conv = '<br>Conventionné : ' + jsonData.convention;
+                        }
+                        $('#rest').append('<a href="#" id="popinfo" data-container="body" data-toggle="popover"data-placement="bottom" data-html="true" data-content="' + paiment + ' ' +carteVita+ '' + tarrif + ' ' + conv+ '"> <i class="fa fa-info-circle"></i> Plus d\'infos </a>')
                         $('#popinfo').popover({
                             container: 'body'
                         });

@@ -62,6 +62,7 @@
                 $('#tarifs').val(jsonData.tarif);
                 $('#prescab').val(jsonData.pres);
                 $('#urlcab').val(jsonData.url);
+                $('#urcabsamll').html('<a href="https://www.kinecab.com/cab/'+jsonData.url+'">http://www.kinecab.com/cab/<b>'+jsonData.url+'</b></a>');
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
@@ -191,7 +192,6 @@ header section -->
                                                        style="padding:5px;width: 200px; "
                                                        readonly>
                                                 <small id="urcabsamll" class="form-text text-muted">
-                                                    http://www.kinecab.com/cab/<b>monCabinet</b>
                                                 </small>
                                             </div>
                                             <div class="col-sm text-left mb-3">

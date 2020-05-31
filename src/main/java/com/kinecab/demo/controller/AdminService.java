@@ -50,7 +50,6 @@ public class AdminService {
             } else {
                 try {
                     Person person;
-                    System.out.println(mail);
                     if (!Strings.isNullOrEmpty(mail) && !emailExist(mail)) {
                         person = new Person(nom, prenom, mail, tel);
                     } else {
