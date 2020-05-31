@@ -207,6 +207,7 @@ public class LoginService {
                 return new Message("FAIL", "Mot de passe incorrecte.");
             }
             removeToken(new Token(people.get(0).getId(), token, "0"));
+            //TODO remove cab persone
             removePerson(people.get(0));
             return new Message("OK", "Compte supprimé.");
         } catch (Exception e) {
