@@ -407,10 +407,13 @@ header section -->
                                required=""
                                oninput="setCustomValidity(this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
                         <br>
-                        <input type="tel" id="telPat" class="form-control" name="tel" id="tel"
+                        <input type="tel" id="telPat" class="form-control" name="tel"
                                pattern="[0][12345679][0-9]{8}$"
                                placeholder="Téléphone : ex 0637849203" required="" autofocus=""
                                oninput="setCustomValidity(this.validity.patternMismatch ? 'Numéro de téléphone incorrecte' : '')"/>
+                        <br>
+                        <input type="email" id="mailPat" class="form-control" name="email"
+                               placeholder="email"  autofocus=""/>
                         <br>
                         <div class="col-sm">
                             <button type="button" id="savePatient" class="btn btn-secondary float-right">Enregistrer
@@ -555,15 +558,15 @@ header section -->
     });
 
     $("#savePatient").click(function (e) {
-        addPatient($('#namePat').val(), $('#prenomPat').val(), $('#telPat').val())
+        addPatient($('#namePat').val(), $('#prenomPat').val(), $('#telPat').val(),$('#mailPat').val())
     });
 
-    function addPatient(nom, prenom, tel) {
+    function addPatient(nom, prenom, tel, mail) {
         $('#popupAddPatient').modal('hide');
         $('#dialog_title_span').text("");
         $('#modalMessage').modal('toggle');
         $.ajax({
-            data: {nom: nom, prenom: prenom, tel: tel, tokenAdmin: readCookie('session')},
+            data: {nom: nom, prenom: prenom, tel: tel,mail: mail, tokenAdmin: readCookie('session')},
             type: 'POST',
             url: '/admin/addpatient',
             success: function (data, textStatus, jqXHR) {

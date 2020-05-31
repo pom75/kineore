@@ -22,10 +22,17 @@ public class PatientDB {
     }
 
     public static Person getPatientById(String id) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.id = '" + id + "';");
-                return (Person) sqlQuery.addEntity(Person.class).list().get(0);
-            }
+            return (Person) sqlQuery.addEntity(Person.class).list().get(0);
         }
+    }
+
+    public static boolean emailExist(String email) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.email = '" + email + "';");
+            return  !sqlQuery.addEntity(Person.class).list().isEmpty();
+        }
+    }
 
 }
