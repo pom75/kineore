@@ -375,7 +375,8 @@ header section -->
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
                     if (jsonData.status === "OK") {
-                        $('#modaleMessageTitle').text("Rendez-vous bien prit en compte. Il va etre confirmer par le kiné prochainement.");
+                        $('#modaleMessageTitle').text("Merci");
+                        $('#dialog_title_span').text("Le rendez-vous à bien pris en compte. Il va etre confirmé par le praticien prochainement.");
                         window.setTimeout(function () {
                             // Move to a new location or you can do something else
                             if (jsonData.admin == 1) {
@@ -383,7 +384,7 @@ header section -->
                             } else {
                                 window.location.href = "mesrendezvous.html";
                             }
-                        }, 2000);
+                        }, 4000);
                     } else {
                         $('#modaleMessageTitle').text("Un erreur s'est produite, veuillez contacter un administrateur.");
                     }
