@@ -22,6 +22,7 @@ import com.kinecab.demo.json.Message;
 
 import static com.kinecab.demo.util.MailUtil.*;
 
+import com.kinecab.demo.util.MailUtil;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import org.springframework.http.MediaType;
@@ -134,6 +135,7 @@ public class LoginService {
                 person.setCryptedPassword(personTemp.getPassword());
                 savePerson(person);
                 deletePersonTemp(personTemp);
+                MailUtil.sendEmail(person.getEmail(),NEW_C_PERSON_TITLE,NEW_C_PERSON_CONTENT);
                 return new Message("OK", "Votre compte a été validé, vous pouvez maintenant vous connecter.");
             }
             return new Message("FAIL", "Token invalide.");

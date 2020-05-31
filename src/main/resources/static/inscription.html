@@ -162,6 +162,7 @@ header section -->
             url: '/login/inscription',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
+                $('#modaleMessageTitle').text("Merci pour votre inscription.");
                 $('#dialog_title_span').text(jsonData.message);
                 if (jsonData.status == "OK") {
                     window.setTimeout(function () {
@@ -169,7 +170,7 @@ header section -->
                         // Move to a new location or you can do something else
                         window.location.href = "index.html";
 
-                    }, 5000);
+                    }, 7000);
                 } else {
                     window.setTimeout(function () {
 
@@ -180,6 +181,7 @@ header section -->
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                $('#modaleMessageTitle').text("Un erreur s'est produite");
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
             }
         });

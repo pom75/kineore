@@ -21,7 +21,7 @@ public class MailUtil {
     public static final String CHANGE_PASSWORD_CONTENT = "Bonjour,\n\n Suite à une demande de changement de votre mot de passe,\n voici votre nouveau mot de passe : xxx\n\n Cordialement,\n Votre Service Client KineCab";
     public static final String NEW_PERSON_TITLE = "Bienvenue sur KineCab !";
     public static final String NEW_PERSON_CONTENT =
-        "Bonjour,\n Pour activer votre compte KineCab, veuillez cliquer sur le lien qui suit : http://kinecab.com/login/confirme?token=xxx \n\n Cordialement,\n Votre Service Client KineCab ";
+        "Bonjour,\n Pour activer votre compte KineCab, veuillez cliquer sur le lien qui suit : https://kinecab.com/login/confirme?token=xxx \n\n Cordialement,\n Votre Service Client KineCab ";
     public static final String CANCEL_TITLE = "KineCab - Confirmation d'annulation";
     public static final String CANCEL_CONTENT =
             "Bonjour,\n Votre rendez-vous du xxx à bien été annulé.\n\n Cordialement,\n Votre Service Client KineCab ";
@@ -37,7 +37,9 @@ public class MailUtil {
     public static final String CANCELED_TITLE = "KineCab - Rendez-vous annulé";
     public static final String CANCELED_CONTENT =
             "Bonjour,\n Votre rendez-vous du xxx vient d'etre annulé par le praticien.\n\n Cordialement,\n Votre Service Client KineCab ";
-
+    public static final String NEW_C_PERSON_TITLE = "Bienvenue sur KineCab !";
+    public static final String NEW_C_PERSON_CONTENT =
+            "Bonjour,\n Votre inscription a été confirmé, vous pouvez dèsàa présent vous connecter. \n\n Cordialement,\n Votre Service Client KineCab ";
 
     static {
         final String username = "no-reply@kinecab.com";
