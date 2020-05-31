@@ -39,8 +39,14 @@ public class AdminService {
             if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            if (nom.isEmpty() || prenom.isEmpty() || !tel.matches("[0][12345679][0-9]{8}$")) {
-                return new Message("FAIL", "Un des champ est invalide");
+            if (nom.isEmpty()) {
+                return new Message("FAIL", "Le nom du patient est vide.");
+            }
+            if (prenom.isEmpty()) {
+                return new Message("FAIL", "Le prenom du patient est vide");
+            }
+            if (!tel.matches("[0][12345679][0-9]{8}$")) {
+                return new Message("FAIL", "L'email du patient est invalide");
             } else {
                 try {
                     Person person;
