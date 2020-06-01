@@ -29,7 +29,8 @@ import static com.kinecab.demo.util.MailUtil.*;
 
 @Controller
 public class RDVService {
-    public static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final SimpleDateFormat FORMAT_RDV = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final SimpleDateFormat FORMAT_MAIL= new SimpleDateFormat("EEEE dd MMMM yyyy à HH:mm",Locale.FRANCE);
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
@@ -97,13 +98,13 @@ public class RDVService {
                         case "BOOKED"://TODO ADD from Admin warninig fake email
                             break;
                         case "ACCEPTE":
-                            sendEmail(getPatientById(idPat).getEmail(), ACCEPTE_TITLE, ACCEPTE_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rdv.getStart())));
+                            sendEmail(getPatientById(idPat).getEmail(), ACCEPTE_TITLE, ACCEPTE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
                             break;
                         case "REFUSE":
-                            sendEmail(getPatientById(idPat).getEmail(), REFUSE_TITLE, REFUSE_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rdv.getStart())));
+                            sendEmail(getPatientById(idPat).getEmail(), REFUSE_TITLE, REFUSE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
                             break;
                         case "CANCEL":
-                            sendEmail(getPatientById(idPat).getEmail(), CANCELED_TITLE, CANCELED_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rdv.getStart())));
+                            sendEmail(getPatientById(idPat).getEmail(), CANCELED_TITLE, CANCELED_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
                             break;
                     }
                 }catch (EmailException exception){
@@ -157,11 +158,11 @@ public class RDVService {
     private String getEnd() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 1);
-        return FORMAT.format(cal.getTime());
+        return FORMAT_RDV.format(cal.getTime());
     }
 
     private String getStart() {
-        return FORMAT.format(new Date());
+        return FORMAT_RDV.format(new Date());
     }
 
     @PostMapping(value = "/rdv/removerdv", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -247,7 +248,7 @@ public class RDVService {
             curentEvent.setNomPrenom(person.getNom() + " " + person.getPrenom());
             CabDB.addCabPersonIfNotPresent(person.getId(), curentEvent.getIdAdmin());
             RDVDB.saveRDVs(Collections.singletonList(curentEvent));
-            sendEmail(person.getEmail(), TOOK_TITLE, TOOK_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(curentEvent.getStart())));
+            sendEmail(person.getEmail(), TOOK_TITLE, TOOK_CONTENT.replace("xxx", FORMAT_MAIL.format(curentEvent.getStart())));
             //TODO controle now + 1 month
             return new Message("OK", "RAS");
         } catch (Exception e) {
@@ -281,7 +282,7 @@ public class RDVService {
                 rdv.setStatus(Status.CANCELED);
                 RDVDB.saveRDVs(Collections.singletonList(rdv));
                 RDVDB.saveRDVs(Collections.singletonList(new Event(rdv)));
-                sendEmail(person.getEmail(), CANCEL_TITLE, CANCEL_CONTENT.replace("xxx", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rdv.getStart())));
+                sendEmail(person.getEmail(), CANCEL_TITLE, CANCEL_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
                 return new Message("OK", "RAS");
             } else {
                 return new Message("FAIL", "Impossible d'annuler le rendez-vous. Veuillez contacter votre praticien");

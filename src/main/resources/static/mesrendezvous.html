@@ -223,15 +223,15 @@ header section -->
         listEvent.forEach(event => {
             if (moment(event.start) > moment() && event.status === "WAITING") {
                 waiting = 1;
-                $('#waitRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #FFD17D"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </li>');
+                $('#waitRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #FFD17D"> <p>Date: ' + moment(event.start).format("dddd D MMMM YYYY à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </li>');
             }
             if (moment(event.start) > moment() && event.status === "BOOKED") {
                 bookedF = 1;
-                $('#nextRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #10a337"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </li>');
+                $('#nextRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #10a337"> <p>Date: ' + moment(event.start).format("dddd D MMMM YYYY à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </li>');
             }
             if (moment(event.start) < moment() && event.status === "BOOKED") {
                 bookedP = 1;
-                $('#passedRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #5ec5f7"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p>  </li>');
+                $('#passedRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #5ec5f7"> <p>Date: ' + moment(event.start).format("dddd D MMMM YYYY à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p>  </li>');
             }
         });
         if (waiting === 0) {
@@ -275,6 +275,61 @@ header section -->
         });
     }
 
+    moment.locale('fr', {
+        months: 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_'),
+        monthsShort: 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
+        monthsParseExact: true,
+        weekdays: 'Dimanche_Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi'.split('_'),
+        weekdaysShort: 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
+        weekdaysMin: 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+        weekdaysParseExact: true,
+        longDateFormat: {
+            LT: 'HH:mm',
+            LTS: 'HH:mm:ss',
+            L: 'DD/MM/YYYY',
+            LL: 'D MMMM YYYY',
+            LLL: 'D MMMM YYYY HH:mm',
+            LLLL: 'dddd D MMMM YYYY HH:mm'
+        },
+        calendar: {
+            sameDay: '[Aujourd’hui à] LT',
+            nextDay: '[Demain à] LT',
+            nextWeek: 'dddd [à] LT',
+            lastDay: '[Hier à] LT',
+            lastWeek: 'dddd [dernier à] LT',
+            sameElse: 'L'
+        },
+        relativeTime: {
+            future: 'dans %s',
+            past: 'il y a %s',
+            s: 'quelques secondes',
+            m: 'une minute',
+            mm: '%d minutes',
+            h: 'une heure',
+            hh: '%d heures',
+            d: 'un jour',
+            dd: '%d jours',
+            M: 'un mois',
+            MM: '%d mois',
+            y: 'un an',
+            yy: '%d ans'
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}(er|e)/,
+        ordinal: function (number) {
+            return number + (number === 1 ? 'er' : 'e');
+        },
+        meridiemParse: /PD|MD/,
+        isPM: function (input) {
+            return input.charAt(0) === 'M';
+        },
+        meridiem: function (hours, minutes, isLower) {
+            return hours < 12 ? 'PD' : 'MD';
+        },
+        week: {
+            dow: 1, // Monday is the first day of the week.
+            doy: 4  // Used to determine first week of the year.
+        }
+    });
 
 </script>
 </body>
