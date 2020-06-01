@@ -168,7 +168,7 @@ header section -->
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
                 if (jsonData.status == "OK") {
-                    $('#modaleMessageTitle').text("Opération terminé");
+                    $('#modaleMessageTitle').text("Opération terminée");
                     writeCookie("session", jsonData.token, 30);
                     writeCookie("admin", jsonData.admin, 30);
                     writeCookie("idAdmin", jsonData.idAdmin, 30);
@@ -206,7 +206,7 @@ header section -->
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
                 if (jsonData.status == "OK") {
-                    $('#modaleMessageTitle').text("Opération terminé");
+                    $('#modaleMessageTitle').text("Opération terminée");
                 }else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                 }

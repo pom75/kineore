@@ -227,11 +227,11 @@ header section -->
             }
             if (moment(event.start) > moment() && event.status === "BOOKED") {
                 bookedF = 1;
-                $('#nextRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #FFD17D"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </li>');
+                $('#nextRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #10a337"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p> <div class="float-sm-right" > <button type="button" onclick="cancelRDV(' + event.id + ')" class="btn btn-danger pull-right">Annulation</button> </div> </li>');
             }
             if (moment(event.start) < moment() && event.status === "BOOKED") {
                 bookedP = 1;
-                $('#passedRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #FFD17D"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p>  </li>');
+                $('#passedRDV').append('<li class="list-group-item list-group-item-action mb-3" style="background-color: #5ec5f7"> <p>Date: ' + moment(event.start).format("YYYY-MM-DD à HH:mm") + '</p> <p>Motif: ' + idMotifMap[event.idMotif].motif + '</p> <p> Nom du praticien: <a href="/cabinet.html?id=' + idAdminMap[event.idAdmin].idCab + '" > ' + idAdminMap[event.idAdmin].name + ' </a></p>  </li>');
             }
         });
         if (waiting === 0) {

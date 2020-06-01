@@ -45,8 +45,8 @@ public class AdminService {
             if (prenom.isEmpty()) {
                 return new Message("FAIL", "Le prenom du patient est vide");
             }
-            if (!tel.matches("[0][12345679][0-9]{8}$")) {
-                return new Message("FAIL", "L'email du patient est invalide");
+            if (!tel.matches("[0][12345679][0-9]{8}$") || tel.isEmpty()) {
+                return new Message("FAIL", "Le numéro du patient est invalide");
             } else {
                 try {
                     Person person;

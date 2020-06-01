@@ -74,7 +74,7 @@ public class RDVDB {
 
     public static List<Event> getRdvFreeByTime(String start, String end, int id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idAdmin = '" + id + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "' AND Event.status = 'FREE';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idAdmin = '" + id + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "' AND Event.status = 'FREE' ORDER BY Event.start;");
             return sqlQuery.addEntity(Event.class).list();
         }
     }
