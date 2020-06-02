@@ -39,7 +39,7 @@ public class MailUtil {
             "Bonjour,\n Votre rendez-vous du xxx vient d'être annulé par le praticien.\n\n Cordialement,\n Votre Service Client KineCab ";
     public static final String NEW_C_PERSON_TITLE = "Bienvenue sur KineCab !";
     public static final String NEW_C_PERSON_CONTENT =
-            "Bonjour,\n Votre inscription a été confirmé, vous pouvez dèsàa présent vous connecter. \n\n Cordialement,\n Votre Service Client KineCab ";
+            "Bonjour,\n Votre inscription a été confirmé, vous pouvez dès à présent vous connecter. \n\n Cordialement,\n Votre Service Client KineCab ";
 
     static {
         final String username = "no-reply@kinecab.com";
