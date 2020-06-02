@@ -21,7 +21,7 @@ public class MailUtil {
     public static final String CHANGE_PASSWORD_CONTENT = "Bonjour,\n\n Suite à une demande de changement de votre mot de passe,\n voici votre nouveau mot de passe : xxx\n\n Cordialement,\n Votre Service Client KineCab";
     public static final String NEW_PERSON_TITLE = "Bienvenue sur KineCab !";
     public static final String NEW_PERSON_CONTENT =
-        "Bonjour,\n Pour activer votre compte KineCab, veuillez cliquer sur le lien qui suit : https://kinecab.com/login/confirme?token=xxx \n\n Cordialement,\n Votre Service Client KineCab ";
+        "Bonjour,\n Pour activer votre compte KineCab, veuillez cliquer sur le lien qui suit : https://kinecab.com/validation.html?token=xxx \n\n Cordialement,\n Votre Service Client KineCab ";
     public static final String CANCEL_TITLE = "KineCab - Confirmation d'annulation";
     public static final String CANCEL_CONTENT =
             "Bonjour,\n Votre rendez-vous du xxx à bien été annulé.\n\n Cordialement,\n Votre Service Client KineCab ";

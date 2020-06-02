@@ -137,8 +137,9 @@ public class LoginService {
                 deletePersonTemp(personTemp);
                 MailUtil.sendEmail(person.getEmail(),NEW_C_PERSON_TITLE,NEW_C_PERSON_CONTENT);
                 return new Message("OK", "Votre compte a été validé, vous pouvez maintenant vous connecter.");
+            }else {
+                return new Message("FAIL", "Token invalide.");
             }
-            return new Message("FAIL", "Token invalide.");
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Impossible d'activer le compte");
