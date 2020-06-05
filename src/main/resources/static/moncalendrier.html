@@ -122,12 +122,12 @@ header section -->
 
 <section class="about text-center mb-5" id="calendare">
     <div class="container">
-            <!-- Main Title -->
-            <h2>Rendez-vous</h2>
-            <div class="row">
+        <!-- Main Title -->
+        <h2>Rendez-vous</h2>
+        <div class="row">
 
-                <div id='calendar'></div>
-            </div>
+            <div id='calendar'></div>
+        </div>
     </div>
 </section>
 
@@ -329,8 +329,8 @@ header section -->
                         <input id="numBooked" type="text" class="form-control" name="nom" placeholder="Nom"
                                value="" readonly/>
                         <br/>
-                        <input id="motifBooked" type="text" class="form-control" name="nom" placeholder="Nom"
-                               value="" readonly/>
+                        <select class="form-control" id="motifBooked">
+                        </select>
                         <br/>
                         <textarea class="form-control input-lg" style="resize:none" placeholder="Information client"
                                   rows="5"
@@ -555,8 +555,20 @@ header section -->
                 if (status.toUpperCase().localeCompare("BOOKED") == 0) {
                     $('#eventBookedTitle').html(moment(info.event.start).format("dddd D MMMM") + "   " + moment(info.event.start).format("HH:mm") + " à " + moment(info.event.end).format("HH:mm"));
                     $('#namePatBooked').val(data.nomPatient);
-                    $('#numBooked').val(idPersonMap[data.idPatient].tel);
-                    $('#motifBooked').val(idMotifMap[data.idMotif]);
+                    if (idPersonMap[data.idPatient] != null) {
+                        $('#numBooked').val(idPersonMap[data.idPatient].tel);
+                    }else{
+                        $('#numBooked').val("Compte supprimé");
+                    }
+                    var motifs = data.listIdMotif.split(',');
+                    $('#motifBooked').empty();
+                    motifs.forEach(motif => {
+                        if(motif === data.idMotif){
+                            $('#motifBooked').append("<option value=\"" + motif + "\"selected>" + idMotifMap[motif] + "</option>");
+                        }else {
+                            $('#motifBooked').append("<option value=\"" + motif + "\">" + idMotifMap[motif] + "</option>");
+                        }
+                    })
                     $('#commentEventBooked').val(data.info);
                     $("#pointe").prop("checked", data.pointe);
                     $("#paye").prop("checked", data.paye);
@@ -565,7 +577,11 @@ header section -->
                 if (status.toUpperCase().localeCompare("WAITING") == 0) {
                     $('#eventWaitingTitle').html(moment(info.event.start).format("dddd D MMMM") + "   " + moment(info.event.start).format("HH:mm") + " à " + moment(info.event.end).format("HH:mm"));
                     $('#namePatWaiting').val(data.nomPatient);
-                    $('#numWaiting').val(idPersonMap[data.idPatient].tel);
+                    if (idPersonMap[data.idPatient] != null) {
+                        $('#numWaiting').val(idPersonMap[data.idPatient].tel);
+                    }else{
+                        $('#numWaiting').val("Compte supprimé");
+                    }
                     $('#motifWaiting').val(idMotifMap[data.idMotif]);
                     $('#commentEventWaiting').val(data.info);
                     $('#popupSingleEventWaiting').modal('show');
@@ -573,7 +589,11 @@ header section -->
                 if (status.toUpperCase().localeCompare("CANCELED") == 0) {
                     $('#eventCanceledTitle').html(moment(info.event.start).format("dddd D MMMM") + "   " + moment(info.event.start).format("HH:mm") + " à " + moment(info.event.end).format("HH:mm"));
                     $('#namePatCanceled').val(data.nomPatient);
-                    $('#numCanceled').val(idPersonMap[data.idPatient].tel);
+                    if (idPersonMap[data.idPatient] != null) {
+                        $('#numCanceled').val(idPersonMap[data.idPatient].tel);
+                    }else{
+                        $('#numCanceled').val("Compte supprimé");
+                    }
                     $('#motifCanceled').val(idMotifMap[data.idMotif]);
                     $('#commentEventCanceled').val(data.info);
                     $('#popupSingleEventCanceled').modal('show');
@@ -609,7 +629,7 @@ header section -->
                 if (added) {
                     added = false;
                     calendar.getEvents().forEach(function (event) {
-                            event.remove();
+                        event.remove();
                     })
                 }
                 var events = getEvents(moment(info.start).format("YYYY-MM-DD HH:mm:ss"), moment(info.end).format("YYYY-MM-DD HH:mm:ss"));
@@ -898,7 +918,7 @@ header section -->
                         listEvent[i].id = jsonData.collect[i];
                     }
                     calendar.addEventSource(listEvent);
-                    added= true;
+                    added = true;
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
@@ -1060,6 +1080,8 @@ header section -->
         currentEvent.event.extendedProps.data.pointe = $('#pointe').is(":checked");
         currentEvent.event.extendedProps.data.paye = $('#paye').is(":checked");
         currentEvent.event.extendedProps.data.info = $('#commentEventBooked').val();
+        currentEvent.event.extendedProps.data.motif = $("#motifBooked option:selected").text();
+        currentEvent.event.extendedProps.data.idMotif = $("#motifBooked").val();
         changeOneEvent([createJsonEvent(currentEvent.event)]);
         calendar.getEventById(currentEvent.event.id).remove();
     });
