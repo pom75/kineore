@@ -636,7 +636,7 @@ header section -->
                 successCallback(events);
             },
             eventDrop: function (info) {
-                changeOneEvent([createJsonEvent(info.event)]);
+                moveEvent([createJsonEvent(info.event)]);
                 calendar.getEventById(info.event.id).remove();
             }
         });
@@ -891,16 +891,20 @@ header section -->
                 if (jsonData.status === "OK") {
                     calendar.addEventSource(listEvent);
                     added = true;
+                    return true;
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
                     $('#modalMessage').modal('toggle');
+                    calendar.refetchEvents();
+                    return false;
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                 $('#modaleMessageTitle').text("Une erreur est survenue");
                 $('#modalMessage').modal('toggle');
+                return false;
             }
         });
     }
@@ -933,11 +937,11 @@ header section -->
         });
     }
 
-    function changeOneEvent(listEvent) {
+    function safebookOneEvent(listEvent) {
         $.ajax({
             data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
             type: 'POST',
-            url: '/rdv/changeoneevent',
+            url: '/rdv/safebookoneevent',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
@@ -947,6 +951,32 @@ header section -->
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
                     $('#modalMessage').modal('toggle');
+                    calendar.refetchEvents();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+    function moveEvent(listEvent) {
+        $.ajax({
+            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            type: 'POST',
+            url: '/rdv/moveevent',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                if (jsonData.status === "OK") {
+                    calendar.addEventSource(listEvent);
+                    added = true;
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                    calendar.refetchEvents();
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -988,7 +1018,7 @@ header section -->
         } else {
             $('#popupSingleEvent').modal('hide');
             setEventPropFreeToBooked(currentEvent.event);
-            changeOneEvent([createJsonEvent(currentEvent.event)]);
+            safebookOneEvent([createJsonEvent(currentEvent.event)]);
             calendar.getEventById(currentEvent.event.id).remove();
         }
     });
@@ -1010,7 +1040,7 @@ header section -->
     $("#suppEvent").click(function () {
         $('#popupSingleEvent').modal('hide');
         calendar.getEventById(currentEvent.event.id).remove();
-        removeEvents([currentEvent.event.id]);
+        removeEvents([createJsonEvent(currentEvent.event)]);
     });
 
     //Do nothing on submit
@@ -1054,24 +1084,26 @@ header section -->
         $('#popupSingleEventBooked').modal('hide');
         currentEvent.event.extendedProps.data.status = "CANCELED";
         currentEvent.event.setProp("color", '#b21809');
-        changeStatusEvents([createJsonEvent(currentEvent.event)], "CANCEL", currentEvent.event.extendedProps.data.idPatient);//cancel rdv
-        currentEvent.event.setProp("color", '#257e4a');
-        currentEvent.event.setProp("title", "RDV Libre");
-        currentEvent.event.extendedProps.data.status = "FREE";
-        currentEvent.event.extendedProps.data.idPatient = 0;
-        currentEvent.event.extendedProps.data.idMotif = "";
-        currentEvent.event.extendedProps.data.nomPatient = "";
-        currentEvent.event.extendedProps.data.info = "";
-        currentEvent.event.extendedProps.data.id = 0;
-        saveNewEvents([createJsonEvent(currentEvent.event)]);//add new free rdv
-        calendar.getEventById(currentEvent.event.id).remove();
+        var alright = changeStatusEvents([createJsonEvent(currentEvent.event)], "CANCEL", currentEvent.event.extendedProps.data.idPatient);//cancel rdv
+        if(alright) {
+            currentEvent.event.setProp("color", '#257e4a');
+            currentEvent.event.setProp("title", "RDV Libre");
+            currentEvent.event.extendedProps.data.status = "FREE";
+            currentEvent.event.extendedProps.data.idPatient = 0;
+            currentEvent.event.extendedProps.data.idMotif = "";
+            currentEvent.event.extendedProps.data.nomPatient = "";
+            currentEvent.event.extendedProps.data.info = "";
+            currentEvent.event.extendedProps.data.id = 0;
+            saveNewEvents([createJsonEvent(currentEvent.event)]);//add new free rdv
+            calendar.getEventById(currentEvent.event.id).remove();
+        }
     });
 
     //Supp Booked RDV
     $("#suppEventBooked").click(function () {
         $('#popupSingleEventBooked').modal('hide');
         calendar.getEventById(currentEvent.event.id).remove();
-        removeEvents([currentEvent.event.id]);
+        removeEvents([createJsonEvent(currentEvent.event)]);
     });
 
     //Save Booked RDV
@@ -1082,7 +1114,7 @@ header section -->
         currentEvent.event.extendedProps.data.info = $('#commentEventBooked').val();
         currentEvent.event.extendedProps.data.motif = $("#motifBooked option:selected").text();
         currentEvent.event.extendedProps.data.idMotif = $("#motifBooked").val();
-        changeOneEvent([createJsonEvent(currentEvent.event)]);
+        moveEvent([createJsonEvent(currentEvent.event)]);
         calendar.getEventById(currentEvent.event.id).remove();
     });
 
@@ -1096,7 +1128,7 @@ header section -->
     $("#suppEventCanceled").click(function () {
         $('#popupSingleEventCanceled').modal('hide');
         calendar.getEventById(currentEvent.event.id).remove();
-        removeEvents([currentEvent.event.id]);
+        removeEvents([createJsonEvent(currentEvent.event)]);
     });
 
     //Do nothing on submit
@@ -1178,19 +1210,19 @@ header section -->
     }
 
     function removeEvent(start, end) {
-        var arrayIds = [];
+        var arrayEvents = [];
         calendar.getEvents().forEach(function (event) {
             if (start.diff(event.start) <= 0 && end.diff(event.start) >= 0) {
-                arrayIds.push(event.id);
+                arrayEvents.push(createJsonEvent(event));
                 event.remove();
             }
-        })
-        removeEvents(arrayIds);
+        });
+        removeEvents(arrayEvents);
     }
 
-    function removeEvents(arrayIds) {
+    function removeEvents(listEvents) {
         $.ajax({
-            data: {idEvents: JSON.stringify(arrayIds), tokenAdmin: readCookie('session')},
+            data: {listEvents: JSON.stringify(listEvents), tokenAdmin: readCookie('session')},
             type: 'POST',
             url: '/rdv/removerdv',
             success: function (data, textStatus, jqXHR) {
@@ -1201,6 +1233,7 @@ header section -->
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
                     $('#modalMessage').modal('toggle');
+                    calendar.refetchEvents();
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {

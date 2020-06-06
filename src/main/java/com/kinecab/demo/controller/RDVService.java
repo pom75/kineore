@@ -13,7 +13,6 @@ import com.kinecab.demo.db.RDVDB;
 import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.json.*;
 
-import com.kinecab.demo.util.EmailException;
 import org.json.JSONArray;
 
 import org.springframework.http.MediaType;
@@ -30,7 +29,7 @@ import static com.kinecab.demo.util.MailUtil.*;
 @Controller
 public class RDVService {
     public static final SimpleDateFormat FORMAT_RDV = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public static final SimpleDateFormat FORMAT_MAIL= new SimpleDateFormat("EEEE dd MMMM yyyy à HH:mm",Locale.FRANCE);
+    public static final SimpleDateFormat FORMAT_MAIL = new SimpleDateFormat("EEEE dd MMMM yyyy à HH:mm", Locale.FRANCE);
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
@@ -55,10 +54,11 @@ public class RDVService {
         }
     }
 
-    @PostMapping(value = "/rdv/changeoneevent", produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @PostMapping(value = "/rdv/safebookoneevent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message changeOneEvent(@RequestParam("events") String events,
-                                  @RequestParam("tokenAdmin") String tokenAdmin) {
+    public Message safeBookOneEvent(@RequestParam("events") String events,
+                                    @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
             List<Colab> colabByToken = getColabByToken(tokenAdmin);
             if (colabByToken.isEmpty()) {
@@ -67,8 +67,37 @@ public class RDVService {
             Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.get(0).getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
-                RDVDB.saveRDV(rdv);
-                return new Message("OK", "RAS");
+                if (RDVDB.safeUpdateRDV(rdv, Status.FREE)) {
+                    return new Message("OK", "RAS");
+                } else {
+                    return new Message("FAIL", "Erreur, le rendez-vous que vous voulez modifier vient d'etre pris par un patient.");
+                }
+            } else {
+                return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/moveevent", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message moveEvent(@RequestParam("events") String events,
+                             @RequestParam("tokenAdmin") String tokenAdmin) {
+        try {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.get(0).getId(), new JSONArray(events)).get(0);
+            Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
+            if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
+                if (RDVDB.safeUpdateRDV(rdv, rdv.getStatus())) {
+                    return new Message("OK", "RAS");
+                } else {
+                    return new Message("FAIL", "Erreur, le rendez-vous que vous voulez modifier vient d'etre modifier par le patient.");
+                }
             } else {
                 return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
             }
@@ -92,25 +121,27 @@ public class RDVService {
             Event rdv = RDVDB.rdvJsonToRdvs(ColabByToken.get(0).getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
-                RDVDB.saveRDV(rdv);
-                try {
-                    switch (status) {//Todo crete thread for mails
-                        case "BOOKED"://TODO ADD from Admin warninig fake email
-                            break;
-                        case "ACCEPTE":
-                            sendEmail(getPatientById(idPat).getEmail(), ACCEPTE_TITLE, ACCEPTE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
-                            break;
-                        case "REFUSE":
-                            sendEmail(getPatientById(idPat).getEmail(), REFUSE_TITLE, REFUSE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
-                            break;
-                        case "CANCEL":
-                            sendEmail(getPatientById(idPat).getEmail(), CANCELED_TITLE, CANCELED_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
-                            break;
-                    }
-                }catch (EmailException exception){
-                    //TODO HACK temp patient no email
-                    exception.printStackTrace();
-                    return new Message("OK", "RAS");
+                boolean sucess;
+                if (status.equalsIgnoreCase("CANCEL")) {
+                    sucess = RDVDB.safeUpdateRDV(rdv, Status.BOOKED);
+                } else {
+                    sucess = RDVDB.safeUpdateRDV(rdv, Status.WAITING);
+                }
+                if (!sucess) {
+                    return new Message("FAIL", "Le rendez-vous que vous voulez modifier vient d'etre mis à jour par le patient.");
+                }
+                switch (status) {//Todo crete thread for mails
+                    case "BOOKED":
+                        break;
+                    case "ACCEPTE":
+                        sendEmail(getPatientById(idPat).getEmail(), ACCEPTE_TITLE, ACCEPTE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
+                        break;
+                    case "REFUSE":
+                        sendEmail(getPatientById(idPat).getEmail(), REFUSE_TITLE, REFUSE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
+                        break;
+                    case "CANCEL":
+                        sendEmail(getPatientById(idPat).getEmail(), CANCELED_TITLE, CANCELED_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
+                        break;
                 }
                 return new Message("OK", "RAS");
             } else {
@@ -167,18 +198,25 @@ public class RDVService {
 
     @PostMapping(value = "/rdv/removerdv", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message removeRDV(@RequestParam("idEvents") String idEvents,
+    public Message removeRDV(@RequestParam("listEvents") String listEvents,
                              @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
             List<Colab> colabByToken = getColabByToken(tokenAdmin);
             if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
-            RDVDB.removeRdvByIds(new JSONArray(idEvents), colabByToken.get(0).getId());
-            return new Message("OK", "Evenement supprimé");
+            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.get(0).getId(), new JSONArray(listEvents));
+            boolean success = RDVDB.removeRdvByEvent(rdvs, colabByToken.get(0).getId());
+            if (success) {
+                //sendEmail(getPatientById(idPat).getEmail(), ACCEPTE_TITLE, ACCEPTE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
+                return new Message("OK", "Evenement supprimé");
+            } else {
+                return new Message("FAIL", "Erreur dans la suppression du rendez-vous. Le rendez-vous a été modifié par un patient.");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("FAIL", "Erreur interne serveur ");
+            return new Message("FAIL", "Erreur dans la suppression du rendez-vous. Le rendez-vous a été modifié par un patient.");
 
         }
     }
@@ -231,16 +269,21 @@ public class RDVService {
     @ResponseBody
     public Message bookRDVFromPat(@RequestParam("idEvent") String idEvent,
                                   @RequestParam("tokenPat") String tokenPat,
-                                  @RequestParam("idMotif") String idMotif) {
+                                  @RequestParam("idMotif") String idMotif,
+                                  @RequestParam("start") String start) {
         try {
             Person person = PatientDB.getPatientByToken(tokenPat);
             List<Event> rdvFreeById = RDVDB.getRdvFreeById(idEvent);
             if (rdvFreeById.isEmpty()) {
-                return new Message("FAIL", "Ce rendez-vous n'est plus dispoblible.");
+                return new Message("FAIL", "Ce rendez-vous n'est plus disponible.");
             }
             Event curentEvent = rdvFreeById.get(0);
             if (!idMotifIsPresentInEvent(idMotif, curentEvent)) {
-                return new Message("FAIL", "Ce rendez-vous n'est plus dispoblible.");
+                return new Message("FAIL", "Ce rendez-vous n'est plus disponible.");
+            }
+            Timestamp timestamp = Timestamp.valueOf(start);
+            if (curentEvent.getStart().compareTo(timestamp) != 0) {
+                return new Message("FAIL", "Ce rendez-vous n'est plus disponible.");
             }
             curentEvent.setIdMotif(idMotif);
             curentEvent.setStatus(Status.WAITING);
@@ -253,7 +296,7 @@ public class RDVService {
             return new Message("OK", "RAS");
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("FAIL", "Erreur pendant la création des rendez-vous.");
+            return new Message("FAIL", "Erreur pendant la création du rendez-vous.");
         }
     }
 

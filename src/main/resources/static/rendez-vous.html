@@ -192,12 +192,14 @@ header section -->
                 </button>
             </div>
             <div class="modal-body">
-                <form class="form-signin"  method="POST">
-                    <input type="email" class="form-control" name="email" id="emailMdp" placeholder="Adresse mail" required=""
+                <form class="form-signin" method="POST">
+                    <input type="email" class="form-control" name="email" id="emailMdp" placeholder="Adresse mail"
+                           required=""
                            autofocus=""/>
                     <div class="checkbox mb-3">
                     </div>
-                    <button type="submit" id="newPassword" class="btn btn-primary" data-dismiss="modal">Envoyer un nouveau mot de passe
+                    <button type="submit" id="newPassword" class="btn btn-primary" data-dismiss="modal">Envoyer un
+                        nouveau mot de passe
                     </button>
                 </form>
             </div>
@@ -218,7 +220,6 @@ header section -->
     var currentDate = new Date();
     onLoad();
 
-    filterAndShowRdv(currentDate);//Show RDV initialisation current day
 
     $(function () {
         $('#calendrierPick').datetimepicker({
@@ -269,6 +270,7 @@ header section -->
             events.forEach(event => {
                 $('#titleDate').text("");
                 var heur = moment(event.start).format("HH:mm");
+                ;
                 heur = heur.replace(":", "h");
                 $('#listHour').append('<div class="btn-group mt-3 px-2" role="group" aria-label="Third group"> <button type="button" class="btn btn-success" onclick="setCurrentRdv(\'' + event.id + '\')">' + heur + '</button> </div>');
             })
@@ -315,6 +317,7 @@ header section -->
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
                     jsonData.rdvs.forEach(event => listEvent.push(event));
+                    filterAndShowRdv(currentDate);
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
@@ -324,7 +327,8 @@ header section -->
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                 $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');            }
+                $('#modalMessage').modal('toggle');
+            }
         });
     }
 
@@ -363,13 +367,25 @@ header section -->
         currentIdEvent = id;
     }
 
+    var currentEvent;
+
     function saveRDV() {
+        listEvent.forEach(event => {
+            if (event.id + "" === currentIdEvent) {
+                currentEvent = event;
+            }
+        });
         if (readCookie('session') != '') {
             $('#dialog_title_span').text("");
             $('#modaleMessageTitle').text("Veuillez patienter");
             $('#modalMessage').modal('show');
             $.ajax({
-                data: {idEvent: currentIdEvent, tokenPat: readCookie('session'), idMotif: currentMotif},
+                data: {
+                    idEvent: currentIdEvent,
+                    tokenPat: readCookie('session'),
+                    idMotif: currentMotif,
+                    start: moment(currentEvent.start).format("YYYY-MM-DD hh:mm:ss.SSS")
+                },
                 type: 'POST',
                 url: '/rdv/bookrdvfrompat',
                 success: function (data, textStatus, jqXHR) {
@@ -386,14 +402,16 @@ header section -->
                             }
                         }, 4000);
                     } else {
-                        $('#modaleMessageTitle').text("Un erreur s'est produite, veuillez contacter un administrateur.");
+                        $('#dialog_title_span').text(jsonData.message);
+                        listEvent = [];
+                        getEvents();
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                 }
             });
-        }else{
+        } else {
             $('#popupSingin').modal('toggle');
         }
     }
@@ -432,7 +450,7 @@ header section -->
                             saveRDV();
                         }
                     }, 600);
-                }else {
+                } else {
                     $('#modalMessage').modal('toggle');
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                 }
@@ -461,7 +479,7 @@ header section -->
                 $('#dialog_title_span').text(jsonData.message);
                 if (jsonData.status == "OK") {
                     $('#modaleMessageTitle').text("Opération terminée");
-                }else {
+                } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                 }
             },
