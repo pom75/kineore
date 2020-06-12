@@ -58,8 +58,14 @@
 
         var idMotifMap = {};
 
+        var firstTime = true;
         function getMotif() {
+            if(!firstTime){
+                return;
+            }
+            firstTime = false;
             $.ajax({
+                async: false,
                 data: {tokenAdmin: readCookie('session')},
                 type: 'POST',
                 url: '/rdv/getmotif',
@@ -67,7 +73,7 @@
                     var jsonData = JSON.parse(data);
                     if (jsonData.status === "OK") {
                         for (var i = 0; i < jsonData.motif.length; i++) {
-                            idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
+                            idMotifMap[jsonData.motif[i].id] = jsonData.motif[i];
                             $('#selectListIdMotif').append('<input class="form-check-input" name="day" type="checkbox" value="' + jsonData.motif[i].id + '" id="' + jsonData.motif[i].id + '"> <label class="form-check-label" for="' + jsonData.motif[i].id + '">' + jsonData.motif[i].motif + ' </label><br>');
                             $('#selectListIdMotif2').append('<input class="form-check-input" name="month" type="checkbox" value="' + jsonData.motif[i].id + '" id="' + jsonData.motif[i].id + '"> <label class="form-check-label" for="' + jsonData.motif[i].id + '">' + jsonData.motif[i].motif + ' </label><br>');
                         }
@@ -483,7 +489,6 @@ header section -->
     var calendar;
     var currentEvent;
     var added = false; // avoid duplication
-    getMotif();
     getPerson();
 
 
@@ -564,9 +569,9 @@ header section -->
                     $('#motifBooked').empty();
                     motifs.forEach(motif => {
                         if(motif === data.idMotif){
-                            $('#motifBooked').append("<option value=\"" + motif + "\"selected>" + idMotifMap[motif] + "</option>");
+                            $('#motifBooked').append("<option value=\"" + motif + "\"selected>" + idMotifMap[motif].motif + "</option>");
                         }else {
-                            $('#motifBooked').append("<option value=\"" + motif + "\">" + idMotifMap[motif] + "</option>");
+                            $('#motifBooked').append("<option value=\"" + motif + "\">" + idMotifMap[motif].motif + "</option>");
                         }
                     })
                     $('#commentEventBooked').val(data.info);
@@ -582,7 +587,7 @@ header section -->
                     }else{
                         $('#numWaiting').val("Compte supprimé");
                     }
-                    $('#motifWaiting').val(idMotifMap[data.idMotif]);
+                    $('#motifWaiting').val(idMotifMap[data.idMotif].motif);
                     $('#commentEventWaiting').val(data.info);
                     $('#popupSingleEventWaiting').modal('show');
                 }
@@ -594,7 +599,7 @@ header section -->
                     }else{
                         $('#numCanceled').val("Compte supprimé");
                     }
-                    $('#motifCanceled').val(idMotifMap[data.idMotif]);
+                    $('#motifCanceled').val(idMotifMap[data.idMotif].motif);
                     $('#commentEventCanceled').val(data.info);
                     $('#popupSingleEventCanceled').modal('show');
                 }
@@ -606,7 +611,7 @@ header section -->
                     $('#eventMotifSelection').empty();
                     $('#eventMotifSelection').append('<option value="default" selected>Veuillez faire un choix</option>');
                     motifs.forEach(motif => {
-                        $('#eventMotifSelection').append("<option value=\"" + motif + "\">" + idMotifMap[motif] + "</option>");
+                        $('#eventMotifSelection').append("<option value=\"" + motif + "\">" + idMotifMap[motif].motif + "</option>");
                     })
                     $('#eventFreeTitle').html(moment(info.event.start).format("dddd D MMMM") + "   " + moment(info.event.start).format("HH:mm") + " à " + moment(info.event.end).format("HH:mm"));
                     $('#popupSingleEvent').modal('show');
@@ -646,6 +651,7 @@ header section -->
     ;
 
     function getEvents(start, end) {
+        getMotif();
         var listEvent = [];
         $.ajax({
             async: false,
@@ -680,8 +686,9 @@ header section -->
         var title = "RDV Libre";
         var color = '#257e4a';
         if (data.status.toUpperCase().localeCompare("BOOKED") == 0) {
+            data.idMotif
             title = data.nomPrenom;
-            color = '#3687b2';
+            color = idMotifMap[data.idMotif].color;
         }
         if (data.status.toUpperCase().localeCompare("WAITING") == 0) {
             title = data.nomPrenom;
@@ -1025,7 +1032,7 @@ header section -->
 
     function setEventPropFreeToBooked(event) {
         event.setProp("title", $('#namePat').val());
-        event.setProp("color", '#3687b2');
+        event.setProp("color", idMotifMap[$("#eventMotifSelection").val()].color);
         event.extendedProps.data.status = "BOOKED";
         event.extendedProps.data.nomPatient = $('#namePat').val();
         event.extendedProps.data.idPatient = $('#namePat').attr("name");
@@ -1052,7 +1059,7 @@ header section -->
     //Accepte RDV
     $("#accepteEventWaiting").click(function () {
         $('#popupSingleEventWaiting').modal('hide');
-        currentEvent.event.setProp("color", '#3687b2');
+        currentEvent.event.setProp("color", idMotifMap[currentEvent.event.extendedProps.data.idMotif].color);
         currentEvent.event.extendedProps.data.status = "BOOKED";
         changeStatusEvents([createJsonEvent(currentEvent.event)], "ACCEPTE", currentEvent.event.extendedProps.data.idPatient);
         calendar.getEventById(currentEvent.event.id).remove();
@@ -1114,6 +1121,7 @@ header section -->
         currentEvent.event.extendedProps.data.info = $('#commentEventBooked').val();
         currentEvent.event.extendedProps.data.motif = $("#motifBooked option:selected").text();
         currentEvent.event.extendedProps.data.idMotif = $("#motifBooked").val();
+        currentEvent.event.setProp("color", idMotifMap[$("#motifBooked").val()].color);
         moveEvent([createJsonEvent(currentEvent.event)]);
         calendar.getEventById(currentEvent.event.id).remove();
     });
