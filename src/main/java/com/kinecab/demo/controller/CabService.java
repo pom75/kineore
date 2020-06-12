@@ -7,6 +7,7 @@ import static com.kinecab.demo.db.AdminDB.getColabByToken;
 import static com.kinecab.demo.db.CabDB.*;
 import static com.kinecab.demo.db.RDVDB.getMotif;
 
+import com.kinecab.demo.db.CabDB;
 import com.kinecab.demo.db.entity.Cab;
 import com.kinecab.demo.db.entity.Colab;
 import com.kinecab.demo.db.entity.MotifCab;
@@ -52,7 +53,6 @@ public class CabService {
                 return new Message("FAIL", "Pas de Cabinet a ce nom.");
             }
             Cab cab = cabByAdminID.get(0);
-            cab.setUrl(urlcab);
             cab.setName(nomcab);
             cab.setPres(prescab);
             cab.setPhone(numcab);
@@ -63,8 +63,14 @@ public class CabService {
             cab.setCartevital(vitale);
             cab.setTarif(tarifs);
             cab.setConvention(convention);
-
-            saveCab(cab);
+            if(urlcab.contentEquals(cab.getUrl())){
+                saveCab(cab);
+            }else {
+                cab.setUrl(urlcab);
+                if(!CabDB.saveIfIsFree(cab)){
+                    return new Message("FAIL", "Impossible d'utiliser "+urlcab+ ", cet url est déjà pris.");
+                }
+            }
             return new Message("OK", "Modifications enregistrées.");
         } catch (Exception e) {
             e.printStackTrace();

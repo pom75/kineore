@@ -130,7 +130,7 @@ header section -->
 
 
 <!-- Modal -->
-<div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+<div class="modal fade" id="modalMessage" style="z-index:99999999" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -390,7 +390,7 @@ header section -->
 
 <!-- Popup Add Patient -->
 
-<div class="modal fade" id="popupAddPatient" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div class="modal fade" id="popupAddPatient" tabindex="-99" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered event-popup mb-5" role="document">
         <div class="modal-content">
@@ -456,6 +456,7 @@ header section -->
         $('#vitale').removeAttr('readonly');
         $('#tarifs').removeAttr('readonly');
         $('#convention').removeAttr('readonly');
+        $('#urlcab').removeAttr('readonly');
     });
 
     $('#supp').click(function () {
@@ -472,6 +473,7 @@ header section -->
             url: '/login/changeprofiladmin',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
+                $('#modaleMessageTitle').text("Ok");
                 $('#dialog_title_span').text(jsonData.message);
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -497,6 +499,9 @@ header section -->
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
+                if (jsonData.status == "OK") {
+                    $('#urcabsamll').html('<a href="https://www.kinecab.com/cab/' + $('#urlcab').val() + '">http://www.kinecab.com/cab/<b>' + $('#urlcab').val() + '</b></a>');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
@@ -506,6 +511,7 @@ header section -->
         });
         jQuery('#modifBlock2').css("display", "block");
         jQuery('#saveBlock2').css("display", "none");
+        $('#urlcab').attr('readonly', true);
         $('#nomcab').attr('readonly', true);
         $('#prescab').attr('readonly', true);
         $('#numcab').attr('readonly', true);
@@ -562,9 +568,7 @@ header section -->
     });
 
     function addPatient(nom, prenom, tel, mail) {
-        $('#popupAddPatient').modal('hide');
         $('#dialog_title_span').text("");
-        $('#modalMessage').modal('toggle');
         $.ajax({
             data: {nom: nom, prenom: prenom, tel: tel,mail: mail, tokenAdmin: readCookie('session')},
             type: 'POST',
@@ -573,11 +577,14 @@ header section -->
                 var jsonData = JSON.parse(data);
                 $('#dialog_title_span').text(jsonData.message);
                 if (jsonData.status == "OK") {
+                    $('#popupAddPatient').modal('hide');
+                    $('#modalMessage').modal('toggle');
                     $('#modaleMessageTitle').text("Opération terminée");
                     $('#namePat').val('');
                     $('#prenomPat').val('');
                     $('#telPat').val('');
                 }else{
+                    $('#modalMessage').modal('toggle');
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                 }
             },

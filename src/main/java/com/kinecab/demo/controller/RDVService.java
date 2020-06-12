@@ -13,6 +13,8 @@ import com.kinecab.demo.db.RDVDB;
 import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.json.*;
 
+import com.kinecab.demo.util.EmailException;
+import com.kinecab.demo.util.MailUtil;
 import org.json.JSONArray;
 
 import org.springframework.http.MediaType;
@@ -68,6 +70,11 @@ public class RDVService {
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
                 if (RDVDB.safeUpdateRDV(rdv, Status.FREE)) {
+                    try {
+                        MailUtil.sendEmail(getPatientById(rdv.getIdPatient()+"").getEmail(),ACCEPTE_TITLE,ACCEPTE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
+                    }catch (EmailException e){
+                        e.printStackTrace();
+                    }
                     return new Message("OK", "RAS");
                 } else {
                     return new Message("FAIL", "Erreur, le rendez-vous que vous voulez modifier vient d'etre pris par un patient.");

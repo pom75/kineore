@@ -2,6 +2,7 @@
 package com.kinecab.demo.db.entity;
 
 import com.google.common.hash.Hashing;
+import com.kinecab.demo.util.Utils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,9 +48,9 @@ public class PersonTemp {
     }
 
     public PersonTemp(String nom, String prenom, String email, String tel, String password, String token) {
-        this.email = email;
-        this.nom = nom;
-        this.prenom = prenom;
+        this.email = email.trim();
+        this.nom = Utils.trimUp(nom);
+        this.prenom = Utils.trimUp(prenom);
         this.tel = tel;
         this.password = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
         this.token = token;

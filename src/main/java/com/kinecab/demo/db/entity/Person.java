@@ -2,6 +2,7 @@
 package com.kinecab.demo.db.entity;
 
 import com.google.common.hash.Hashing;
+import com.kinecab.demo.util.Utils;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -42,8 +43,8 @@ public class Person {
 
     public Person(String nom, String prenom, String email, String tel, String password) {
         this.email = email;
-        this.nom = nom;
-        this.prenom = prenom;
+        this.nom = Utils.trimUp(nom);
+        this.prenom = Utils.trimUp(prenom);
         this.tel = tel;
         this.password = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
     }

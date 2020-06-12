@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import javax.persistence.*;
 
 import com.google.common.hash.Hashing;
+import com.kinecab.demo.util.Utils;
 
 
 @Entity
@@ -50,14 +51,14 @@ public class Admin implements Serializable {
 
     public Admin(String nom, String prenom, String email) {
         this.email = email;
-        this.nom = nom;
-        this.prenom = prenom;
+        this.nom = Utils.trimUp(nom);
+        this.prenom = Utils.trimUp(prenom);
     }
 
     public Admin(String nom, String prenom, String email, String tel, String password) {
         this.email = email;
-        this.nom = nom;
-        this.prenom = prenom;
+        this.nom = Utils.trimUp(nom);
+        this.prenom = Utils.trimUp(prenom);
         this.tel = tel;
         this.password = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
     }

@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 
+import javax.persistence.criteria.CommonAbstractCriteria;
+
 
 public class CabDB {
 
@@ -74,11 +76,24 @@ public class CabDB {
         CabPerson cabPerson = new CabPerson(cab.getId(),idPerson);
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + cab.getId() + "' AND CAB_PERSON.idPerson = '" + idPerson + "';");
-            List<CabPerson> cabPersons = (List<CabPerson>) sqlQuery.addEntity(CabPerson.class).list();
+            List cabPersons = sqlQuery.addEntity(CabPerson.class).list();
             if(cabPersons.isEmpty()){
                 saveCabPerson(cabPerson);
             }
         }
     }
 
+    public static boolean saveIfIsFree(Cab cab) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB WHERE  CAB.url = '" + cab.getUrl() + "';");
+            List cabs =  sqlQuery.addEntity(Cab.class).list();
+            if(cabs.isEmpty()){
+                Transaction trx = session.beginTransaction();
+                session.saveOrUpdate(cab);
+                trx.commit();
+                return true;
+            }
+        }
+        return false;
+    }
 }
