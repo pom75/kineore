@@ -70,11 +70,7 @@ public class RDVService {
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
                 if (RDVDB.safeUpdateRDV(rdv, Status.FREE)) {
-                    try {
-                        MailUtil.sendEmail(getPatientById(rdv.getIdPatient()+"").getEmail(),ACCEPTE_TITLE,ACCEPTE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
-                    }catch (EmailException e){
-                        e.printStackTrace();
-                    }
+                    MailUtil.sendEmail(getPatientById(rdv.getIdPatient() + "").getEmail(), ACCEPTE_TITLE, ACCEPTE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
                     return new Message("OK", "RAS");
                 } else {
                     return new Message("FAIL", "Erreur, le rendez-vous que vous voulez modifier vient d'etre pris par un patient.");
@@ -137,7 +133,7 @@ public class RDVService {
                 if (!sucess) {
                     return new Message("FAIL", "Le rendez-vous que vous voulez modifier vient d'etre mis à jour par le patient.");
                 }
-                switch (status) {//Todo crete thread for mails
+                switch (status) {
                     case "BOOKED":
                         break;
                     case "ACCEPTE":

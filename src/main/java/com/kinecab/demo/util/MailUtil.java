@@ -21,7 +21,7 @@ public class MailUtil {
     public static final String CHANGE_PASSWORD_CONTENT = "Bonjour,\n\n Suite à une demande de changement de votre mot de passe,\n voici votre nouveau mot de passe : xxx\n\n Cordialement,\n Votre Service Client KineCab";
     public static final String NEW_PERSON_TITLE = "Bienvenue sur KineCab !";
     public static final String NEW_PERSON_CONTENT =
-        "Bonjour,\n Pour activer votre compte KineCab, veuillez cliquer sur le lien qui suit : https://kinecab.com/validation.html?token=xxx \n\n Cordialement,\n Votre Service Client KineCab ";
+            "Bonjour,\n Pour activer votre compte KineCab, veuillez cliquer sur le lien qui suit : https://kinecab.com/validation.html?token=xxx \n\n Cordialement,\n Votre Service Client KineCab ";
     public static final String CANCEL_TITLE = "KineCab - Confirmation d'annulation";
     public static final String CANCEL_CONTENT =
             "Bonjour,\n Votre rendez-vous du xxx à bien été annulé.\n\n Cordialement,\n Votre Service Client KineCab ";
@@ -53,27 +53,34 @@ public class MailUtil {
         prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
         session = Session.getInstance(prop, new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
     }
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static void sendEmail(String mail, String title, String content) throws Exception {
-        if(!mail.contains("@")){
-            new EmailException("Erreur avec l'email " + mail).printStackTrace();
-        }
-        Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress("no-reply@kinecab.com"));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mail));
-        message.setSubject(title);
-        message.setText(content);
+    public static void sendEmail(String mail, String title, String content){
+        new Thread(() -> {
+            if (!mail.contains("@")) {
+                new EmailException("Erreur avec l'email " + mail).printStackTrace();
+                return;
+            }
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress("no-reply@kinecab.com"));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mail));
+                message.setSubject(title);
+                message.setText(content);
 
-        Transport.send(message);
+                Transport.send(message);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
+        }).start();
     }
 }
