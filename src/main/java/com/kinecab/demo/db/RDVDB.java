@@ -93,7 +93,6 @@ public class RDVDB {
             NativeQuery sqlQuery;
             Transaction trx = session.beginTransaction();
             for (Event event : events) {
-                System.out.println(event.getId());
                 Event dbEvent = RDVDB.getRdvbyId(event.getId());
                 if(dbEvent.getStatus() != event.getStatus()){
                     trx.commit();
