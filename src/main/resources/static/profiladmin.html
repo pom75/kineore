@@ -9,9 +9,12 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
     <link rel="icon" type="image/png" href="img/ck.png"/>
-    <script src="js/jquery-2.1.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js" defer></script>
     <script>
+
         window.onload = redirect;
 
         function redirect() {
@@ -28,8 +31,7 @@
             url: '/login/getprofiladmin',
             type: 'POST',
             data: 'token=' + readCookie('session'),
-            success: function (data, textStatus, jqXHR) {
-                var jsonData = JSON.parse(data);
+            success: function (jsonData, textStatus, jqXHR) {
                 $('#mail').val(jsonData.email);
                 $('#num').val(jsonData.tel);
                 $('#nom').val(jsonData.nom);
@@ -45,12 +47,12 @@
             }
         });
 
+
         $.ajax({
             url: '/cab/getcabprofil',
             type: 'POST',
             data: 'token=' + readCookie('session'),
-            success: function (data, textStatus, jqXHR) {
-                var jsonData = JSON.parse(data);
+            success: function (jsonData, textStatus, jqXHR) {
                 $('#vitale').val(jsonData.cartevital);
                 $('#codepostal').val(jsonData.codePostal);
                 $('#convention').val(jsonData.convention);
@@ -92,7 +94,6 @@
             window.location.href = ("/index.html");
         }
     </script>
-    <script src="js/jquery-2.1.1.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
 </head>
@@ -157,6 +158,8 @@ header section -->
                        aria-controls="nav-home" aria-selected="true">Mon Cabinet</a>
                     <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
                        aria-controls="nav-profile" aria-selected="false">Profil</a>
+                    <a class="nav-item nav-link" id="nav-pat-tab" data-toggle="tab" href="#nav-pat" role="tab"
+                       aria-controls="nav-pat" aria-selected="false">Mes Patients</a>
                 </div>
             </nav>
             <div class="tab-content justify-content-md-center" id="nav-tabContent">
@@ -358,6 +361,35 @@ header section -->
                 </div>
     </section>
     </div>
+                <div class="tab-pane fade mt-2" id="nav-pat" role="tabpanel" aria-labelledby="nav-pat-tab">
+                    <section class="text-center">
+                        <div class="container">
+                            <h1 class="jumbotron-heading mb-4">Mes Patients</h1>
+                            <div class="row">
+                                <table id="table_id" class="display">
+                                    <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Prenom</th>
+                                        <th>Mail</th>
+                                        <th>Tel</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tab_pat">
+                                    <tr>
+                                        <td>Ferreira</td>
+                                        <td>Stéphane</td>
+                                        <td>stephaneferreira@hotmail.com</td>
+                                        <td>0744678392</td>
+                                        <td>Modifier</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
     </div>
     </div>
     </section>
@@ -594,6 +626,41 @@ header section -->
             }
         });
     }
+
+    var table;
+    $(document).ready( function () {
+        table = $('#table_id').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
+            }
+        });
+        getPerson();
+    } );
+
+    function getPerson() {
+        $.ajax({
+            data: {tokenAdmin: readCookie('session')},
+            type: 'POST',
+            url: '/rdv/getpersonidadmin',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.people.length; i++) {
+                        table.row.add([jsonData.people[i].nom, jsonData.people[i].prenom, jsonData.people[i].email, jsonData.people[i].tel, "Modifier"]).draw().node();
+                    }
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
 </script>
 </body>
 </html>
