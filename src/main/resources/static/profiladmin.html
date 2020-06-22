@@ -503,8 +503,7 @@ header section -->
             data: $('#changeProfil').serialize(),
             type: 'POST',
             url: '/login/changeprofiladmin',
-            success: function (data, textStatus, jqXHR) {
-                var jsonData = JSON.parse(data);
+            success: function (jsonData, textStatus, jqXHR) {
                 $('#modaleMessageTitle').text("Ok");
                 $('#dialog_title_span').text(jsonData.message);
             },
@@ -528,8 +527,7 @@ header section -->
             data: $('#changeCabinet').serialize(),
             type: 'POST',
             url: '/cab/updatecab',
-            success: function (data, textStatus, jqXHR) {
-                var jsonData = JSON.parse(data);
+            success: function (jsonData, textStatus, jqXHR) {
                 $('#dialog_title_span').text(jsonData.message);
                 if (jsonData.status == "OK") {
                     $('#urcabsamll').html('<a href="https://www.kinecab.com/cab/' + $('#urlcab').val() + '">http://www.kinecab.com/cab/<b>' + $('#urlcab').val() + '</b></a>');
@@ -570,8 +568,7 @@ header section -->
             data: $('#suppForm').serialize(),
             type: 'POST',
             url: '/login/suppprofiladmin',
-            success: function (data, textStatus, jqXHR) {
-                var jsonData = JSON.parse(data);
+            success: function (jsonData, textStatus, jqXHR) {
                 $('#dialog_title_span').text(jsonData.message);
                 if (jsonData.status == "OK") {
                     delete_cookie('session');
@@ -605,8 +602,7 @@ header section -->
             data: {nom: nom, prenom: prenom, tel: tel,mail: mail, tokenAdmin: readCookie('session')},
             type: 'POST',
             url: '/admin/addpatient',
-            success: function (data, textStatus, jqXHR) {
-                var jsonData = JSON.parse(data);
+            success: function (jsonData, textStatus, jqXHR) {
                 $('#dialog_title_span').text(jsonData.message);
                 if (jsonData.status == "OK") {
                     $('#popupAddPatient').modal('hide');
@@ -645,7 +641,7 @@ header section -->
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
                     for (var i = 0; i < jsonData.people.length; i++) {
-                        table.row.add([jsonData.people[i].nom, jsonData.people[i].prenom, jsonData.people[i].email, jsonData.people[i].tel, "Modifier"]).draw().node();
+                        table.row.add([jsonData.people[i].nom, jsonData.people[i].prenom, jsonData.people[i].email, jsonData.people[i].tel, '<select class="form-control" id="productselect" data-live-search="true">Modifier</select>']).draw().node();
                     }
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
