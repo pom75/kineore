@@ -13,7 +13,6 @@ import com.kinecab.demo.db.RDVDB;
 import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.json.*;
 
-import com.kinecab.demo.util.EmailException;
 import com.kinecab.demo.util.MailUtil;
 import org.json.JSONArray;
 
@@ -261,10 +260,31 @@ public class RDVService {
                 return new Message("FAIL", "Token invalide");
             }
             final List<Person> people = getPersonByIdCab(colabByToken.get(0).getIdCab());
-            return new GetPerson("OK", "RAS", people);
+            return new GetPeople("OK", "RAS", people);
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Erreur pendant le chargement des patients.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/getpersonidadminidperson", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getPersonIdAdminByIdPerson(@RequestParam("tokenAdmin") String tokenAdmin,
+                                              @RequestParam("idPerson") String idPerson) {
+        try {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), idPerson);
+            if(person != null){
+                return new GetPerson("OK", "RAS", person);
+            }else {
+                return new Message("FAIL", "Erreur pendant le chargement du patient.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement du patient.");
         }
     }
 

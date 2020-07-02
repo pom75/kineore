@@ -5,14 +5,15 @@ import com.kinecab.demo.db.entity.Person;
 import java.util.List;
 
 public class GetPerson extends Message{
-    public List<Person> getPeople() {
-        return people;
+
+    public Person getPerson() {
+        return person;
     }
 
-    private final List<Person> people;
+    private final Person person;
 
-    public GetPerson(String ok, String ras, List<Person> people) {
+    public GetPerson(String ok, String ras, Person person) {
         super(ok,ras);
-        this.people = people;
+        this.person = person;
     }
 }

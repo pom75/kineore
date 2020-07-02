@@ -120,6 +120,27 @@ public class AdminDB {
         }
     }
 
+    public static Person getPersonByIdCabIdPerson(int idCab, String idPerson) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            final Person[] personResult = {null};
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + idCab + "';");
+            List<CabPerson> cabPerson = (List<CabPerson>) sqlQuery.addEntity(CabPerson.class).list();
+            try {
+                cabPerson.stream().forEach(person -> {
+                    if(idPerson.contentEquals(person.getIdPerson()+"")) {
+                        final NativeQuery sqlQuery1 = session.createSQLQuery("SELECT * FROM PERSON WHERE  PERSON.id = '" + person.getIdPerson() + "';");
+                        Person singleResult = (Person) sqlQuery1.addEntity(Person.class).getSingleResult();
+                        personResult[0] = singleResult;
+                        singleResult.setPassword("");
+                    }
+                });
+            } catch (NoResultException nre) {
+                //Ignore this because as per your logic this is ok!
+            }
+            return personResult[0];
+        }
+    }
+
     public static List<Admin> getAdminByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from ADMIN where  ADMIN.email = '" + email + "';");

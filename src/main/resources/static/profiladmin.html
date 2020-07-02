@@ -365,25 +365,18 @@ header section -->
                     <section class="text-center">
                         <div class="container">
                             <h1 class="jumbotron-heading mb-4">Mes Patients</h1>
-                            <div class="row">
-                                <table id="table_id" class="display">
+                            <div class="row justify-content-center" >
+                                <table id="table_id" class="display mt-3">
                                     <thead>
                                     <tr>
+                                        <th>Id</th>
                                         <th>Nom</th>
                                         <th>Prenom</th>
                                         <th>Mail</th>
                                         <th>Tel</th>
-                                        <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tab_pat">
-                                    <tr>
-                                        <td>Ferreira</td>
-                                        <td>Stéphane</td>
-                                        <td>stephaneferreira@hotmail.com</td>
-                                        <td>0744678392</td>
-                                        <td>Modifier</td>
-                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -628,8 +621,20 @@ header section -->
         table = $('#table_id').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
-            }
+            },
+            "columnDefs": [
+                {
+                    "targets": [ 0 ],
+                    "visible": false,
+                    "searchable": false
+                }
+            ]
+
         });
+        $('#table_id tbody').on('click', 'tr', function () {
+            var data = table.row( this ).data();
+            window.location.href = "patient.html?id="+data[0];
+        } );
         getPerson();
     } );
 
@@ -641,7 +646,7 @@ header section -->
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
                     for (var i = 0; i < jsonData.people.length; i++) {
-                        table.row.add([jsonData.people[i].nom, jsonData.people[i].prenom, jsonData.people[i].email, jsonData.people[i].tel, '<select class="form-control" id="productselect" data-live-search="true">Modifier</select>']).draw().node();
+                        table.row.add([jsonData.people[i].id,jsonData.people[i].nom, jsonData.people[i].prenom, jsonData.people[i].email, jsonData.people[i].tel, '<select class="form-control" id="productselect" data-live-search="true">Modifier</select>']).draw().node();
                     }
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");

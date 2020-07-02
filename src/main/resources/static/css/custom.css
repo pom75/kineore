@@ -24,3 +24,13 @@
     cursor:default;
     z-index:999999999999999999999999999999 !important
 }
+
+tbody tr {
+    cursor: pointer;
+}
+
+[type="search"] {
+outline-offset: -2px;
+-webkit-appearance: none;
+    border-width: 1px;
+}
