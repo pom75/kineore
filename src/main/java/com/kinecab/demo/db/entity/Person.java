@@ -82,7 +82,7 @@ public class Person {
     }
 
     public void setNom(String nom) {
-        this.nom = nom;
+        this.nom = Utils.trimUp(nom);
     }
 
     public String getPrenom() {
@@ -90,7 +90,7 @@ public class Person {
     }
 
     public void setPrenom(String prenom) {
-        this.prenom = prenom;
+        this.prenom = Utils.trimUp(prenom);
     }
 
     public String getTel() {

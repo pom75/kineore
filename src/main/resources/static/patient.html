@@ -36,9 +36,9 @@
             }
 
             $.ajax({
-                data: {tokenAdmin: readCookie('session'),idPerson : $_GET('id')},
+                data: {tokenAdmin: readCookie('session'), idPerson: $_GET('id')},
                 type: 'POST',
-                url: '/rdv/getpersonidadminidperson',
+                url: '/admin/getpersonidadminidperson',
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
                     if (jsonData.status === "OK") {
@@ -46,6 +46,8 @@
                         $('#num').val(jsonData.person.tel);
                         $('#nom').val(jsonData.person.nom);
                         $('#prenom').val(jsonData.person.prenom);
+                        $('#id').val(jsonData.person.id);
+                        $('#token').val(readCookie('session'));
                     } else {
                         $('#modaleMessageTitle').text("Une erreur est survenue");
                         $('#dialog_title_span').text(jsonData.message);
@@ -138,7 +140,7 @@ header section -->
 <main role="main">
     <section>
         <div class="container">
-            <section >
+            <section>
                 <div class="container">
                     <h1 class="jumbotron-heading mb-4 text-center">Gestion Patient</h1>
                     <div class="panel-body">
@@ -147,13 +149,13 @@ header section -->
                                 <div class="row">
                                     <div class="col-sm text-left">
                                         <label class="text-left">Nom</label>
-                                        <input class="form-control" id="nom" value=""
+                                        <input class="form-control" id="nom" value="" name="nom"
                                                style="padding:5px;width: 200px; "
                                                readonly>
                                     </div>
                                     <div class="col-sm text-left">
                                         <label>Prénom</label>
-                                        <input class="form-control btn-group-sm" id="prenom"
+                                        <input class="form-control btn-group-sm" id="prenom" name="prenom"
                                                style="padding:5px;width: 200px; "
                                                value="" readonly>
                                     </div>
@@ -165,7 +167,7 @@ header section -->
                                     </div>
                                     <div class="col-sm text-left">
                                         <label>Adresse mail</label>
-                                        <input class="form-control btn-group-sm" id="mail"
+                                        <input class="form-control btn-group-sm" id="mail" name="mail"
                                                style="padding:5px;width: 200px; "
                                                value="" readonly>
                                     </div>
@@ -175,28 +177,36 @@ header section -->
                                                style="padding:5px;width: 200px; "
                                                value="" readonly>
                                     </div>
-
+                                    <div class="col-sm text-left" style="display: none">
+                                        <label>Id</label>
+                                        <input class="form-control btn-group-sm" id="id" name="id"
+                                               style="padding:5px;width: 200px; "
+                                               value="" readonly>
+                                    </div>
                                 </div>
                                 <div class="mt-2">
-                                    <div class="btn-group mt-3" id="modifBlock" role="group" aria-label="Third group">
-                                        <button type="button" id="modif" class="btn btn-secondary ">
-                                            Modifier
-                                        </button>
-                                    </div>
-                                    <div class="btn-group mt-3" role="group" aria-label="Third group">
-                                        <button type="button" id="send" class="btn btn-secondary">
-                                            Envoyer le mail d'inscription
-                                        </button>
-                                    </div>
-                                    <div class="btn-group mt-3" style="display: none" id="saveBlock" role="group" aria-label="Third group">
-                                        <input type="submit"
-                                               class="form-check-input btn btn-secondary float-left"
-                                               value="Enregistrer">
-                                    </div>
-                                    <div class="btn-group mt-3"  role="group" aria-label="Third group">
-                                        <button type="button" id="supp"
-                                                class="btn btn-danger float-right">Supprimer
-                                        </button>
+                                    <div  class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                        <div id="modifBlock" class="btn-group mr-2 mb-2" role="group" aria-label="First group">
+                                            <button type="button" id="modif" class="btn btn-secondary ">
+                                                Modifier
+                                            </button>
+                                        </div>
+                                        <div  id=saveBlock class="btn-group mr-2 mb-2" style="display: none" role="group" aria-label="First group">
+                                            <input type="submit"
+                                                   class="form-check-input btn btn-secondary float-left"
+                                                   value="Enregistrer">
+                                        </div>
+
+                                        <div class="btn-group mr-2 mb-2" role="group" aria-label="Second group">
+                                            <button type="button" id="send" class="btn btn-secondary">
+                                                Envoyer le mail d'inscription
+                                            </button>
+                                        </div>
+                                        <div class="btn-group mr-2 mb-2" role="group" aria-label="Third group">
+                                            <button type="button" id="supp"
+                                                    class="btn btn-danger">Supprimer
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -248,7 +258,9 @@ header section -->
         jQuery('#modifBlock').css("display", "none");
         jQuery('#saveBlock').css("display", "block");
         $('#num').removeAttr('readonly');
-        $('#mdp').removeAttr('readonly');
+        $('#mail').removeAttr('readonly');
+        $('#nom').removeAttr('readonly');
+        $('#prenom').removeAttr('readonly');
     });
 
     $('#supp').click(function () {
@@ -262,7 +274,7 @@ header section -->
         $.ajax({
             data: $('#changeProfil').serialize(),
             type: 'POST',
-            url: '/login/changeprofil',
+            url: '/admin/updatepatient',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status == "OK") {
@@ -281,7 +293,9 @@ header section -->
         jQuery('#modifBlock').css("display", "block");
         jQuery('#saveBlock').css("display", "none");
         $('#num').attr('readonly', true);
-        $('#mdp').attr('readonly', true);
+        $('#mail').attr('readonly', true);
+        $('#nom').attr('readonly', true);
+        $('#prenom').attr('readonly', true);
         return false; // cancel original event to prevent form submitting
     });
 

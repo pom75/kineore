@@ -267,26 +267,6 @@ public class RDVService {
         }
     }
 
-    @PostMapping(value = "/rdv/getpersonidadminidperson", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public Message getPersonIdAdminByIdPerson(@RequestParam("tokenAdmin") String tokenAdmin,
-                                              @RequestParam("idPerson") String idPerson) {
-        try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
-                return new Message("FAIL", "Token invalide");
-            }
-            Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), idPerson);
-            if(person != null){
-                return new GetPerson("OK", "RAS", person);
-            }else {
-                return new Message("FAIL", "Erreur pendant le chargement du patient.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Message("FAIL", "Erreur pendant le chargement du patient.");
-        }
-    }
 
     @PostMapping(value = "/rdv/bookrdvfrompat", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
