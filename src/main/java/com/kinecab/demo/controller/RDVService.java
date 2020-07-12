@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import static com.kinecab.demo.db.AdminDB.*;
+import static com.kinecab.demo.db.LoginDB.newPasswordPerson;
 import static com.kinecab.demo.db.PatientDB.getPatientById;
 import static com.kinecab.demo.util.MailUtil.*;
 
@@ -355,5 +356,28 @@ public class RDVService {
         }
         return false;
     }
+
+    @PostMapping(value = "/rdv/getrdvpatient", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getRdvPatient(@RequestParam("id") String id,
+                                    @RequestParam("tokenAdmin") String token) {
+        try {
+            List<Colab> colabByToken = getColabByToken(token);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), id);
+            if (person == null) {
+                return new Message("FAIL", "Aucun Patient trouvé.");
+            }
+            final List<Event> rdvs = RDVDB.getRdvbyIdClient(person.getId()).stream().filter(event -> event.getIdAdmin() == colabByToken.get(0).getId()).collect(Collectors.toList());
+            return new GetRDV("OK", "RAS", rdvs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Impossible recuperer les rendez-vous");
+        }
+    }
+
+
 
 }

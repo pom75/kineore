@@ -646,7 +646,7 @@ header section -->
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
                     for (var i = 0; i < jsonData.people.length; i++) {
-                        table.row.add([jsonData.people[i].id,jsonData.people[i].nom, jsonData.people[i].prenom, jsonData.people[i].email, jsonData.people[i].tel, '<select class="form-control" id="productselect" data-live-search="true">Modifier</select>']).draw().node();
+                        table.row.add([jsonData.people[i].id,jsonData.people[i].nom, jsonData.people[i].prenom, jsonData.people[i].email, jsonData.people[i].tel]).draw().node();
                     }
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");

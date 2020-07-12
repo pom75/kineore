@@ -5,12 +5,13 @@ import java.util.List;
 
 import static com.kinecab.demo.db.AdminDB.*;
 import static com.kinecab.demo.db.CabDB.*;
-import static com.kinecab.demo.db.LoginDB.getPersonByEmail;
-import static com.kinecab.demo.db.LoginDB.savePerson;
+import static com.kinecab.demo.db.LoginDB.*;
 import static com.kinecab.demo.db.PatientDB.emailExist;
+import static com.kinecab.demo.util.MailUtil.*;
 
 import com.google.common.base.Strings;
 import com.kinecab.demo.db.LoginDB;
+import com.kinecab.demo.db.RDVDB;
 import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.json.GetColab;
 import com.kinecab.demo.json.GetPerson;
@@ -95,9 +96,9 @@ public class AdminService {
                 return new Message("FAIL", "Token invalide");
             }
             Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), idPerson);
-            if(person != null){
+            if (person != null) {
                 return new GetPerson("OK", "RAS", person);
-            }else {
+            } else {
                 return new Message("FAIL", "Erreur pendant le chargement du patient.");
             }
         } catch (Exception e) {
@@ -109,37 +110,67 @@ public class AdminService {
     @PostMapping(value = "/admin/updatepatient", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message updatePatient(@RequestParam("num") String num,
-                                @RequestParam("mail") String mail,
-                                @RequestParam("nom") String nom,
-                                @RequestParam("prenom") String prenom,
-                                @RequestParam("id") String id,
-                                @RequestParam("token") String token) {
+                                 @RequestParam("mail") String mail,
+                                 @RequestParam("nom") String nom,
+                                 @RequestParam("prenom") String prenom,
+                                 @RequestParam("id") String id,
+                                 @RequestParam("token") String token) {
         try {
             List<Colab> colabByToken = getColabByToken(token);
             if (colabByToken.isEmpty()) {
                 return new Message("FAIL", "Token invalide");
             }
             Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), id);
+            if (person == null) {
+                return new Message("FAIL", "Aucun Patient trouvé.");
+            }
             if (num.isEmpty() || !num.matches("[0][12345679][0-9]{8}$")) {
                 return new Message("FAIL", "Numéro de téléphone invalide.");
             }
             if (!getPersonByEmail(mail).isEmpty()) {
                 return new Message("FAIL", "Mail déjà utilisé");
             }
-            if(person.getPassword().contentEquals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")){
+            if (person.getPassword().contentEquals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) {
                 person.setEmail(mail);
                 person.setNom(nom);
                 person.setPrenom(prenom);
                 person.setTel(num);
                 savePerson(person);
                 return new Message("OK", "Modifications enregistrées.");
-            }else {
-                return new Message("FAIL", "Vosu ne pouvez pas modifier le profil d'un patient inscrit.");
+            } else {
+                return new Message("FAIL", "Vous ne pouvez pas modifier le profil d'un patient inscrit.");
             }
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Impossible de changer le profil.");
         }
     }
+
+    @PostMapping(value = "/admin/sendmailinscription", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message sendEmailPatient(@RequestParam("id") String id,
+                                    @RequestParam("token") String token) {
+        try {
+            List<Colab> colabByToken = getColabByToken(token);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), id);
+            if (person == null) {
+                return new Message("FAIL", "Aucun Patient trouvé.");
+            }
+            if (person.getPassword().contentEquals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) {
+                String newPassword = newPasswordPerson(person);
+                sendEmail(person.getEmail(), SEND_PERSON_TITLE, SEND_PERSON_CONTENT.replace("xxx", newPassword));
+                return new Message("OK", "Email d'inscription envoyé à "+person.getEmail()+".");
+            } else {
+                return new Message("FAIL", "Vous ne pouvez pas envoyer un mail d'inscription a un patient déja inscrit.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Impossible de changer le profil.");
+        }
+    }
+
 
 }
