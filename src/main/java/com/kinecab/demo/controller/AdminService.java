@@ -127,7 +127,7 @@ public class AdminService {
             if (num.isEmpty() || !num.matches("[0][12345679][0-9]{8}$")) {
                 return new Message("FAIL", "Numéro de téléphone invalide.");
             }
-            if (!getPersonByEmail(mail).isEmpty()) {
+            if (!mail.contentEquals(person.getEmail()) && !getPersonByEmail(mail).isEmpty()) {
                 return new Message("FAIL", "Mail déjà utilisé");
             }
             if (person.getPassword().contentEquals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) {
