@@ -524,9 +524,6 @@ header section -->
             var nomPatient = patient.nom + " " + patient.prenom;
             currentEvent = mapIdEvent[idEvent];
             var status = currentEvent.status;
-            console.log(data);
-            console.log(status);
-            console.log(currentEvent);
             if (status.toUpperCase().localeCompare("BOOKED") == 0) {
                 $('#eventBookedTitle').html(start);
                 $('#namePatBooked').val(nomPatient);
