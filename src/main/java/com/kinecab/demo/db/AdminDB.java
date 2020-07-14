@@ -131,7 +131,6 @@ public class AdminDB {
                         final NativeQuery sqlQuery1 = session.createSQLQuery("SELECT * FROM PERSON WHERE  PERSON.id = '" + person.getIdPerson() + "';");
                         Person singleResult = (Person) sqlQuery1.addEntity(Person.class).getSingleResult();
                         personResult[0] = singleResult;
-                        singleResult.setPassword("");
                     }
                 });
             } catch (NoResultException nre) {

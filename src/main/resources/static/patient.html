@@ -9,12 +9,14 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
     <link rel="icon" type="image/png" href="img/ck.png"/>
+    <script src="js/moment.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"/>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js" defer></script>
-    <script src="js/moment.js"></script>
     <script>
+        var patient;
+
         function $_GET(param) {
             var vars = {};
             window.location.href.replace(location.hash, '').replace(
@@ -44,12 +46,19 @@
                 url: '/admin/getpersonidadminidperson',
                 success: function (jsonData, textStatus, jqXHR) {
                     if (jsonData.status === "OK") {
+                        patient = jsonData.person;
                         $('#mail').val(jsonData.person.email);
                         $('#num').val(jsonData.person.tel);
                         $('#nom').val(jsonData.person.nom);
                         $('#prenom').val(jsonData.person.prenom);
                         $('#id').val(jsonData.person.id);
                         $('#token').val(readCookie('session'));
+                        if (jsonData.person.password.localeCompare("null") != 0) {//Person inscrite
+                            jQuery('#modifBlock').css("display", "none");
+                            jQuery('#mailInscrip').css("display", "none");
+                            jQuery('#saveBlock').css("display", "none");
+                            jQuery('#suppBlock').css("display", "none");
+                        }
                     } else {
                         $('#modaleMessageTitle').text("Une erreur est survenue");
                         $('#dialog_title_span').text(jsonData.message);
@@ -210,7 +219,8 @@ header section -->
                                                     Envoyer le mail d'inscription
                                                 </button>
                                             </div>
-                                            <div class="btn-group mr-2 mb-2" role="group" aria-label="Third group">
+                                            <div id="suppBlock" class="btn-group mr-2 mb-2" role="group"
+                                                 aria-label="Third group">
                                                 <button type="button" id="supp"
                                                         class="btn btn-danger">Supprimer
                                                 </button>
@@ -228,6 +238,7 @@ header section -->
                                         <th>Id</th>
                                         <th>Date</th>
                                         <th>Motif</th>
+                                        <th>Status</th>
                                         <th>Pointé</th>
                                         <th>Payé</th>
                                     </tr>
@@ -243,6 +254,138 @@ header section -->
         </div>
     </section>
 </main>
+
+<!-- Popup Event New WAITING -->
+
+<div class="modal fade" id="popupSingleEventWaiting" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog event-popup mb-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="eventWaitingTitle"></h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventFreeFormWaiting" method="POST">
+                    <div id="WaitingEvent" class="daySelectect">
+                        <input id="namePatWaiting" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="numWaiting" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="motifWaiting" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <textarea class="form-control input-lg" placeholder="Information client" rows="5"
+                                  id="commentEventWaiting" readonly> </textarea>
+                        <br>
+                        <div class="float-sm-right" id="modifBlockWaiting">
+                            <button type="button" id="accepteEventWaiting" class="btn btn-secondary float-left">Accepter
+                            </button>
+                        </div>
+                        <div class="float-sm-left">
+                            <button type="button" id="refuseEventWaiting" class="btn btn-danger float-right">Refuser
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Popup Event New BOOKED -->
+<div class="modal fade" id="popupSingleEventBooked" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog event-popup mb-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="eventBookedTitle"></h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventFreeFormBooked" method="POST">
+                    <div id="BookedEvent" class="daySelectect">
+                        <input id="namePatBooked" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="numBooked" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <select class="form-control" id="motifBooked">
+                        </select>
+                        <br/>
+                        <textarea class="form-control input-lg" style="resize:none" placeholder="Information client"
+                                  rows="5"
+                                  id="commentEventBooked"> </textarea>
+                        <br>
+
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="pointe">
+                            <label class="form-check-label" for="pointe">
+                                Pointé
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="paye">
+                            <label class="form-check-label" for="paye">
+                                Payé
+                            </label>
+                            <button type="button" id="saveEventBooked" class="btn btn-secondary float-right">
+                                Enregistrer
+                            </button>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="float-sm-right" id="modifBlockBooked">
+                            <button type="button" id="cancelEventBooked" class="btn btn-secondary float-left">Annuler
+                            </button>
+                        </div>
+                        <div class="float-sm-left">
+                            <button type="button" id="suppEventBooked" class="btn btn-danger float-right">Supprimer
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Popup Event CANCELED EVENT -->
+
+<div class="modal fade" id="popupSingleEventCanceled" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog event-popup mb-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="eventCanceledTitle"></h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventFreeFormCanceled" method="POST">
+                    <div id="CanceledEvent" class="daySelectect">
+                        <input id="namePatCanceled" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="numCanceled" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <input id="motifCanceled" type="text" class="form-control" name="nom" placeholder="Nom"
+                               value="" readonly/>
+                        <br/>
+                        <textarea class="form-control input-lg" placeholder="Information client" rows="5"
+                                  id="commentEventCanceled" readonly> </textarea>
+                        <br>
+                        <div class="col-sm">
+                            <button type="button" id="suppEventCanceled" class="btn btn-danger float-sm-right">Supprimer
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <div class="modal fade" id="modalSupp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -277,7 +420,7 @@ header section -->
 <!-- script tags
 ============================================================= -->
 <script type="text/javascript">
-
+    var currentEvent;
 
     $('#modif').click(function () {
         jQuery('#modifBlock').css("display", "none");
@@ -360,6 +503,7 @@ header section -->
 
     var table;
     $(document).ready(function () {
+        $.fn.dataTable.moment( 'DD/MM/YYYY à HH:mm' );
         table = $('#table_id').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
@@ -375,16 +519,57 @@ header section -->
         });
         $('#table_id tbody').on('click', 'tr', function () {
             var data = table.row(this).data();
-            //window.location.href = "patient.html?id="+data[0];
+            var start = data[1];
+            var idEvent = data[0];
+            var nomPatient = patient.nom + " " + patient.prenom;
+            currentEvent = mapIdEvent[idEvent];
+            var status = currentEvent.status;
+            console.log(data);
+            console.log(status);
+            console.log(currentEvent);
+            if (status.toUpperCase().localeCompare("BOOKED") == 0) {
+                $('#eventBookedTitle').html(start);
+                $('#namePatBooked').val(nomPatient);
+                $('#numBooked').val(patient.tel);
+                var motifs = currentEvent.listIdMotif.split(',');
+                $('#motifBooked').empty();
+                motifs.forEach(motif => {
+                    if (motif === currentEvent.idMotif) {
+                        $('#motifBooked').append("<option value=\"" + motif + "\"selected>" + idMotifMap[motif].motif + "</option>");
+                    } else {
+                        $('#motifBooked').append("<option value=\"" + motif + "\">" + idMotifMap[motif].motif + "</option>");
+                    }
+                });
+                $('#commentEventBooked').val(currentEvent.info);
+                $("#pointe").prop("checked", currentEvent.pointe);
+                $("#paye").prop("checked", currentEvent.paye);
+                $('#popupSingleEventBooked').modal('show');
+            }
+            if (status.toUpperCase().localeCompare("WAITING") == 0) {
+                $('#eventWaitingTitle').html(start);
+                $('#namePatWaiting').val(nomPatient);
+                $('#numWaiting').val(patient.tel);
+                $('#motifWaiting').val(idMotifMap[currentEvent.idMotif].motif);
+                $('#commentEventWaiting').val(currentEvent.info);
+                $('#popupSingleEventWaiting').modal('show');
+            }
+            if (status.toUpperCase().localeCompare("CANCELED") == 0) {
+                $('#eventCanceledTitle').html(start);
+                $('#namePatCanceled').val(nomPatient);
+                $('#numCanceled').val(patient.tel);
+                $('#motifCanceled').val(idMotifMap[currentEvent.idMotif].motif);
+                $('#commentEventCanceled').val(currentEvent.info);
+                $('#popupSingleEventCanceled').modal('show');
+            }
         });
         getRdvs();
     });
 
     var idMotifMap = {};
+    var mapIdEvent = {};
 
     function getRdvs() {
         getMotif();
-        var listEvent = [];
         $.ajax({
             async: false,
             data: {id: $_GET('id'), tokenAdmin: readCookie('session')},
@@ -392,8 +577,10 @@ header section -->
             url: '/rdv/getrdvpatient',
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
-                    jsonData.rdvs.forEach(event => {
-                        var pointe, payer;
+                    var sortedList =  jsonData.rdvs.sort((a, b) => b.start.valueOf() - a.start.valueOf())
+                    sortedList.forEach(event => {
+                        mapIdEvent[event.id] = event;
+                        var pointe, payer, status;
                         if (event.pointe == true) {
                             pointe = "Pointé"
                         } else {
@@ -404,7 +591,17 @@ header section -->
                         } else {
                             payer = "Non"
                         }
-                        table.row.add([event.id, moment(event.start).format("DD/MM/YYYY à HH:mm"), idMotifMap[event.idMotif].motif, pointe, payer]).draw().node();
+                        if (event.status.toUpperCase().localeCompare("BOOKED") == 0) {
+                            status = "Confirmé";
+                        }
+                        if (event.status.toUpperCase().localeCompare("WAITING") == 0) {
+                            status = "En attente de confrimation";
+                        }
+                        if (event.status.toUpperCase().localeCompare("CANCELED") == 0) {
+                            status = "Annulé";
+                        }
+
+                        table.row.add([event.id, moment(event.start).format("DD/MM/YYYY à HH:mm"), idMotifMap[event.idMotif].motif, status, pointe, payer]).draw().node();
                     });
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
@@ -418,7 +615,6 @@ header section -->
                 $('#modalMessage').modal('toggle');
             }
         });
-        return listEvent;
     }
 
     function getMotif() {
@@ -445,6 +641,216 @@ header section -->
             }
         });
     }
+
+    function createJsonEvent(event) {
+        return {
+            id: event.id,
+            title: event.title,
+            start: moment(event.start).format("YYYY-MM-DD HH:mm:ss"),
+            end: moment(event.end).format("YYYY-MM-DD HH:mm:ss"),
+            color: event.backgroundColor,
+            editable: true,
+            durationEditable: false,
+            data: {
+                status: event.status,
+                idPatient: event.idPatient,
+                nomPatient: event.nomPrenom,
+                idMotif: event.idMotif,
+                motif: event.motif,
+                duration: event.duration,
+                info: event.info,
+                pointe: event.pointe,
+                id: event.id,
+                paye: event.paye,
+                listIdMotif: event.listIdMotif,
+                idAdmin: event.idAdmin
+            }
+        }
+    }
+
+    //Save Booked RDV
+    $("#saveEventBooked").click(function () {
+        $('#popupSingleEventBooked').modal('hide');
+        currentEvent.pointe = $('#pointe').is(":checked");
+        currentEvent.paye = $('#paye').is(":checked");
+        currentEvent.info = $('#commentEventBooked').val();
+        currentEvent.idMotif = $("#motifBooked").val();
+        moveEvent([createJsonEvent(currentEvent)]);
+    });
+
+    function moveEvent(listEvent) {
+        $.ajax({
+            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            type: 'POST',
+            url: '/rdv/moveevent',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    redrawTableData();
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+    //Accepte RDV
+    $("#accepteEventWaiting").click(function () {
+        $('#popupSingleEventWaiting').modal('hide');
+        currentEvent.status = "BOOKED";
+        changeStatusEvents([createJsonEvent(currentEvent)], "ACCEPTE", currentEvent.idPatient);
+    });
+
+    function changeStatusEvents(listEvent, status, idPatient) {
+        $.ajax({
+            data: {
+                events: JSON.stringify(listEvent),
+                tokenAdmin: readCookie('session'),
+                status: status,
+                idPat: idPatient
+            },
+            type: 'POST',
+            url: '/rdv/changestatusevent',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    redrawTableData();
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+    //Refuse RDV
+    $("#refuseEventWaiting").click(function () {
+        $('#popupSingleEventWaiting').modal('hide');
+        var tempIdPatient = currentEvent.idPatient;
+        currentEvent.title = "RDV Libre";
+        currentEvent.status = "FREE";
+        currentEvent.idPatient = 0;
+        currentEvent.idMotif = "";
+        currentEvent.nomPatient = "";
+        currentEvent.info = "";
+        changeStatusEvents([createJsonEvent(currentEvent)], "REFUSE", tempIdPatient);
+    });
+
+    //Cancel Booked RDV
+    $("#cancelEventBooked").click(function () {
+        $('#popupSingleEventBooked').modal('hide');
+        currentEvent.status = "CANCELED";
+        changeStatusEventsAndCreateFree([createJsonEvent(currentEvent)], "CANCEL", currentEvent.idPatient);//cancel rdv
+    });
+
+    function changeStatusEventsAndCreateFree(listEvent, status, idPatient) {
+        $.ajax({
+            data: {
+                events: JSON.stringify(listEvent),
+                tokenAdmin: readCookie('session'),
+                status: status,
+                idPat: idPatient
+            },
+            type: 'POST',
+            url: '/rdv/changestatusevent',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    redrawTableData();
+                    currentEvent.title = "RDV Libre";
+                    currentEvent.status = "FREE";
+                    currentEvent.idPatient = 0;
+                    currentEvent.idMotif = "";
+                    currentEvent.nomPatient = "";
+                    currentEvent.info = "";
+                    currentEvent.id = 0;
+                    saveNewEvents([createJsonEvent(currentEvent)]);//add new free rdv
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+    function saveNewEvents(listEvent) {
+        $.ajax({
+            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            type: 'POST',
+            url: '/rdv/addevent',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+    //Supp Booked RDV
+    $("#suppEventBooked").click(function () {
+        $('#popupSingleEventBooked').modal('hide');
+        removeEvents([createJsonEvent(currentEvent)]);
+    });
+
+    function redrawTableData(){
+        table.clear().draw();
+        idMotifMap = {};
+        mapIdEvent = {};
+        getRdvs();
+    }
+    function removeEvents(listEvents) {
+        $.ajax({
+            data: {listEvents: JSON.stringify(listEvents), tokenAdmin: readCookie('session')},
+            type: 'POST',
+            url: '/rdv/removerdv',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    redrawTableData();
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+    //Supp Canceled RDV
+    $("#suppEventCanceled").click(function () {
+        $('#popupSingleEventCanceled').modal('hide');
+        removeEvents([createJsonEvent(currentEvent)]);
+    });
+
 </script>
+<script type="text/javascript" src="js/moment-js-order.js" defer></script>
 </body>
 </html>

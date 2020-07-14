@@ -318,7 +318,6 @@ header section -->
 </div>
 
 <!-- Popup Event New BOOKED -->
-
 <div class="modal fade" id="popupSingleEventBooked" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog event-popup mb-5" role="document">
@@ -605,6 +604,7 @@ header section -->
                 }
                 if (status.toUpperCase().localeCompare("FREE") == 0) {
                     $('#namePat').val("");
+                    $('#namePat').attr("name",null);
                     $('#commentEvent').val("");
                     $("#eventMotifSelection").val("default").change();
                     var motifs = data.listIdMotif.split(',');
@@ -1055,6 +1055,10 @@ header section -->
             errorText += "Nom du Patient inférieur à 3 caracteres. <br>";
             error = true;
         }
+        if ($('#namePat').attr("name") == null) {
+            errorText += "Nom du Patient inexistant, veuillez rajouter un nouveau patient. <br>";
+            error = true;
+        }
         if ($("#eventMotifSelection").val().toUpperCase().localeCompare("DEFAULT") == 0) {
             errorText += "Aucun Motif selectioné. <br>";
             error = true;
@@ -1068,6 +1072,7 @@ header section -->
             safebookOneEvent([createJsonEvent(currentEvent.event)]);
             calendar.getEventById(currentEvent.event.id).remove();
         }
+
     });
 
     function setEventPropFreeToBooked(event) {

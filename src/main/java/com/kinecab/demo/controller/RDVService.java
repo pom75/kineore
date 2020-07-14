@@ -279,14 +279,12 @@ public class RDVService {
             Person person = PatientDB.getPatientByToken(tokenPat);
             List<Event> rdvFreeById = RDVDB.getRdvFreeById(idEvent);
             if (rdvFreeById.isEmpty()) {
+                //Event not free in the DB
                 return new Message("FAIL", "Ce rendez-vous n'est plus disponible.");
             }
             Event curentEvent = rdvFreeById.get(0);
             if (!idMotifIsPresentInEvent(idMotif, curentEvent)) {
-                return new Message("FAIL", "Ce rendez-vous n'est plus disponible.");
-            }
-            Timestamp timestamp = Timestamp.valueOf(start);
-            if (curentEvent.getStart().compareTo(timestamp) != 0) {
+                //Wrong Motif
                 return new Message("FAIL", "Ce rendez-vous n'est plus disponible.");
             }
             curentEvent.setIdMotif(idMotif);

@@ -11,7 +11,6 @@ import static com.kinecab.demo.util.MailUtil.*;
 
 import com.google.common.base.Strings;
 import com.kinecab.demo.db.LoginDB;
-import com.kinecab.demo.db.RDVDB;
 import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.json.GetColab;
 import com.kinecab.demo.json.GetPerson;
@@ -97,7 +96,12 @@ public class AdminService {
             }
             Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), idPerson);
             if (person != null) {
-                return new GetPerson("OK", "RAS", person);
+                if (person.getPassword() == null) {
+                    person.setCryptedPassword("null");
+                }else {
+                    person.setCryptedPassword("not null");
+                }
+                    return new GetPerson("OK", "RAS", person);
             } else {
                 return new Message("FAIL", "Erreur pendant le chargement du patient.");
             }
@@ -130,7 +134,8 @@ public class AdminService {
             if (!mail.contentEquals(person.getEmail()) && !getPersonByEmail(mail).isEmpty()) {
                 return new Message("FAIL", "Mail déjà utilisé");
             }
-            if (person.getPassword().contentEquals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) {
+            //TODO update nom prenom RDVs
+            if (person.getPassword()== null) {
                 person.setEmail(mail);
                 person.setNom(nom);
                 person.setPrenom(prenom);
@@ -159,7 +164,7 @@ public class AdminService {
             if (person == null) {
                 return new Message("FAIL", "Aucun Patient trouvé.");
             }
-            if (person.getPassword().contentEquals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) {
+            if (person.getPassword() == null) {
                 String newPassword = newPasswordPerson(person);
                 sendEmail(person.getEmail(), SEND_PERSON_TITLE, SEND_PERSON_CONTENT.replace("xxx", newPassword));
                 return new Message("OK", "Email d'inscription envoyé à "+person.getEmail()+".");
