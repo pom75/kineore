@@ -51,8 +51,8 @@ public class Person {
 
     public Person(String nom, String prenom, String email, String tel) {
         this.email = email;
-        this.nom = nom;
-        this.prenom = prenom;
+        this.nom = Utils.trimUp(nom);
+        this.prenom = Utils.trimUp(prenom);
         this.tel = tel;
         this.password = null;
     }
