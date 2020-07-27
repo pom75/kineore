@@ -30,6 +30,8 @@ public class MotifCab {
     @Column
     private int resource;
 
+    @Column
+    private int duree;
 
 //~ ----------------------------------------------------------------------------------------------------------------
     //~ Constructors
@@ -84,5 +86,13 @@ public class MotifCab {
 
     public void setIdCab(int idAdmin) {
         this.idCab = idAdmin;
+    }
+
+    public int getDuree() {
+        return duree;
+    }
+
+    public void setDuree(int duree) {
+        this.duree = duree;
     }
 }

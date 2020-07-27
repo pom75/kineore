@@ -218,14 +218,7 @@ header section -->
                     </div>
 
                     <div id="createDay2" class="daySelectect2" style="display:none">
-                        <h4>Duree d'un rendez-vous : </h4>
-                        <select class="form-control" id="dureeSelection2">
-                            <option selected></option>
-                            <option value="15">15 min</option>
-                            <option value="20">20 min</option>
-                            <option value="30">30 min</option>
-                            <option value="60">1 h</option>
-                        </select>
+                        <h4>Motif du rendez-vous : </h4>
                         <br>
                         <div class="form-check" id="selectListIdMotif">
                         </div>
@@ -845,13 +838,6 @@ header section -->
 
     });
 
-    //On duree event selection
-    $(function () {
-        $('#dureeSelection2').change(function () {
-            durationRDV = $(this).val();
-        })
-    });
-
     //On save free event
     $("#createListRdvHour").click(function () {
         checked = $("input[name='day']:checked").length;
@@ -860,17 +846,24 @@ header section -->
             $('#modalMessage').modal('toggle');
             return false;
         }
-        if (!durationRDV) {
-            $('#dialog_title_span').html("Vous devez selectionner au moins 1 motif.");
-            $('#modalMessage').modal('toggle');
-            return false;
-        }
+        var listDuree = [];
         var listIdMotif = "";
+
         $.each($("input[name='day']:checked"), function () {
             listIdMotif += $(this).val();
             listIdMotif += ",";
+            listDuree.push(idMotifMap[$(this).val()].duree);
         });
-        listIdMotif = listIdMotif.substring(0, listIdMotif.length - 1); //remove coma
+
+        listIdMotif = listIdMotif.substring(0, listIdMotif.length - 1); //remove last coma
+        durationRDV = pgdcListe(listDuree);
+
+        if(durationRDV === null){
+            $('#dialog_title_span').text("Erreur");
+            $('#modaleMessageTitle').text("Les durées des motifs selectionné ne sont pas compatible. Veuillez selectionner d'autres motif ou changer les durées.");
+            $('#modalMessage').modal('toggle');
+            return;
+        }
 
         $('#timeGrid').modal('hide');
         var currentWritter = moment(startDay);
@@ -896,7 +889,11 @@ header section -->
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
-                    calendar.addEventSource(listEvent);
+                    if(status.toUpperCase().localeCompare("REFUSE") == 0){
+                       // calendar.addEventSource(listEvent);
+                        removeEvents(listEvent);
+                        calendar.getEventById(currentEvent.event.id).remove();
+                    }
                     added = true;
                     return true;
                 } else {
@@ -929,17 +926,29 @@ header section -->
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
-                    calendar.addEventSource(listEvent);
+                    var listDuree = [];
+                    var tabMotif = currentEvent.event.extendedProps.data.listIdMotif.split(',');
+                    tabMotif.forEach(id => {
+                        listDuree.push(idMotifMap[id].duree);
+                    });
+
+                    durationRDV = pgdcListe(listDuree);
+
+                    if(durationRDV === null){
+                        $('#dialog_title_span').text("Erreur");
+                        $('#modaleMessageTitle').text("Les durées des motifs selectionné ne sont pas compatible. Veuillez selectionner d'autres motif ou changer les durées.");
+                        $('#modalMessage').modal('toggle');
+                        return;
+                    }
+
+                    var currentWritter = moment(currentEvent.event.start);
+                    var listEvent = [];
+                    while (moment(currentEvent.event.end).diff(currentWritter) > 0) {
+                        var integer = parseInt(durationRDV, 10);
+                        listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, currentEvent.event.extendedProps.data.listIdMotif, readCookie('idAdmin')));
+                    }
+                    saveNewEvents(listEvent);
                     added = true;
-                    currentEvent.event.setProp("color", '#257e4a');
-                    currentEvent.event.setProp("title", "RDV Libre");
-                    currentEvent.event.extendedProps.data.status = "FREE";
-                    currentEvent.event.extendedProps.data.idPatient = 0;
-                    currentEvent.event.extendedProps.data.idMotif = "";
-                    currentEvent.event.extendedProps.data.nomPatient = "";
-                    currentEvent.event.extendedProps.data.info = "";
-                    currentEvent.event.extendedProps.data.id = 0;
-                    saveNewEvents([createJsonEvent(currentEvent.event)]);//add new free rdv
                     calendar.getEventById(currentEvent.event.id).remove();
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
@@ -970,6 +979,7 @@ header section -->
                     }
                     calendar.addEventSource(listEvent);
                     added = true;
+                    calendar.refetchEvents();
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
@@ -1051,6 +1061,8 @@ header section -->
     $("#saveEvent").click(function () {
         var error = false;
         var errorText = "";
+        var listToRemove = [];
+        //TODO FUNCTION ERROR with return
         if ($('#namePat').val().length < 3) {
             errorText += "Nom du Patient inférieur à 3 caracteres. <br>";
             error = true;
@@ -1063,10 +1075,71 @@ header section -->
             errorText += "Aucun Motif selectioné. <br>";
             error = true;
         }
+
+        if(!error && currentEvent.event.extendedProps.data.duration != idMotifMap[$("#eventMotifSelection").val()].duree){
+            var duration = currentEvent.event.extendedProps.data.duration;
+            var duree = idMotifMap[$("#eventMotifSelection").val()].duree;
+            if(duration > duree){
+                errorText += "Impossible de choisir ce motif. <br>";
+                error = true;
+                return;
+            }
+            var events =  calendar.getEvents().sort(function(a, b) {
+                return a.start - b.start;
+            });
+            var quotient = Math.floor(duree/duration);
+            var found = false;
+            var currEvent = currentEvent.event;
+
+            for (i = 0; i < events.length; i++) {
+                if(currEvent.id === events[i].id){
+                    found = true;
+                    continue;
+                }
+                if(found){
+                    if(moment(currEvent.start).isSame(moment(events[i].start))){
+                        continue;
+                    }
+                    if(moment(currEvent.end).isSame(moment(events[i].start))){
+                        var tabMotif = events[i].extendedProps.data.listIdMotif.split(',');
+                        if(currEvent.extendedProps.data.duration === events[i].extendedProps.data.duration &&  events[i].extendedProps.data.status.toUpperCase().localeCompare("FREE") == 0 && tabMotif.includes($("#eventMotifSelection").val())){
+                            quotient --;
+                            listToRemove.push(events[i]);
+                            if(quotient <= 1){
+                                break;
+                            }else{
+                                currEvent = events[i];
+                            }
+                        }
+                    }else{
+                        break;
+                    }
+                }
+                //motif est dans la liste des motif
+                //liste chainé
+            }
+        }
+
+        if(quotient > 1){
+            errorText += "Pas de assez de temps disponible pour ce motif, impossible de choisir ce motif. <br>";
+            error = true;
+        }
+
         if (error) {
             $('#dialog_title_span').html(errorText);
             $('#modalMessage').modal('toggle');
         } else {
+            if(quotient === 1 && found) {
+                currentEvent.event.setProp("durationEditable", true);
+                currentEvent.event.setEnd(events[i].end);
+                currentEvent.event.extendedProps.data.duration = duree;
+                var jsonListToRemove = [];
+                listToRemove.forEach(event => {
+                    jsonListToRemove.push(createJsonEvent(event));
+                    calendar.getEventById(event.id).remove();
+                });
+                removeEvents(jsonListToRemove);
+            }
             $('#popupSingleEvent').modal('hide');
             setEventPropFreeToBooked(currentEvent.event);
             safebookOneEvent([createJsonEvent(currentEvent.event)]);
@@ -1114,6 +1187,27 @@ header section -->
     $("#refuseEventWaiting").click(function () {
         $('#popupSingleEventWaiting').modal('hide');
         var tempIdPatient = currentEvent.event.extendedProps.data.idPatient;
+        var listDuree = [];
+        var tabMotif = currentEvent.event.extendedProps.data.listIdMotif.split(',');
+        tabMotif.forEach(id => {
+            listDuree.push(idMotifMap[id].duree);
+        });
+
+        durationRDV = pgdcListe(listDuree);
+
+        if(durationRDV === null){
+            $('#dialog_title_span').text("Erreur");
+            $('#modaleMessageTitle').text("Les durées des motifs selectionné ne sont pas compatible. Veuillez selectionner d'autres motif ou changer les durées.");
+            $('#modalMessage').modal('toggle');
+            return;
+        }
+
+        var currentWritter = moment(currentEvent.event.start);
+        var listEvent = [];
+        while (moment(currentEvent.event.end).diff(currentWritter) > 0) {
+            var integer = parseInt(durationRDV, 10);
+            listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, currentEvent.event.extendedProps.data.listIdMotif, readCookie('idAdmin')));
+        }
         currentEvent.event.setProp("color", '#257e4a');
         currentEvent.event.setProp("title", "RDV Libre");
         currentEvent.event.extendedProps.data.status = "FREE";
@@ -1122,7 +1216,7 @@ header section -->
         currentEvent.event.extendedProps.data.nomPatient = "";
         currentEvent.event.extendedProps.data.info = "";
         changeStatusEvents([createJsonEvent(currentEvent.event)], "REFUSE", tempIdPatient);
-        calendar.getEventById(currentEvent.event.id).remove();
+        saveNewEvents(listEvent);
     });
 
     //Do nothing on submit
@@ -1343,6 +1437,35 @@ header section -->
             doy: 4  // Used to determine first week of the year.
         }
     });
+
+    function pgdcListe(input) {
+        if (toString.call(input) !== "[object Array]")
+            return  false;
+        var len, a, b;
+        len = input.length;
+        if ( !len ) {
+            return null;
+        }
+        a = input[ 0 ];
+        for ( var i = 1; i < len; i++ ) {
+            b = input[ i ];
+            a = pgdc( a, b );
+        }
+        return a;
+    }
+
+    function pgdc(x, y) {
+        if ((typeof x !== 'number') || (typeof y !== 'number'))
+            return false;
+        x = Math.abs(x);
+        y = Math.abs(y);
+        while(y) {
+            var t = y;
+            y = x % y;
+            x = t;
+        }
+        return x;
+    }
 </script>
 </body>
 </html>
