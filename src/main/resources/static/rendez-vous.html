@@ -14,14 +14,10 @@
     <link rel="stylesheet" href="css/custom.css">
     <link rel="icon" type="image/png" href="img/ck.png"/>
     <script src="js/jquery-2.1.1.js"></script>
-    <script src="js/jquery-ui.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-autocomplete.min.js"></script>
     <script src="js/moment.js"></script>
-    <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css"/>
+    <script src="js/jquery-ui.min.js"></script>
 </head>
 <script>
 
@@ -221,23 +217,32 @@ header section -->
     onLoad();
 
 
-    $(function () {
-        $('#calendrierPick').datetimepicker({
+    getEvents();
+    function initComponent() {
+
+        $('#calendrierPick').datepicker({
             inline: true,
             format: 'L',
             sideBySide: true,
+            onSelect: function (e) {
+                currentDate = moment(e);
+                filterAndShowRdv(moment(e));
+            },
+            beforeShowDay: function highLight(date) {
+                for (const currEvent of listEvent) {
+                    var split = currEvent.listIdMotif.split(',');
+                    if (moment(currEvent.start).isSame(moment(date), 'day') && split.includes(currentMotif)) {
+                        return [true, 'highlightfree'];
+                    }
+                }
+                return [true,'highlightnotfree'];
+            },
             locale: test,
             minDate: new Date(),
             maxDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-            disabledDates: [
-                moment("04/25/20")//TODO disable day sans RDV
-            ]
         });
-        $("#calendrierPick").on("change.datetimepicker", function (e) {
-            currentDate = e.date;
-            filterAndShowRdv(e.date);
-        });
-    });
+    }
+
 
     function filterAndShowRdv(date) {
         var filteredFreeRdvs = getFreeRdvsFromDateAndIdMotif(date);
@@ -332,8 +337,6 @@ header section -->
         });
     }
 
-    getEvents();
-
     function $_GET(param) {
         var vars = {};
         window.location.href.replace(location.hash, '').replace(
@@ -357,6 +360,9 @@ header section -->
             currentMotif = $(this).val();
             $('#suiteChoice').show();
             $('#modifBlock').show();
+            $("#calendrierPick").datepicker("destroy");
+            initComponent();
+            $('#calendrierPick').datepicker("refresh");
             filterAndShowRdv(currentDate);
         }
     });
@@ -490,9 +496,6 @@ header section -->
         });
         return false; // cancel original event to prevent form submitting
     });
-
-</script>
-<script>
     var test = moment.locale('fr', {
         months: 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_'),
         monthsShort: 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),

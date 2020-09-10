@@ -34,3 +34,6 @@ outline-offset: -2px;
 -webkit-appearance: none;
     border-width: 1px;
 }
+
+td.highlightfree a {background: #28a745  50% 50% repeat-x !important;  border: 1px #88a276 solid !important;}
+td.highlightnotfree a {background: #dd1e20 50% 50% repeat-x !important;  border: 1px #a25c52 solid !important;}
