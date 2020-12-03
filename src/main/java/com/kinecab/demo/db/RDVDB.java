@@ -94,10 +94,10 @@ public class RDVDB {
             Transaction trx = session.beginTransaction();
             for (Event event : events) {
                 Event dbEvent = RDVDB.getRdvbyId(event.getId());
-                if(dbEvent.getStatus() != event.getStatus()){
+                if (dbEvent.getStatus() != event.getStatus()) {
                     trx.commit();
-                   return false;
-                }else {
+                    return false;
+                } else {
                     sqlQuery = session.createSQLQuery("DELETE FROM Event WHERE Event.idAdmin = '" + idAdmin + "' AND  Event.id = '" + event.getId() + "';");
                     sqlQuery.executeUpdate();
                 }
@@ -116,6 +116,15 @@ public class RDVDB {
                 NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + motifColab.getIdMotifCab() + "';");
                 motifCabs.add((MotifCab) sqlQuery2.addEntity(MotifCab.class).list().get(0));
             });
+            return motifCabs;
+        }
+    }
+
+    public static List<MotifCab> getMotifCabByIdCab(int id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            List<MotifCab> motifCabs = new LinkedList<>();
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + id + "';");
+            motifCabs.add((MotifCab) sqlQuery.addEntity(MotifCab.class).list().get(0));
             return motifCabs;
         }
     }

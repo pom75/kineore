@@ -86,7 +86,7 @@ header section -->
             <div class="row justify-content-md-center">
                 <div class="col-md-4">
                     <select class="form-control mx-sm-3 mb-2" id="eventMotifSelection">
-                        <option value="default" selected>Veuillez faire un choix</option>
+                        <option value="default" selected>Veuillez Selectionner un Motif</option>
                     </select>
                 </div>
             </div>
@@ -211,15 +211,19 @@ header section -->
 </body>
 </html>
 <script type="text/javascript">
+    //TODO get first idMotifCab the id admin
     var listEvent = [];
     var currentMotif = 0;
     var currentDate = new Date();
+    //TODO set
+    var idColbasMap = {};
+    var idColabMapIdMotifMap = {};
+
     onLoad();
-
-
     getEvents();
-    function initComponent() {
+    getColabs();
 
+    function initComponent() {
         $('#calendrierPick').datepicker({
             inline: true,
             format: 'L',
@@ -235,7 +239,7 @@ header section -->
                         return [true, 'highlightfree'];
                     }
                 }
-                return [true,'highlightnotfree'];
+                return [true, 'highlightnotfree'];
             },
             locale: test,
             minDate: new Date(),
@@ -275,27 +279,25 @@ header section -->
             events.forEach(event => {
                 $('#titleDate').text("");
                 var heur = moment(event.start).format("HH:mm");
-                ;
                 heur = heur.replace(":", "h");
                 $('#listHour').append('<div class="btn-group mt-3 px-2" role="group" aria-label="Third group"> <button type="button" class="btn btn-success" onclick="setCurrentRdv(\'' + event.id + '\')">' + heur + '</button> </div>');
             })
         }
     }
 
-    var idMotifMap = {};
-
     function getMotif() {
+        var idMotifMap = {};
         $.ajax({
             data: 'idAdmin=' + $_GET('id'),
             type: 'POST',
-            url: '/rdv/getmotifid',
+            url: '/rdv/getmotifcabid',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
                     for (var i = 0; i < jsonData.motif.length; i++) {
-                        idMotifMap[jsonData.motif[i].id] = jsonData.motif[i].motif;
-                        $('#eventMotifSelection').append("<option value=\"" + jsonData.motif[i].id + "\">" + jsonData.motif[i].motif + "</option>");
+                        idMotifMap[jsonData.motif[i].id] = jsonData.motif[i];
                     }
+                    return idMotifMap;
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
                     $('#dialog_title_span').text(jsonData.message);
@@ -310,8 +312,38 @@ header section -->
         });
     }
 
-    getMotif();
-
+    var listMotif = [];
+    function logMapElements(valeur, clé, map) {
+        console.log(`map.get('${clé}') = ${value}`);
+    }
+    function getColabs() {
+        $.ajax({
+            url: '/cab/getAdminsCab',
+            type: 'POST',
+            data: 'id=' + $_GET('id'),
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.colabs.length; i++) {
+                        idColbasMap[jsonData.colabs[i].id] = jsonData.colabs[i];
+                        var motifMap = getMotif(jsonData.colabs[i].id);
+                        motifMap.foreach(logMapElements);
+                        $('#eventMotifSelection').append("<option value=\"" + jsonData.motif[i].id + "\">" + jsonData.motif[i].motif + "</option>");
+                        idColabMapIdMotifMap[jsonData.colabs[i].id] = motifMap;
+                    }
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
 
     function getEvents() {
         $.ajax({

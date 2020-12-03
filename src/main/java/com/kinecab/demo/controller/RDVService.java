@@ -240,11 +240,11 @@ public class RDVService {
         }
     }
 
-    @PostMapping(value = "/rdv/getmotifid", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getMotifId(@RequestParam("idAdmin") String idAdmin) {
+    public Message getMotifId(@RequestParam("idCab") String idCab) {
         try {
-            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(Integer.parseInt(idAdmin.replace("#", "")));
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifCabByIdCab(Integer.parseInt(idCab.replace("#", "")));
             return new GetMotif("OK", "RAS", motifByIdAdmin);
         } catch (Exception e) {
             e.printStackTrace();

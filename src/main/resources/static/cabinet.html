@@ -82,28 +82,6 @@
                         $('#modalMessage').modal('toggle');
                     }
                 });
-                $.ajax({
-                    url: '/cab/getAdminsCab',
-                    type: 'POST',
-                    data: 'id=' + $_GET('id'),
-                    success: function (data, textStatus, jqXHR) {
-                        var jsonData = JSON.parse(data);
-                        if (jsonData.status === "OK") {
-                            for (var i = 0; i < jsonData.colabs.length; i++) {
-                                $('#eventMotifSelection').append("<option value=\"" + jsonData.colabs[i].id + "\">" + jsonData.colabs[i].name  +"</option>");
-                            }
-                        } else {
-                            $('#modaleMessageTitle').text("Une erreur est survenue");
-                            $('#dialog_title_span').text(jsonData.message);
-                            $('#modalMessage').modal('toggle');
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-                        $('#modaleMessageTitle').text("Une erreur est survenue");
-                        $('#modalMessage').modal('toggle');
-                    }
-                });
             } else { //from admin
                 window.location.href = ("/index.html");
             }
@@ -200,30 +178,6 @@ header section -->
     </div>
 </section><!-- end of about section -->
 
-<div class="modal fade" id="selectKine" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog event-popup mb-5" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="eventFreeTitle"> Choisissez votre praticien</h3>
-            </div>
-            <div class="modal-body">
-                <form class="form-signin" id="eventFreeForm" method="POST">
-                    <div id="bookEvent" class="daySelectect">
-                        <select class="form-control" id="eventMotifSelection">
-                            <option value="default" selected>Veuillez faire un choix</option>
-                        </select>
-                        <br>
-                        <div class="float-sm-center" id="modifBlock">
-                            <button type="button" id="gotokine" class="btn btn-secondary pull-left">Prendre Rendez-vous
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <!-- footer starts here -->
@@ -236,14 +190,9 @@ header section -->
 <script type="text/javascript">
     onLoad();
     $('#rdvlink').click(function () {
-        $('#selectKine').modal('toggle');
+        window.location.href = ("/rendez-vous.html?id=" + $_GET('id'));
     });
 
-    $('#gotokine').click(function () {
-        if (!$("#eventMotifSelection").val().toUpperCase().localeCompare("DEFAULT") == 0) {
-            window.location.href = ("/rendez-vous.html?id=" + parseInt($("#eventMotifSelection").val(), 10));
-        }
-    });
 
 
     function $_GET(param) {
