@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import static com.kinecab.demo.db.AdminDB.*;
-import static com.kinecab.demo.db.LoginDB.newPasswordPerson;
 import static com.kinecab.demo.db.PatientDB.getPatientById;
 import static com.kinecab.demo.util.MailUtil.*;
 
@@ -224,7 +223,7 @@ public class RDVService {
         }
     }
 
-    @PostMapping(value = "/rdv/getmotif", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/getmotifcolab", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getMotif(@RequestParam("tokenAdmin") String tokenAdmin) {
         try {
@@ -240,6 +239,7 @@ public class RDVService {
         }
     }
 
+    //duplicated in AdminService?
     @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getMotifId(@RequestParam("idCab") String idCab) {

@@ -68,7 +68,7 @@
                 async: false,
                 data: {tokenAdmin: readCookie('session')},
                 type: 'POST',
-                url: '/rdv/getmotif',
+                url: '/rdv/getmotifcolab',
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
                     if (jsonData.status === "OK") {

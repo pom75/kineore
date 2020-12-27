@@ -619,7 +619,7 @@ header section -->
             async: false,
             data: {tokenAdmin: readCookie('session')},
             type: 'POST',
-            url: '/rdv/getmotif',
+            url: '/rdv/getmotifcolab',
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
                     for (var i = 0; i < jsonData.motif.length; i++) {
