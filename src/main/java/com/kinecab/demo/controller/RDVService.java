@@ -1,26 +1,24 @@
 
 package com.kinecab.demo.controller;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.kinecab.demo.db.CabDB;
 import com.kinecab.demo.db.PatientDB;
 import com.kinecab.demo.db.RDVDB;
 import com.kinecab.demo.db.entity.*;
 import com.kinecab.demo.json.*;
-
 import com.kinecab.demo.util.MailUtil;
 import org.json.JSONArray;
-
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.kinecab.demo.db.AdminDB.*;
 import static com.kinecab.demo.db.PatientDB.getPatientById;

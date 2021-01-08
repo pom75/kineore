@@ -3,8 +3,10 @@ package com.kinecab.demo.db.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "COLAB")
 public class Colab {
 
     @Id

@@ -38,10 +38,10 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(MotifCab.class);
                 configuration.addAnnotatedClass(MotifColab.class);
                 configuration.addAnnotatedClass(Colab.class);
-                Context context=new InitialContext();
-                Context environmentContext=(Context) context.lookup("java:comp/env");
-                sessionFactory = configuration.configure().buildSessionFactory();
 
+//                Context context=new InitialContext();
+//                Context environmentContext=(Context) context.lookup("java:comp/env");
+                sessionFactory = configuration.configure().buildSessionFactory();
 
             } catch (Exception e) {
                 e.printStackTrace();

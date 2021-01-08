@@ -6,9 +6,11 @@ import org.hibernate.annotations.Type;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "CAB")
 public class Cab {
 
     //~ ----------------------------------------------------------------------------------------------------------------

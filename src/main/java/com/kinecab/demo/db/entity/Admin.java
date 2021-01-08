@@ -11,6 +11,7 @@ import com.kinecab.demo.util.Utils;
 
 
 @Entity
+@Table(name = "ADMIN")
 public class Admin implements Serializable {
 
     //~ ----------------------------------------------------------------------------------------------------------------
