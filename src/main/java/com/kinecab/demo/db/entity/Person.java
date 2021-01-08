@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.nio.charset.StandardCharsets;
 
 @Entity
+@Table(name = "PERSON")
 public class Person {
 
     //~ ----------------------------------------------------------------------------------------------------------------

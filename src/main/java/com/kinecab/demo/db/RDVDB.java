@@ -1,21 +1,22 @@
 
 package com.kinecab.demo.db;
 
-import java.sql.Timestamp;
-
-import java.util.*;
-
-import com.kinecab.demo.db.entity.*;
+import com.kinecab.demo.db.entity.Event;
+import com.kinecab.demo.db.entity.MotifCab;
+import com.kinecab.demo.db.entity.MotifColab;
+import com.kinecab.demo.db.entity.Status;
 import com.kinecab.demo.util.HibernateUtil;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class RDVDB {
