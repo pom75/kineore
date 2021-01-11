@@ -398,6 +398,7 @@ header section -->
                                         <th>Couleur</th>
                                         <th>Ressource</th>
                                         <th>Durée</th>
+                                        <th>Delete</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tab_motif">
@@ -437,6 +438,7 @@ header section -->
 </div>
 
 
+            </div>
 <!-- Popup Add Patient -->
 
 <div class="modal fade" id="popupAddPatient" tabindex="-99" role="dialog" aria-labelledby="myModalLabel"
@@ -690,6 +692,28 @@ header section -->
     }
 
 
+    function removeMotif(mid) {
+        $.ajax({
+            data: {tokenAdmin: readCookie('session'), motifId: mid},
+            type: 'POST',
+            url: '/rdv/remCollabMotif',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+
     //Table Motif
     var table_motif;
     $(document).ready( function () {
@@ -702,11 +726,23 @@ header section -->
                     "targets": [ 0 ],
                     "visible": false,
                     "searchable": false
+                },
+                {
+                    "targets": 5 ,
+                    "visible": true,
+                    "data": null,
+                    "defaultContent": "<button>supprimer</button>",
+                    "searchable": false
                 }
             ]
 
         });
         getMotif();
+    } );
+        $('#table_id_motif tbody').on( 'click', 'button', function () {
+        var data = table_motif.row( $(this).parents('tr') ).data();
+<!--        alert( "removing " + data[0]);-->
+            removeMotif(data[0]);
     } );
 
     function getMotif() {
@@ -717,8 +753,8 @@ header section -->
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
                     for (var i = 0; i < jsonData.motif.length; i++) {
-                        //Add person on table person
-                        table_motif.row.add([jsonData.motif[i].id,jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree]).draw().node();
+                        //Add motif on table_motif
+                        table_motif.row.add([jsonData.motif[i].id,jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree,null]).draw().node();
                         $(table_motif.cell(i,2).node()).css({'background-color':jsonData.motif[i].color,'color':jsonData.motif[i].color})
                     }
                 } else {

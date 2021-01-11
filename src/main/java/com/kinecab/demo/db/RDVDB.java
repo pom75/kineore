@@ -121,6 +121,17 @@ public class RDVDB {
         }
     }
 
+    public static void removeMotifByIdColab(int id, int motifId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+
+            NativeQuery sqlQuery = session.createSQLQuery("DELETE FROM MOTIF_COLAB WHERE  MOTIF_COLAB.idColab = '" + id + "' AND MOTIF_COLAB.idMotifCab = '" + motifId + "';");
+            sqlQuery.executeUpdate();
+
+            trx.commit();
+        }
+    }
+
     public static List<MotifCab> getMotifCabByIdCab(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<MotifCab> motifCabs = new LinkedList<>();

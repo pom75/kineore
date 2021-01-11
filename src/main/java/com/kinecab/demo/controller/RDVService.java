@@ -237,6 +237,22 @@ public class RDVService {
         }
     }
 
+    @PostMapping(value = "/rdv/remCollabMotif", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message removeCollaboratorMotif(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("motifId") String motifId) {
+        try {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            RDVDB.removeMotifByIdColab(colabByToken.get(0).getId(), Integer.parseInt(motifId));
+            return new Message("OK", "Evenement supprimé");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
     //duplicated in AdminService?
     @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
