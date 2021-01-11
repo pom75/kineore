@@ -237,6 +237,63 @@ public class RDVService {
         }
     }
 
+    @PostMapping(value = "/rdv/getmotifCabNotUsedByColab", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getMotifCabNotUsedByColab(@RequestParam("tokenAdmin") String tokenAdmin) {
+        try {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+
+            final List<MotifCab> motifByIdCab = RDVDB.getMotifCabByIdCab(colabByToken.get(0).getIdCab());
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(colabByToken.get(0).getId());
+            List<MotifCab> result = new ArrayList<>(motifByIdCab);
+            result.removeAll(motifByIdAdmin);
+            return new GetMotif("OK", "RAS", result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/remCollabMotif", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message removeCollaboratorMotif(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("motifId") String motifId) {
+        try {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            RDVDB.removeMotifByIdColab(colabByToken.get(0).getId(), Integer.parseInt(motifId));
+            return new Message("OK", "Evenement supprimé");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/addMotifsForCollab", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message addMotifsForCollab(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("motifIds") String[] motifIds) {
+        try {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            ArrayList<Integer> motifs = new ArrayList<Integer>();
+            for (String motif : motifIds
+            ) {
+              motifs.add(Integer.parseInt(motif));
+            }
+            RDVDB.addMotifsForCollab(colabByToken.get(0).getId(), motifs);
+            return new Message("OK", "Evenement supprimé");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
     //duplicated in AdminService?
     @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -356,7 +413,7 @@ public class RDVService {
     @PostMapping(value = "/rdv/getrdvpatient", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getRdvPatient(@RequestParam("id") String id,
-                                    @RequestParam("tokenAdmin") String token) {
+                                 @RequestParam("tokenAdmin") String token) {
         try {
             List<Colab> colabByToken = getColabByToken(token);
             if (colabByToken.isEmpty()) {
@@ -373,7 +430,6 @@ public class RDVService {
             return new Message("FAIL", "Impossible recuperer les rendez-vous");
         }
     }
-
 
 
 }
