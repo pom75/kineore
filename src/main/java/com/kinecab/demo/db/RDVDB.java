@@ -77,14 +77,14 @@ public class RDVDB {
 
     public static List<Event> getRdvByTime(String start, String end, int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idAdmin = '" + id + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idAdmin = '" + id + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "'");
             return sqlQuery.addEntity(Event.class).list();
         }
     }
 
     public static List<Event> getRdvFreeByTime(String start, String end, int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idAdmin = '" + id + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "' AND Event.status = 'FREE' ORDER BY Event.start;");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idAdmin = '" + id + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "' AND Event.status = 'FREE' ORDER BY Event.start");
             return sqlQuery.addEntity(Event.class).list();
         }
     }
@@ -99,7 +99,7 @@ public class RDVDB {
                     trx.commit();
                     return false;
                 } else {
-                    sqlQuery = session.createSQLQuery("DELETE FROM Event WHERE Event.idAdmin = '" + idAdmin + "' AND  Event.id = '" + event.getId() + "';");
+                    sqlQuery = session.createSQLQuery("DELETE FROM Event WHERE Event.idAdmin = '" + idAdmin + "' AND  Event.id = '" + event.getId() + "'");
                     sqlQuery.executeUpdate();
                 }
             }
@@ -110,11 +110,11 @@ public class RDVDB {
 
     public static List<MotifCab> getMotifByIdColab(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_COLAB WHERE  MOTIF_COLAB.idColab = '" + id + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_COLAB WHERE  MOTIF_COLAB.idColab = '" + id + "'");
             List<MotifColab> list = sqlQuery.addEntity(MotifColab.class).list();
             List<MotifCab> motifCabs = new LinkedList<>();
             list.forEach(motifColab -> {
-                NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + motifColab.getIdMotifCab() + "';");
+                NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + motifColab.getIdMotifCab() + "'");
                 motifCabs.add((MotifCab) sqlQuery2.addEntity(MotifCab.class).list().get(0));
             });
             return motifCabs;
@@ -124,7 +124,7 @@ public class RDVDB {
     public static List<MotifCab> getMotifCabByIdCab(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<MotifCab> motifCabs = new LinkedList<>();
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + id + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + id + "'");
             motifCabs.add((MotifCab) sqlQuery.addEntity(MotifCab.class).list().get(0));
             return motifCabs;
         }
@@ -132,7 +132,7 @@ public class RDVDB {
 
     public static List<MotifCab> getMotif() {//TODO overkill
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB;");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB");
             List<MotifCab> list = sqlQuery.addEntity(MotifCab.class).list();
             return list;
         }
@@ -140,21 +140,21 @@ public class RDVDB {
 
     public static List<Event> getRdvFreeById(String id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "' AND Event.status = 'FREE';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "' AND Event.status = 'FREE'");
             return sqlQuery.addEntity(Event.class).list();
         }
     }
 
     public static List<Event> getRdvbyIdClient(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idPatient = '" + id + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idPatient = '" + id + "'");
             return sqlQuery.addEntity(Event.class).list();
         }
     }
 
     public static Event getRdvbyId(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "'");
             return (Event) sqlQuery.addEntity(Event.class).list().get(0);
         }
     }
