@@ -15,11 +15,11 @@ public class CookieMessage extends Message {
     //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public CookieMessage(String status, String message, String token, String admin, String diAdminn) {
+    public CookieMessage(String status, String message, String token, String admin, String idAdmin) {
         super(status, message);
         this.token = token;
         this.admin = admin;
-        this.idAdmin = diAdminn;
+        this.idAdmin = idAdmin;
     }
 
     //~ ----------------------------------------------------------------------------------------------------------------
@@ -32,5 +32,9 @@ public class CookieMessage extends Message {
 
     public String getToken() {
         return token;
+    }
+
+    public String getIdAdmin() {
+        return idAdmin;
     }
 }

@@ -35,6 +35,21 @@
                 window.location.href = ("/index.html");
             }
         }
+        function $_GET(param) {
+            var vars = {};
+            window.location.href.replace(location.hash, '').replace(
+                /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+                function (m, key, value) { // callback
+                    vars[key] = value !== undefined ? value : '';
+                }
+            );
+
+            if (param) {
+                return vars[param] ? vars[param] : null;
+            }
+            return vars;
+        }
+
 
         function readCookie(name) {
             var i, c, ca, nameEQ = name + "=";
@@ -57,20 +72,55 @@
         }
 
         var idMotifMap = {};
-
         var firstTime = true;
+        var currentIdAdmin = readCookie('idAdmin');
+
+        //Select Admin Calendar
+        if($_GET('id') != null){
+            currentIdAdmin = $_GET('id');
+        }
+        $.ajax({
+            data: {token: readCookie('session')},
+            type: 'POST',
+            url: '/admin/getallcabadmins',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                if (jsonData.status === "OK") {
+                    $('#adminName').empty();
+                    jsonData.admins.forEach(admin => {
+                            if (admin.id == currentIdAdmin) {
+                                $('#adminName').append("<option value=\"" + admin.id + "\" selected=\"selected\">" + admin.prenom + "</option>");
+                            } else {
+                                $('#adminName').append("<option value=\"" + admin.id + "\">" + admin.prenom + "</option>");
+                            }
+                    })
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+
+
         function getMotif() {
-            if(!firstTime){
+            if (!firstTime) {
                 return;
             }
             firstTime = false;
             $.ajax({
                 async: false,
-                data: {tokenAdmin: readCookie('session')},
+                data: {tokenAdmin: readCookie('session'), idAdmin: currentIdAdmin},
                 type: 'POST',
-                url: '/rdv/getmotifcolab',
+                url: '/rdv/getmotifcolabbyidadmin',
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
+                    console.log(jsonData);
                     if (jsonData.status === "OK") {
                         for (var i = 0; i < jsonData.motif.length; i++) {
                             idMotifMap[jsonData.motif[i].id] = jsonData.motif[i];
@@ -129,7 +179,11 @@ header section -->
 <section class="about text-center mb-5" id="calendare">
     <div class="container">
         <!-- Main Title -->
-        <h2>Rendez-vous</h2>
+        <h2>Planning de : <select class="selectpicker" data-width="fit" id="adminName">
+            <option value="default" selected></option>
+            <option value="15"></option>
+        </select>
+        </h2>
         <div class="row">
 
             <div id='calendar'></div>
@@ -440,7 +494,7 @@ header section -->
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
-                    var idName = []
+                    var idName = [];
                     for (var i = 0; i < jsonData.people.length; i++) {
                         idPersonMap[jsonData.people[i].id] = jsonData.people[i];
                         var obj = {};
@@ -554,18 +608,18 @@ header section -->
                     $('#namePatBooked').val(data.nomPatient);
                     if (idPersonMap[data.idPatient] != null) {
                         $('#numBooked').val(idPersonMap[data.idPatient].tel);
-                    }else{
+                    } else {
                         $('#numBooked').val("Compte supprimé");
                     }
                     var motifs = data.listIdMotif.split(',');
                     $('#motifBooked').empty();
                     motifs.forEach(motif => {
-                        if(motif === data.idMotif){
+                        if (motif === data.idMotif) {
                             $('#motifBooked').append("<option value=\"" + motif + "\"selected>" + idMotifMap[motif].motif + "</option>");
-                        }else {
+                        } else {
                             $('#motifBooked').append("<option value=\"" + motif + "\">" + idMotifMap[motif].motif + "</option>");
                         }
-                    })
+                    });
                     $('#commentEventBooked').val(data.info);
                     $("#pointe").prop("checked", data.pointe);
                     $("#paye").prop("checked", data.paye);
@@ -576,7 +630,7 @@ header section -->
                     $('#namePatWaiting').val(data.nomPatient);
                     if (idPersonMap[data.idPatient] != null) {
                         $('#numWaiting').val(idPersonMap[data.idPatient].tel);
-                    }else{
+                    } else {
                         $('#numWaiting').val("Compte supprimé");
                     }
                     $('#motifWaiting').val(idMotifMap[data.idMotif].motif);
@@ -588,7 +642,7 @@ header section -->
                     $('#namePatCanceled').val(data.nomPatient);
                     if (idPersonMap[data.idPatient] != null) {
                         $('#numCanceled').val(idPersonMap[data.idPatient].tel);
-                    }else{
+                    } else {
                         $('#numCanceled').val("Compte supprimé");
                     }
                     $('#motifCanceled').val(idMotifMap[data.idMotif].motif);
@@ -597,7 +651,7 @@ header section -->
                 }
                 if (status.toUpperCase().localeCompare("FREE") == 0) {
                     $('#namePat').val("");
-                    $('#namePat').attr("name",null);
+                    $('#namePat').attr("name", null);
                     $('#commentEvent').val("");
                     $("#eventMotifSelection").val("default").change();
                     var motifs = data.listIdMotif.split(',');
@@ -648,9 +702,9 @@ header section -->
         var listEvent = [];
         $.ajax({
             async: false,
-            data: {start: start, end: end, tokenAdmin: readCookie('session')},
+            data: {start: start, end: end, tokenAdmin: readCookie('session'), idAdmin: currentIdAdmin},
             type: 'POST',
-            url: '/rdv/getrdv',
+            url: '/rdv/getrdvbyidadmin',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
@@ -858,7 +912,7 @@ header section -->
         listIdMotif = listIdMotif.substring(0, listIdMotif.length - 1); //remove last coma
         durationRDV = pgdcListe(listDuree);
 
-        if(durationRDV === null){
+        if (durationRDV === null) {
             $('#dialog_title_span').text("Erreur");
             $('#modaleMessageTitle').text("Les durées des motifs selectionné ne sont pas compatible. Veuillez selectionner d'autres motif ou changer les durées.");
             $('#modalMessage').modal('toggle');
@@ -889,8 +943,8 @@ header section -->
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
-                    if(status.toUpperCase().localeCompare("REFUSE") == 0){
-                       // calendar.addEventSource(listEvent);
+                    if (status.toUpperCase().localeCompare("REFUSE") == 0) {
+                        // calendar.addEventSource(listEvent);
                         removeEvents(listEvent);
                         calendar.getEventById(currentEvent.event.id).remove();
                     }
@@ -934,7 +988,7 @@ header section -->
 
                     durationRDV = pgdcListe(listDuree);
 
-                    if(durationRDV === null){
+                    if (durationRDV === null) {
                         $('#dialog_title_span').text("Erreur");
                         $('#modaleMessageTitle').text("Les durées des motifs selectionné ne sont pas compatible. Veuillez selectionner d'autres motif ou changer les durées.");
                         $('#modalMessage').modal('toggle');
@@ -1076,42 +1130,42 @@ header section -->
             error = true;
         }
 
-        if(!error && currentEvent.event.extendedProps.data.duration != idMotifMap[$("#eventMotifSelection").val()].duree){
+        if (!error && currentEvent.event.extendedProps.data.duration != idMotifMap[$("#eventMotifSelection").val()].duree) {
             var duration = currentEvent.event.extendedProps.data.duration;
             var duree = idMotifMap[$("#eventMotifSelection").val()].duree;
-            if(duration > duree){
+            if (duration > duree) {
                 errorText += "Impossible de choisir ce motif. <br>";
                 error = true;
                 return;
             }
-            var events =  calendar.getEvents().sort(function(a, b) {
+            var events = calendar.getEvents().sort(function (a, b) {
                 return a.start - b.start;
             });
-            var quotient = Math.floor(duree/duration);
+            var quotient = Math.floor(duree / duration);
             var found = false;
             var currEvent = currentEvent.event;
 
             for (i = 0; i < events.length; i++) {
-                if(currEvent.id === events[i].id){
+                if (currEvent.id === events[i].id) {
                     found = true;
                     continue;
                 }
-                if(found){
-                    if(moment(currEvent.start).isSame(moment(events[i].start))){
+                if (found) {
+                    if (moment(currEvent.start).isSame(moment(events[i].start))) {
                         continue;
                     }
-                    if(moment(currEvent.end).isSame(moment(events[i].start))){
+                    if (moment(currEvent.end).isSame(moment(events[i].start))) {
                         var tabMotif = events[i].extendedProps.data.listIdMotif.split(',');
-                        if(currEvent.extendedProps.data.duration === events[i].extendedProps.data.duration &&  events[i].extendedProps.data.status.toUpperCase().localeCompare("FREE") == 0 && tabMotif.includes($("#eventMotifSelection").val())){
-                            quotient --;
+                        if (currEvent.extendedProps.data.duration === events[i].extendedProps.data.duration && events[i].extendedProps.data.status.toUpperCase().localeCompare("FREE") == 0 && tabMotif.includes($("#eventMotifSelection").val())) {
+                            quotient--;
                             listToRemove.push(events[i]);
-                            if(quotient <= 1){
+                            if (quotient <= 1) {
                                 break;
-                            }else{
+                            } else {
                                 currEvent = events[i];
                             }
                         }
-                    }else{
+                    } else {
                         break;
                     }
                 }
@@ -1120,7 +1174,7 @@ header section -->
             }
         }
 
-        if(quotient > 1){
+        if (quotient > 1) {
             errorText += "Pas de assez de temps disponible pour ce motif, impossible de choisir ce motif. <br>";
             error = true;
         }
@@ -1129,7 +1183,7 @@ header section -->
             $('#dialog_title_span').html(errorText);
             $('#modalMessage').modal('toggle');
         } else {
-            if(quotient === 1 && found) {
+            if (quotient === 1 && found) {
                 currentEvent.event.setProp("durationEditable", true);
                 currentEvent.event.setEnd(events[i].end);
                 currentEvent.event.extendedProps.data.duration = duree;
@@ -1195,7 +1249,7 @@ header section -->
 
         durationRDV = pgdcListe(listDuree);
 
-        if(durationRDV === null){
+        if (durationRDV === null) {
             $('#dialog_title_span').text("Erreur");
             $('#modaleMessageTitle').text("Les durées des motifs selectionné ne sont pas compatible. Veuillez selectionner d'autres motif ou changer les durées.");
             $('#modalMessage').modal('toggle');
@@ -1380,6 +1434,13 @@ header section -->
     }
 
 
+    //Select Admin Calendar
+    $("#adminName").change(function() {
+        if($(this).val() != currentIdAdmin){
+            window.location.href = ("/moncalendrier.html?id="+$(this).val());
+        }
+    });
+
 </script>
 <script>
     moment.locale('fr', {
@@ -1440,16 +1501,16 @@ header section -->
 
     function pgdcListe(input) {
         if (toString.call(input) !== "[object Array]")
-            return  false;
+            return false;
         var len, a, b;
         len = input.length;
-        if ( !len ) {
+        if (!len) {
             return null;
         }
-        a = input[ 0 ];
-        for ( var i = 1; i < len; i++ ) {
-            b = input[ i ];
-            a = pgdc( a, b );
+        a = input[0];
+        for (var i = 1; i < len; i++) {
+            b = input[i];
+            a = pgdc(a, b);
         }
         return a;
     }
@@ -1459,7 +1520,7 @@ header section -->
             return false;
         x = Math.abs(x);
         y = Math.abs(y);
-        while(y) {
+        while (y) {
             var t = y;
             y = x % y;
             x = t;

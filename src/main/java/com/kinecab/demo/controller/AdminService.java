@@ -12,6 +12,7 @@ import static com.kinecab.demo.util.MailUtil.*;
 import com.google.common.base.Strings;
 import com.kinecab.demo.db.LoginDB;
 import com.kinecab.demo.db.entity.*;
+import com.kinecab.demo.json.GetAdmin;
 import com.kinecab.demo.json.GetColab;
 import com.kinecab.demo.json.GetPerson;
 import com.kinecab.demo.json.Message;
@@ -170,6 +171,22 @@ public class AdminService {
                 return new Message("OK", "Email d'inscription envoyé à "+person.getEmail()+".");
             } else {
                 return new Message("FAIL", "Vous ne pouvez pas envoyer un mail d'inscription a un patient déja inscrit.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Impossible de changer le profil.");
+        }
+    }
+
+    @PostMapping(value = "/admin/getallcabadmins", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getAllCabAdmins( @RequestParam("token") String token) {
+        try {
+            List<Admin> allAdminCab = getAllCabAdminByToken(token);
+            if (!allAdminCab.isEmpty()) {
+                return new GetAdmin("OK","RAS",allAdminCab);
+            } else {
+                return new Message("FAIL", "Erreur de Token.");
             }
         } catch (Exception e) {
             e.printStackTrace();

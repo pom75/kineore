@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.hash.Hashing;
@@ -63,6 +64,33 @@ public class AdminDB {
         return token.getToken();
     }
 
+    public static List<Admin> getAllCabAdminByToken(String token) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "';");
+            List<Token> tokenList = sqlQuery.addEntity(Token.class).list();
+            List<Colab> colabList = null;
+            if (!tokenList.isEmpty()) {
+                sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idAdmin = '" + tokenList.get(0).getAdmin() + "';");
+                colabList = sqlQuery.addEntity(Colab.class).list();
+            }
+            if (!colabList.isEmpty()) {
+                sqlQuery = session.createSQLQuery("SELECT * from Colab where  Colab.idCab = '" + colabList.get(0).getIdCab() + "';");
+                colabList = sqlQuery.addEntity(Colab.class).list();
+            }
+            List<Admin> listAdmin = new LinkedList<>();
+            if (!colabList.isEmpty()) {
+                for (Colab currentColab : colabList) {
+                    sqlQuery = session.createSQLQuery("SELECT * from Admin where  Admin.id = '" + currentColab.getIdAdmin() + "';");
+                    Admin e = (Admin) sqlQuery.addEntity(Admin.class).uniqueResult();
+                    e.setPassword("");
+                    listAdmin.add(e);
+                }
+            }
+            return listAdmin;
+        }
+    }
+
+
     public static List<Colab> getColabByToken(String token) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "';");
@@ -74,6 +102,14 @@ public class AdminDB {
             return Collections.emptyList();
         }
     }
+
+    public static Colab getColabByIdAdmin(String idAdmin) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idAdmin = '" + idAdmin+ "';");
+            return (Colab) sqlQuery.addEntity(Colab.class).uniqueResult();
+        }
+    }
+
 
     public static List<Admin> getAdminByToken(String token) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -127,7 +163,7 @@ public class AdminDB {
             List<CabPerson> cabPerson = (List<CabPerson>) sqlQuery.addEntity(CabPerson.class).list();
             try {
                 cabPerson.stream().forEach(person -> {
-                    if(idPerson.contentEquals(person.getIdPerson()+"")) {
+                    if (idPerson.contentEquals(person.getIdPerson() + "")) {
                         final NativeQuery sqlQuery1 = session.createSQLQuery("SELECT * FROM PERSON WHERE  PERSON.id = '" + person.getIdPerson() + "';");
                         Person singleResult = (Person) sqlQuery1.addEntity(Person.class).getSingleResult();
                         personResult[0] = singleResult;
