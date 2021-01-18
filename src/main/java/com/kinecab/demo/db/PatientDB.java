@@ -12,10 +12,10 @@ public class PatientDB {
     public static Person getPatientByToken(String token) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "'");
-            List<Token> list = sqlQuery.addEntity(Token.class).list();
-            if (!list.isEmpty()) {
-                sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.id = '" + list.get(0).getId() + "'");
-                return (Person) sqlQuery.addEntity(Person.class).list().get(0);
+            Token tokenDb = (Token) sqlQuery.addEntity(Token.class).uniqueResult();
+            if (tokenDb != null) {
+                sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.id = '" + tokenDb.getId() + "'");
+                return (Person) sqlQuery.addEntity(Person.class).uniqueResult();
             }
             return null;
         }
@@ -24,14 +24,14 @@ public class PatientDB {
     public static Person getPatientById(String id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.id = '" + id + "'");
-            return (Person) sqlQuery.addEntity(Person.class).list().get(0);
+            return (Person) sqlQuery.addEntity(Person.class).uniqueResult();
         }
     }
 
     public static boolean emailExist(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.email = '" + email + "'");
-            return  !sqlQuery.addEntity(Person.class).list().isEmpty();
+            return  sqlQuery.addEntity(Person.class).uniqueResult() != null;
         }
     }
 

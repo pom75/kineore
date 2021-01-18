@@ -39,8 +39,8 @@ public class AdminService {
                                 @RequestParam(value = "mail", required = false) String mail,
                                 @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
             if (nom.isEmpty()) {
@@ -60,7 +60,7 @@ public class AdminService {
                         person = new Person(nom, prenom, nom + prenom + tel, tel);
                     }
                     LoginDB.savePerson(person);
-                    CabPerson cabPerson = new CabPerson(getCabByColabID(String.valueOf(colabByToken.get(0).getId())).get(0).getId(), person.getId());
+                    CabPerson cabPerson = new CabPerson(getCabByColabID(String.valueOf(colabByToken.getId())).getId(), person.getId());
                     saveCabPerson(cabPerson);
                 } catch (Exception e) {
                     return new Message("FAIL", "Mail déjà utilisé " + e);
@@ -91,11 +91,11 @@ public class AdminService {
     public Message getPersonIdAdminByIdPerson(@RequestParam("tokenAdmin") String tokenAdmin,
                                               @RequestParam("idPerson") String idPerson) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), idPerson);
+            Person person = getPersonByIdCabIdPerson(colabByToken.getIdCab(), idPerson);
             if (person != null) {
                 if (person.getPassword() == null) {
                     person.setCryptedPassword("null");
@@ -121,18 +121,18 @@ public class AdminService {
                                  @RequestParam("id") String id,
                                  @RequestParam("token") String token) {
         try {
-            List<Colab> colabByToken = getColabByToken(token);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(token);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), id);
+            Person person = getPersonByIdCabIdPerson(colabByToken.getIdCab(), id);
             if (person == null) {
                 return new Message("FAIL", "Aucun Patient trouvé.");
             }
             if (num.isEmpty() || !num.matches("[0][12345679][0-9]{8}$")) {
                 return new Message("FAIL", "Numéro de téléphone invalide.");
             }
-            if (!mail.contentEquals(person.getEmail()) && !getPersonByEmail(mail).isEmpty()) {
+            if (!mail.contentEquals(person.getEmail()) && getPersonByEmail(mail) != null) {
                 return new Message("FAIL", "Mail déjà utilisé");
             }
             //TODO update nom prenom RDVs
@@ -157,11 +157,11 @@ public class AdminService {
     public Message sendEmailPatient(@RequestParam("id") String id,
                                     @RequestParam("token") String token) {
         try {
-            List<Colab> colabByToken = getColabByToken(token);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(token);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), id);
+            Person person = getPersonByIdCabIdPerson(colabByToken.getIdCab(), id);
             if (person == null) {
                 return new Message("FAIL", "Aucun Patient trouvé.");
             }

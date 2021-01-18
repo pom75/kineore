@@ -45,13 +45,13 @@ public class LoginService {
     public Message connexion(@RequestParam("email") String email,
                              @RequestParam("password") String password) {
         try {
-            List<Person> person = LoginDB.checkPasswordByEmailPerson(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
-            if (!person.isEmpty()) {
-                return new CookieMessage("OK", "Connexion réussite", getTokenPerson(person.get(0)), "0","");//TODO FIX THIS
+            Person person = LoginDB.checkPasswordByEmailPerson(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
+            if (person != null) {
+                return new CookieMessage("OK", "Connexion réussite", getTokenPerson(person), "0","");//TODO FIX THIS
             } else {
-                List<Admin> admin = checkPasswordByEmailAdmin(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
-                if (!admin.isEmpty()) {
-                    return new CookieMessage("OK", "Connexion réussite", getTokenAdmin(admin.get(0)), "1",admin.get(0).getId()+"");
+                Admin admin = checkPasswordByEmailAdmin(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
+                if (admin != null) {
+                    return new CookieMessage("OK", "Connexion réussite", getTokenAdmin(admin), "1",admin.getId()+"");
                 } else {
                     return new Message("FAIL", "Email ou mot de passe incorrecte");
                 }
@@ -73,7 +73,7 @@ public class LoginService {
             if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || !validateEmailStandard(email) || !tel.matches("[0][12345679][0-9]{8}$") || (password.length() < 6)) {
                 return new Message("FAIL", "Un des champ est invalide");
             } else {
-                if (!getPersonByEmail(email).isEmpty()) {
+                if (getPersonByEmail(email) != null) {
                     return new Message("FAIL", "Mail déjà utilisé");
                 }
                 try {
@@ -97,18 +97,18 @@ public class LoginService {
     @ResponseBody
     public Message motDePasseOublier(@RequestParam("email") String email) {
         try {
-            List<Person> personByEmail = getPersonByEmail(email);
-            if (!personByEmail.isEmpty()) {
-                String newPassword = newPasswordPerson(personByEmail.get(0));
+            Person personByEmail = getPersonByEmail(email);
+            if (personByEmail != null) {
+                String newPassword = newPasswordPerson(personByEmail);
                 if (!newPassword.isEmpty()) {
                     sendEmail(email, CHANGE_PASSWORD_TITLE, CHANGE_PASSWORD_CONTENT.replace("xxx", newPassword));
                     return new Message("OK", "Un nouveau mot de passe vas vous être envoyé d'ici 5 minutes. Pensez à regarder dans vos spams.");
                 }
                 return new Message("FAIL", "Erreur pendant le changement de mot de passe");
             } else {
-                List<Admin> adminByEmail = getAdminByEmail(email);
-                if (!adminByEmail.isEmpty()) {
-                    String newPassword = newPasswordAdmin(adminByEmail.get(0));
+                Admin adminByEmail = getAdminByEmail(email);
+                if (adminByEmail != null) {
+                    String newPassword = newPasswordAdmin(adminByEmail);
                     if (!newPassword.isEmpty()) {
                         sendEmail(email, CHANGE_PASSWORD_TITLE, CHANGE_PASSWORD_CONTENT.replace("xxx", newPassword));
                         return new Message("OK", "Un nouveau mot de passe vas vous être envoyé d'ici 5 minutes. Pensez à regarder dans vos spams.");
@@ -128,9 +128,9 @@ public class LoginService {
     @ResponseBody
     public Message confirme(@RequestParam("token") String token) {
         try {
-            List<PersonTemp> personTemps = tempTokenExist(token);
-            if (!personTemps.isEmpty()) {
-                PersonTemp personTemp = personTemps.get(0);
+            PersonTemp personTemps = tempTokenExist(token);
+            if (personTemps != null) {
+                PersonTemp personTemp = personTemps;
                 Person person = new Person(personTemp.getNom(), personTemp.getPrenom(), personTemp.getEmail(), personTemp.getTel(), "");
                 person.setCryptedPassword(personTemp.getPassword());
                 savePerson(person);
@@ -150,9 +150,9 @@ public class LoginService {
     @ResponseBody
     public Person getProfil(@RequestParam("token") String token) {
         try {
-            List<Person> personByToken = getPersonByToken(token);
-            if (!personByToken.isEmpty()) {
-                Person person = personByToken.get(0);
+            Person personByToken = getPersonByToken(token);
+            if (personByToken != null) {
+                Person person = personByToken;
                 person.setPassword("");
                 return person;
             } else {
@@ -170,8 +170,8 @@ public class LoginService {
                                 @RequestParam("mdp") String mdp,
                                 @RequestParam("token") String token) {
         try {
-            List<Person> personByToken = getPersonByToken(token);
-            if (personByToken.isEmpty()) {
+            Person personByToken = getPersonByToken(token);
+            if (personByToken == null) {
                 return new Message("FAIL", "Token invalide.");
             }
             if (tel.isEmpty() || !tel.matches("[0][12345679][0-9]{8}$")) {
@@ -181,7 +181,7 @@ public class LoginService {
                 return new Message("FAIL", "Mot de passe trop court.");
             }
 
-            Person person = personByToken.get(0);
+            Person person = personByToken;
             if (mdp.length() >= 6) {
                 person.setPassword(mdp);
             }
@@ -199,17 +199,17 @@ public class LoginService {
     public Message deleteProfil(@RequestParam("mdp") String mdp,
                                 @RequestParam("token") String token) {
         try {
-            List<Person> personByToken = getPersonByToken(token);
-            if (personByToken.isEmpty()) {
+            Person personByToken = getPersonByToken(token);
+            if (personByToken == null) {
                 return new Message("FAIL", "Token invalide.");
             }
-            List<Person> people = checkPasswordByTokenPerson(token, Hashing.sha256().hashString(mdp, StandardCharsets.UTF_8).toString());
-            if (people.isEmpty()) {
+            Person people = checkPasswordByTokenPerson(token, Hashing.sha256().hashString(mdp, StandardCharsets.UTF_8).toString());
+            if (people == null) {
                 return new Message("FAIL", "Mot de passe incorrecte.");
             }
-            removeToken(new Token(people.get(0).getId(), token, "0"));
+            removeToken(new Token(people.getId(), token, "0"));
             //TODO remove cab persone
-            removePerson(people.get(0));
+            removePerson(people);
             return new Message("OK", "Compte supprimé.");
         } catch (Exception e) {
             e.printStackTrace();
@@ -221,9 +221,9 @@ public class LoginService {
     @ResponseBody
     public Admin getProfilAdmin(@RequestParam("token") String token) {
         try {
-            List<Admin> adminByToken = getAdminByToken(token);
-            if (!adminByToken.isEmpty()) {
-                Admin admin = adminByToken.get(0);
+            Admin adminByToken = getAdminByToken(token);
+            if (adminByToken != null) {
+                Admin admin = adminByToken;
                 admin.setPassword("");
                 return admin;
             } else {
@@ -241,8 +241,8 @@ public class LoginService {
                                      @RequestParam("mdp") String mdp,
                                      @RequestParam("token") String token) {
         try {
-            List<Admin> adminByToken = getAdminByToken(token);
-            if (adminByToken.isEmpty()) {
+            Admin adminByToken = getAdminByToken(token);
+            if (adminByToken == null) {
                 return new Message("FAIL", "Token invalide.");
             }
             if (tel.isEmpty() || !tel.matches("[0][12345679][0-9]{8}$")) {
@@ -252,7 +252,7 @@ public class LoginService {
                 return new Message("FAIL", "Mot de passe trop court.");
             }
 
-            Admin admin = adminByToken.get(0);
+            Admin admin = adminByToken;
             if (mdp.length() >= 6) {
                 admin.setPassword(mdp);
             }
@@ -271,16 +271,16 @@ public class LoginService {
                                      @RequestParam("token") String token) {
         try {
 
-            List<Admin> adminByToken = getAdminByToken(token);
-            if (adminByToken.isEmpty()) {
+             Admin adminByToken = getAdminByToken(token);
+            if (adminByToken == null) {
                 return new Message("FAIL", "Token invalide.");
             }
-            List<Admin> admins = checkPasswordByTokenAdmin(token, Hashing.sha256().hashString(mdp, StandardCharsets.UTF_8).toString());
-            if (admins.isEmpty()) {
+            Admin admin = checkPasswordByTokenAdmin(token, Hashing.sha256().hashString(mdp, StandardCharsets.UTF_8).toString());
+            if (admin == null) {
                 return new Message("FAIL", "Mot de passe incorrecte.");
             }
-            removeToken(new Token(admins.get(0).getId(), token, "1"));
-            removeAdmin(admins.get(0));
+            removeToken(new Token(admin.getId(), token, "1"));
+            removeAdmin(admin);
             return new Message("OK", "Compte supprimé.");
         } catch (Exception e) {
             e.printStackTrace();
