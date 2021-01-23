@@ -45,6 +45,9 @@ public class Event {
     private int duration;
 
     @Column
+    private String titrePostIt;
+
+    @Column
     @Type(type="text")
     private String info;
 
@@ -61,7 +64,7 @@ public class Event {
     //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public Event(int idAdmin, Timestamp start, Timestamp end, Status status, int idPatient, String idMotif, int duration, String info, boolean pointe, boolean paye, String nomPrenom, String listIdMotif) {
+    public Event(int idAdmin, Timestamp start, Timestamp end, Status status, int idPatient, String idMotif, int duration,String titre, String info, boolean pointe, boolean paye, String nomPrenom, String listIdMotif) {
         this.idAdmin = idAdmin;
         this.start = start;
         this.end = end;
@@ -74,6 +77,7 @@ public class Event {
         this.paye = paye;
         this.nomPrenom = nomPrenom;
         this.listIdMotif=listIdMotif;
+        this.titrePostIt = titre;
     }
 
     public Event() {
@@ -114,6 +118,14 @@ public class Event {
 
     public void setPaye(boolean paye) {
         this.paye = paye;
+    }
+
+    public String getTitrePostIt() {
+        return titrePostIt;
+    }
+
+    public void setTitrePostIt(String titrePostIt) {
+        this.titrePostIt = titrePostIt;
     }
 
     public String getNomPrenom() {
