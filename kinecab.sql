@@ -171,6 +171,7 @@ CREATE TABLE `Event` (
   `status` varchar(255) NOT NULL,
   `idPatient` int NOT NULL,
   `idMotif` varchar(255) NOT NULL,
+  `titrePostIt` varchar(255) NOT NULL,
   `duration` int NOT NULL,
   `info` text NOT NULL,
   `pointe` tinyint(1) NOT NULL,
