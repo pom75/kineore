@@ -58,17 +58,17 @@ public class LoginDB {
 
     public static List<Person> checkPasswordByEmailPerson(String email, String password) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON where PERSON.password = '" + password + "' and  PERSON.email = '" + email + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON where PERSON.password = '" + password + "' and  PERSON.email = '" + email + "'");
             return sqlQuery.addEntity(Person.class).list();
         }
     }
 
     public static List<Person> checkPasswordByTokenPerson(String token, String password) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "'");
             List<Token> list = sqlQuery.addEntity(Token.class).list();
             if (!list.isEmpty()) {
-                sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.password = '" + password + "' and PERSON.id= '" + list.get(0).getId() + "';");
+                sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.password = '" + password + "' and PERSON.id= '" + list.get(0).getId() + "'");
                 return sqlQuery.addEntity(Person.class).list();
             }
         }
@@ -77,7 +77,7 @@ public class LoginDB {
 
     public static List<Person> getPersonByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.email = '" + email + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.email = '" + email + "'");
             return sqlQuery.addEntity(Person.class).list();
         }
     }
@@ -85,7 +85,7 @@ public class LoginDB {
 
     public static List<PersonTemp> tempTokenExist(String token) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON_TEMP where  PERSON_TEMP.token = '" + token + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from PERSON_TEMP where  PERSON_TEMP.token = '" + token + "'");
             return sqlQuery.addEntity(PersonTemp.class).list();
         }
     }
@@ -144,10 +144,10 @@ public class LoginDB {
 
     public static List<Person> getPersonByToken(String token) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "'");
             List<Token> list = sqlQuery.addEntity(Token.class).list();
             if (!list.isEmpty()) {
-                sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.id = '" + list.get(0).getId() + "';");
+                sqlQuery = session.createSQLQuery("SELECT * from PERSON where  PERSON.id = '" + list.get(0).getId() + "'");
                 return sqlQuery.addEntity(Person.class).list();
             }
             return Collections.emptyList();
