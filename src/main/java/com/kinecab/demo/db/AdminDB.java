@@ -34,16 +34,16 @@ public class AdminDB {
         }
     }
 
-    public static List<Admin> checkPasswordByTokenAdmin(String token, String password) {
+    public static Admin checkPasswordByTokenAdmin(String token, String password) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "'");
-            List<Token> list = sqlQuery.addEntity(Token.class).list();
-            if (!list.isEmpty()) {
-                sqlQuery = session.createSQLQuery("SELECT * from ADMIN where  ADMIN.password = '" + password + "' and ADMIN.id= '" + list.get(0).getId() + "'");
-                return sqlQuery.addEntity(Admin.class).list();
+            Token tokenDb = (Token) sqlQuery.addEntity(Token.class).uniqueResult();
+            if (tokenDb != null) {
+                sqlQuery = session.createSQLQuery("SELECT * from ADMIN where  ADMIN.password = '" + password + "' and ADMIN.id= '" + tokenDb.getId() + "'");
+                return (Admin) sqlQuery.addEntity(Admin.class).uniqueResult();
             }
         }
-        return Collections.EMPTY_LIST;
+        return null;
     }
 
     public static void removeAdmin(Admin admin) {
@@ -67,14 +67,15 @@ public class AdminDB {
     public static List<Admin> getAllCabAdminByToken(String token) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "'");
-            List<Token> tokenList = sqlQuery.addEntity(Token.class).list();
-            List<Colab> colabList = null;
-            if (!tokenList.isEmpty()) {
-                sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idAdmin = '" + tokenList.get(0).getAdmin() + "'");
-                colabList = sqlQuery.addEntity(Colab.class).list();
+            Token tokenDb = (Token) sqlQuery.addEntity(Token.class).uniqueResult();
+            List<Colab> colabList = Collections.emptyList();
+            Colab colabDb = null;
+            if (tokenDb != null) {
+                sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idAdmin = '" + tokenDb.getAdmin() + "'");
+                colabDb = (Colab) sqlQuery.addEntity(Colab.class).uniqueResult();
             }
-            if (!colabList.isEmpty()) {
-                sqlQuery = session.createSQLQuery("SELECT * from Colab where  Colab.idCab = '" + colabList.get(0).getIdCab() + "'");
+            if (colabDb != null) {
+                sqlQuery = session.createSQLQuery("SELECT * from Colab where  Colab.idCab = '" + colabDb.getIdCab() + "'");
                 colabList = sqlQuery.addEntity(Colab.class).list();
             }
             List<Admin> listAdmin = new LinkedList<>();
@@ -91,15 +92,15 @@ public class AdminDB {
     }
 
 
-    public static List<Colab> getColabByToken(String token) {
+    public static Colab getColabByToken(String token) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "'");
-            List<Token> list = sqlQuery.addEntity(Token.class).list();
-            if (!list.isEmpty()) {
-                sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idAdmin = '" + list.get(0).getId() + "'");
-                return sqlQuery.addEntity(Colab.class).list();
+            Token tokenDb = (Token) sqlQuery.addEntity(Token.class).uniqueResult();
+            if (tokenDb != null) {
+                sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idAdmin = '" + tokenDb.getId() + "'");
+                return (Colab) sqlQuery.addEntity(Colab.class).uniqueResult();
             }
-            return Collections.emptyList();
+            return null;
         }
     }
 
@@ -111,15 +112,15 @@ public class AdminDB {
     }
 
 
-    public static List<Admin> getAdminByToken(String token) {
+    public static Admin getAdminByToken(String token) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from TOKEN where  TOKEN.token = '" + token + "'");
-            List<Token> list = sqlQuery.addEntity(Token.class).list();
-            if (!list.isEmpty()) {
-                sqlQuery = session.createSQLQuery("SELECT * from ADMIN where  ADMIN.id = '" + list.get(0).getId() + "'");
-                return sqlQuery.addEntity(Admin.class).list();
+            Token tokenDb = (Token) sqlQuery.addEntity(Token.class).uniqueResult();
+            if (tokenDb != null) {
+                sqlQuery = session.createSQLQuery("SELECT * from ADMIN where  ADMIN.id = '" + tokenDb.getId() + "'");
+                return (Admin) sqlQuery.addEntity(Admin.class).uniqueResult();
             }
-            return Collections.emptyList();
+            return null;
         }
     }
 
@@ -130,10 +131,10 @@ public class AdminDB {
         }
     }
 
-    public static List<Admin> checkPasswordByEmailAdmin(String email, String password) {
+    public static Admin checkPasswordByEmailAdmin(String email, String password) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from ADMIN where ADMIN.password = '" + password + "' and  ADMIN.email = '" + email + "'");
-            return sqlQuery.addEntity(Admin.class).list();
+            return (Admin) sqlQuery.addEntity(Admin.class).uniqueResult();
         }
     }
 
@@ -143,7 +144,7 @@ public class AdminDB {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + idCab + "'");
             List<CabPerson> cabPerson = (List<CabPerson>) sqlQuery.addEntity(CabPerson.class).list();
             try {
-                cabPerson.stream().forEach(person -> {
+                cabPerson.forEach(person -> {
                     final NativeQuery sqlQuery1 = session.createSQLQuery("SELECT * FROM PERSON WHERE  PERSON.id = '" + person.getIdPerson() + "'");
                     final Person singleResult = (Person) sqlQuery1.addEntity(Person.class).getSingleResult();
                     singleResult.setPassword("");
@@ -165,7 +166,7 @@ public class AdminDB {
                 cabPerson.stream().forEach(person -> {
                     if (idPerson.contentEquals(person.getIdPerson() + "")) {
                         final NativeQuery sqlQuery1 = session.createSQLQuery("SELECT * FROM PERSON WHERE  PERSON.id = '" + person.getIdPerson() + "'");
-                        Person singleResult = (Person) sqlQuery1.addEntity(Person.class).getSingleResult();
+                        Person singleResult = (Person) sqlQuery1.addEntity(Person.class).uniqueResult();
                         personResult[0] = singleResult;
                     }
                 });
@@ -176,10 +177,10 @@ public class AdminDB {
         }
     }
 
-    public static List<Admin> getAdminByEmail(String email) {
+    public static Admin getAdminByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from ADMIN where  ADMIN.email = '" + email + "'");
-            return sqlQuery.addEntity(Admin.class).list();
+            return (Admin) sqlQuery.addEntity(Admin.class).uniqueResult();
         }
     }
 

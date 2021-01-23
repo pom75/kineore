@@ -44,15 +44,15 @@ public class CabService {
         @RequestParam("tarifs") String tarifs,
         @RequestParam("convention") String convention) {
         try {
-            List<Colab> colabByToken = getColabByToken(token);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(token);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide.");
             }
-            List<Cab> cabByAdminID = getCabByColabID(String.valueOf(colabByToken.get(0).getId()));
-            if (cabByAdminID.isEmpty()) {
+            Cab cabByAdminID = getCabByColabID(String.valueOf(colabByToken.getId()));
+            if (cabByAdminID == null) {
                 return new Message("FAIL", "Pas de Cabinet a ce nom.");
             }
-            Cab cab = cabByAdminID.get(0);
+            Cab cab = cabByAdminID;
             cab.setName(nomcab);
             cab.setPres(prescab);
             cab.setPhone(numcab);
@@ -82,22 +82,22 @@ public class CabService {
     @PostMapping(value = "/cab/getcabprofil", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Cab getCabProfil(@RequestParam("token") String token) {
-        List<Colab> colabByToken = getColabByToken(token);
-        if (colabByToken.isEmpty()) {
+        Colab colabByToken = getColabByToken(token);
+        if (colabByToken == null) {
             return null;
         }
-        return getCabByColabID(String.valueOf(colabByToken.get(0).getId())).get(0);
+        return getCabByColabID(String.valueOf(colabByToken.getId()));
     }
 
     @PostMapping(value = "/cab/getcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Cab getCabId(@RequestParam("id") String id) {
         try {
-            List<Cab> cabs = getCabByID(id);
-            if (cabs.isEmpty()) {
+            Cab cabs = getCabByID(id);
+            if (cabs == null) {
                 return null;
             }
-            return cabs.get(0);
+            return cabs;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -135,9 +135,9 @@ public class CabService {
     @ResponseBody
     public void redirect(@PathVariable("url") String url, HttpServletResponse httpServletResponse) {
         try {
-            List<Cab> cabByUrl = getCabByUrl(url);
-            if (!cabByUrl.isEmpty()) {
-                Cab cab = cabByUrl.get(0);
+            Cab cabByUrl = getCabByUrl(url);
+            if (cabByUrl != null) {
+                Cab cab = cabByUrl;
                 httpServletResponse.setHeader("Location", "/cabinet.html?id=" + cab.getId());
                 httpServletResponse.setStatus(302);
             } else {

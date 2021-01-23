@@ -137,10 +137,10 @@ public class RDVDB {
         }
     }
 
-    public static List<Event> getRdvFreeById(String id) {
+    public static Event getRdvFreeById(String id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "' AND Event.status = 'FREE'");
-            return sqlQuery.addEntity(Event.class).list();
+            return (Event) sqlQuery.addEntity(Event.class).uniqueResult();
         }
     }
 
@@ -154,7 +154,7 @@ public class RDVDB {
     public static Event getRdvbyId(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.id = '" + id + "'");
-            return (Event) sqlQuery.addEntity(Event.class).list().get(0);
+            return (Event) sqlQuery.addEntity(Event.class).uniqueResult();
         }
     }
 }

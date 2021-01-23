@@ -25,17 +25,17 @@ public class CabDB {
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static List<Cab> getCabByColabID(String id) {
+    public static Cab getCabByColabID(String id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from COLAB where COLAB.id = '" + id + "'");
-            return getCabByID(((Colab)sqlQuery.addEntity(Colab.class).list().get(0)).getIdCab()+"");
+            return getCabByID(((Colab)sqlQuery.addEntity(Colab.class).uniqueResult()).getIdCab()+"");
         }
     }
 
-    public static List<Cab> getCabByID(String id) {
+    public static Cab getCabByID(String id) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB where CAB.id = '" + id + "'");
-            return sqlQuery.addEntity(Cab.class).list();
+            return (Cab) sqlQuery.addEntity(Cab.class).uniqueResult();
         }
     }
 
@@ -55,10 +55,10 @@ public class CabDB {
     }
 
 
-    public static List<Cab> getCabByUrl(String url) {
+    public static Cab getCabByUrl(String url) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from CAB where CAB.url = '" + url + "'");
-            return sqlQuery.addEntity(Cab.class).list();
+            return (Cab) sqlQuery.addEntity(Cab.class).uniqueResult();
         }
     }
 
@@ -71,12 +71,12 @@ public class CabDB {
     }
 
     public static void addCabPersonIfNotPresent(int idPerson,int idColab) {
-        Cab cab = getCabByColabID(idColab+"").get(0);
+        Cab cab = getCabByColabID(idColab+"");
         CabPerson cabPerson = new CabPerson(cab.getId(),idPerson);
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + cab.getId() + "' AND CAB_PERSON.idPerson = '" + idPerson + "'");
-            List cabPersons = sqlQuery.addEntity(CabPerson.class).list();
-            if(cabPersons.isEmpty()){
+            CabPerson cabPersons = (CabPerson) sqlQuery.addEntity(CabPerson.class).uniqueResult();
+            if(cabPersons == null){
                 saveCabPerson(cabPerson);
             }
         }
@@ -85,8 +85,8 @@ public class CabDB {
     public static boolean saveIfIsFree(Cab cab) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB WHERE  CAB.url = '" + cab.getUrl() + "'");
-            List cabs =  sqlQuery.addEntity(Cab.class).list();
-            if(cabs.isEmpty()){
+            Cab cabs = (Cab) sqlQuery.addEntity(Cab.class).uniqueResult();
+            if(cabs == null){
                 Transaction trx = session.beginTransaction();
                 session.saveOrUpdate(cab);
                 trx.commit();

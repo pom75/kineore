@@ -41,11 +41,11 @@ public class RDVService {
     public Message addEvent(@RequestParam("events") String events,
                             @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.get(0).getId(), new JSONArray(events));
+            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events));
             RDVDB.saveRDVs(rdvs);
             final Set<Integer> collect = rdvs.stream().map(Event::getId).collect(Collectors.toSet());
             return new BookRdv("OK", "RAS", collect);
@@ -61,11 +61,11 @@ public class RDVService {
     public Message safeBookOneEvent(@RequestParam("events") String events,
                                     @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.get(0).getId(), new JSONArray(events)).get(0);
+            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
                 if (RDVDB.safeUpdateRDV(rdv, Status.FREE)) {
@@ -88,11 +88,11 @@ public class RDVService {
     public Message moveEvent(@RequestParam("events") String events,
                              @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.get(0).getId(), new JSONArray(events)).get(0);
+            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
                 if (RDVDB.safeUpdateRDV(rdv, rdv.getStatus())) {
@@ -116,11 +116,11 @@ public class RDVService {
                                    @RequestParam String status,
                                    @RequestParam String idPat) {
         try {
-            List<Colab> ColabByToken = getColabByToken(tokenAdmin);
-            if (ColabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            Event rdv = RDVDB.rdvJsonToRdvs(ColabByToken.get(0).getId(), new JSONArray(events)).get(0);
+            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
                 boolean sucess;
@@ -161,11 +161,11 @@ public class RDVService {
                           @RequestParam("end") String end,
                           @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<Event> rdvs = RDVDB.getRdvByTime(start, end, colabByToken.get(0).getId());
+            final List<Event> rdvs = RDVDB.getRdvByTime(start, end, colabByToken.getId());
             return new GetRDV("OK", "RAS", rdvs);
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,12 +180,12 @@ public class RDVService {
                                    @RequestParam("tokenAdmin") String tokenAdmin,
                                    @RequestParam("idAdmin") String idAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            if(colabByToken.get(0).getId() == Integer.parseInt(idAdmin)) {
-                final List<Event> rdvs = RDVDB.getRdvByTime(start, end, colabByToken.get(0).getId());
+            if(colabByToken.getId() == Integer.parseInt(idAdmin)) {
+                final List<Event> rdvs = RDVDB.getRdvByTime(start, end, colabByToken.getId());
                 return new GetRDV("OK", "RAS", rdvs);
             }else{
                 List<Admin> allAdminCab = getAllCabAdminByToken(tokenAdmin);
@@ -241,12 +241,12 @@ public class RDVService {
     public Message removeRDV(@RequestParam("listEvents") String listEvents,
                              @RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.get(0).getId(), new JSONArray(listEvents));
-            boolean success = RDVDB.removeRdvByEvent(rdvs, colabByToken.get(0).getId());
+            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(listEvents));
+            boolean success = RDVDB.removeRdvByEvent(rdvs, colabByToken.getId());
             if (success) {
                 //sendEmail(getPatientById(idPat).getEmail(), ACCEPTE_TITLE, ACCEPTE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
                 return new Message("OK", "Evenement supprimé");
@@ -265,11 +265,11 @@ public class RDVService {
     @ResponseBody
     public Message getMotifByToken(@RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(colabByToken.get(0).getId());
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(colabByToken.getId());
             return new GetMotif("OK", "RAS", motifByIdAdmin);
         } catch (Exception e) {
             e.printStackTrace();
@@ -282,12 +282,12 @@ public class RDVService {
     @ResponseBody
     public Message getMotifById(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("idAdmin") String idAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            if (colabByToken.get(0).getIdAdmin() == Integer.parseInt(idAdmin)) {
-                final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(colabByToken.get(0).getId());
+            if (colabByToken.getIdAdmin() == Integer.parseInt(idAdmin)) {
+                final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(colabByToken.getId());
                 return new GetMotif("OK", "RAS", motifByIdAdmin);
             } else {
 
@@ -331,11 +331,11 @@ public class RDVService {
     @ResponseBody
     public Message getPersonIdAdmin(@RequestParam("tokenAdmin") String tokenAdmin) {
         try {
-            List<Colab> colabByToken = getColabByToken(tokenAdmin);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            final List<Person> people = getPersonByIdCab(colabByToken.get(0).getIdCab());
+            final List<Person> people = getPersonByIdCab(colabByToken.getIdCab());
             return new GetPeople("OK", "RAS", people);
         } catch (Exception e) {
             e.printStackTrace();
@@ -352,12 +352,12 @@ public class RDVService {
                                   @RequestParam("start") String start) {
         try {
             Person person = PatientDB.getPatientByToken(tokenPat);
-            List<Event> rdvFreeById = RDVDB.getRdvFreeById(idEvent);
-            if (rdvFreeById.isEmpty()) {
+            Event rdvFreeById = RDVDB.getRdvFreeById(idEvent);
+            if (rdvFreeById == null) {
                 //Event not free in the DB
                 return new Message("FAIL", "Ce rendez-vous n'est plus disponible.");
             }
-            Event curentEvent = rdvFreeById.get(0);
+            Event curentEvent = rdvFreeById;
             if (!idMotifIsPresentInEvent(idMotif, curentEvent)) {
                 //Wrong Motif
                 return new Message("FAIL", "Ce rendez-vous n'est plus disponible.");
@@ -435,15 +435,15 @@ public class RDVService {
     public Message getRdvPatient(@RequestParam("id") String id,
                                  @RequestParam("tokenAdmin") String token) {
         try {
-            List<Colab> colabByToken = getColabByToken(token);
-            if (colabByToken.isEmpty()) {
+            Colab colabByToken = getColabByToken(token);
+            if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            Person person = getPersonByIdCabIdPerson(colabByToken.get(0).getIdCab(), id);
+            Person person = getPersonByIdCabIdPerson(colabByToken.getIdCab(), id);
             if (person == null) {
                 return new Message("FAIL", "Aucun Patient trouvé.");
             }
-            final List<Event> rdvs = RDVDB.getRdvbyIdClient(person.getId()).stream().filter(event -> event.getIdAdmin() == colabByToken.get(0).getId()).collect(Collectors.toList());
+            final List<Event> rdvs = RDVDB.getRdvbyIdClient(person.getId()).stream().filter(event -> event.getIdAdmin() == colabByToken.getId()).collect(Collectors.toList());
             return new GetRDV("OK", "RAS", rdvs);
         } catch (Exception e) {
             e.printStackTrace();
