@@ -81,6 +81,32 @@ public class RDVService {
         }
     }
 
+    @PostMapping(value = "/rdv/savepostit", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message savePostIt(@RequestParam("events") String events,
+                              @RequestParam("tokenAdmin") String tokenAdmin) {
+        try {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+            List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events));
+            Event rdv = rdvs.get(0);
+            Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
+            if (rdvbyId.getIdAdmin() == rdv.getIdAdmin()) {
+                RDVDB.saveRDVs(rdvs);
+                return new Message("OK", "RAS");
+            } else {
+                return new Message("FAIL", "Erreur, le rendez-vous que vous voulez modifier vient d'etre pris par un patient.");
+            }
+        } catch (
+                Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant la création du Post it.");
+        }
+
+    }
+
     @PostMapping(value = "/rdv/moveevent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message moveEvent(@RequestParam("events") String events,
@@ -182,10 +208,10 @@ public class RDVService {
             if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            if(colabByToken.getId() == Integer.parseInt(idAdmin)) {
+            if (colabByToken.getId() == Integer.parseInt(idAdmin)) {
                 final List<Event> rdvs = RDVDB.getRdvByTime(start, end, colabByToken.getId());
                 return new GetRDV("OK", "RAS", rdvs);
-            }else{
+            } else {
                 List<Admin> allAdminCab = getAllCabAdminByToken(tokenAdmin);
                 if (allAdminCab.isEmpty()) {
                     return new Message("FAIL", "Token invalide");

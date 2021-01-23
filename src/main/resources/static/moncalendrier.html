@@ -35,6 +35,7 @@
                 window.location.href = ("/index.html");
             }
         }
+
         function $_GET(param) {
             var vars = {};
             window.location.href.replace(location.hash, '').replace(
@@ -76,7 +77,7 @@
         var currentIdAdmin = readCookie('idAdmin');
 
         //Select Admin Calendar
-        if($_GET('id') != null){
+        if ($_GET('id') != null) {
             currentIdAdmin = $_GET('id');
         }
         $.ajax({
@@ -88,11 +89,11 @@
                 if (jsonData.status === "OK") {
                     $('#adminName').empty();
                     jsonData.admins.forEach(admin => {
-                            if (admin.id == currentIdAdmin) {
-                                $('#adminName').append("<option value=\"" + admin.id + "\" selected=\"selected\">" + admin.prenom + "</option>");
-                            } else {
-                                $('#adminName').append("<option value=\"" + admin.id + "\">" + admin.prenom + "</option>");
-                            }
+                        if (admin.id == currentIdAdmin) {
+                            $('#adminName').append("<option value=\"" + admin.id + "\" selected=\"selected\">" + admin.prenom + "</option>");
+                        } else {
+                            $('#adminName').append("<option value=\"" + admin.id + "\">" + admin.prenom + "</option>");
+                        }
                     })
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
@@ -120,7 +121,6 @@
                 url: '/rdv/getmotifcolabbyidadmin',
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
-                    console.log(jsonData);
                     if (jsonData.status === "OK") {
                         for (var i = 0; i < jsonData.motif.length; i++) {
                             idMotifMap[jsonData.motif[i].id] = jsonData.motif[i];
@@ -261,10 +261,12 @@ header section -->
                     <select class="form-control" id="timeGridSelect">
                         <option value="default" selected>Veuillez faire un choix</option>
                         <option value="createListRDV">Créer des crénos libre</option>
+                        <option value="createPostIt">Créer un post-it</option>
                         <option value="suppRDV">Supprimer les rendez-vous</option>
                     </select>
 
                     <div id="suppRDVDiv" class="daySelectect2" style="display:none">
+                        <br>
                         <h4>Tous les rendez-vous prit seront annuler.</h4>
                         <h4>Les patients ne pourons pas prendre de nouveaux rendez-vous dans ce créno.</h4>
                         <br>
@@ -272,12 +274,28 @@ header section -->
                     </div>
 
                     <div id="createDay2" class="daySelectect2" style="display:none">
+                        <br>
                         <h4>Motif du rendez-vous : </h4>
                         <br>
                         <div class="form-check" id="selectListIdMotif">
                         </div>
                         <br>
                         <button id="createListRdvHour" class="btn btn-lg btn-primary btn-block" type="submit">
+                            Enregistrer
+                        </button>
+                    </div>
+
+                    <div id="post-it" class="daySelectect2" style="display:none">
+                        <br>
+                        <h4>Titre</h4>
+                        <input id="titrePostIt" type="text" class="form-control" name="titre" placeholder="Titre"
+                               oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                        <h4>Description</h4>
+                        <textarea class="form-control input-lg" style="resize:none" placeholder="Description"
+                                  rows="5"
+                                  id="descriptionPostIt"> </textarea>
+                        <br>
+                        <button id="create_PostIt" class="btn btn-lg btn-primary btn-block" type="submit">
                             Enregistrer
                         </button>
                     </div>
@@ -456,6 +474,41 @@ header section -->
         </div>
     </div>
 </div>
+
+
+<!-- Popup Event CANCELED EVENT -->
+
+<div class="modal fade" id="popupPostIt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog event-popup mb-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="postItTitle"></h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventpostItPost" method="POST">
+                    <div id="PostItEvent" class="daySelectect">
+                        <h4>Titre</h4>
+                        <input id="titrePostItModal" type="text" class="form-control" name="nom" placeholder="Nom"
+                               oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                        <h4>Description</h4>
+                        <textarea class="form-control input-lg" placeholder="Information client" rows="5"
+                                  id="commentPostIt"></textarea>
+                        <br>
+                        <div class="float-sm-right" id="modifPostIt">
+                            <button type="button" id="savePostIt" class="btn btn-secondary float-left">Sauvegarder
+                            </button>
+                        </div>
+                        <div class="float-sm-left">
+                            <button type="button" id="suppPostIt" class="btn btn-danger float-right">Supprimer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
@@ -637,6 +690,12 @@ header section -->
                     $('#commentEventWaiting').val(data.info);
                     $('#popupSingleEventWaiting').modal('show');
                 }
+                if (status.toUpperCase().localeCompare("POST_IT") == 0) {
+                    $('#postItTitle').html(info.event.title);
+                    $('#titrePostItModal').val(info.event.title);
+                    $('#commentPostIt').val(data.info);
+                    $('#popupPostIt').modal('show');
+                }
                 if (status.toUpperCase().localeCompare("CANCELED") == 0) {
                     $('#eventCanceledTitle').html(moment(info.event.start).format("dddd D MMMM") + "   " + moment(info.event.start).format("HH:mm") + " à " + moment(info.event.end).format("HH:mm"));
                     $('#namePatCanceled').val(data.nomPatient);
@@ -744,6 +803,10 @@ header section -->
         if (data.status.toUpperCase().localeCompare("CANCELED") == 0) {
             title = data.nomPrenom;
             color = '#b23421';
+        }
+        if (data.status.toUpperCase().localeCompare("POST_IT") == 0) {
+            title = data.titrePostIt;
+            color = '#FFF190';
         }
         return createNewEvent(data.id, title, moment(startD).format("YYYY-MM-DD HH:mm:ss"), moment(endD).format("YYYY-MM-DD HH:mm:ss"), color, data.status, data.idPatient, data.nomPrenom, data.idMotif, data.motif, data.duration, data.info, data.pointe, data.paye, data.listIdMotif, data.idAdmin);
     }
@@ -888,8 +951,24 @@ header section -->
             if ($(this).val() == "createListRDV") {
                 $('#createDay2').show();
             }
+            if ($(this).val() == "createPostIt") {
+                $("#titrePostIt").val('');
+                $("#descriptionPostIt").val('');
+                $('#post-it').show();
+            }
         });
 
+    });
+
+    //On save post-it
+    $("#create_PostIt").click(function () {
+        $('#timeGrid').modal('hide');
+        var duree = moment.duration(endDay.diff(startDay)).asMinutes();
+        var titre = $("#titrePostIt").val();
+        var description = $("#descriptionPostIt").val();
+        var listEvent = [];
+        listEvent.push(createNewEvent(0, titre, startDay.format("YYYY-MM-DD HH:mm:ss"), endDay.format("YYYY-MM-DD HH:mm:ss"), '#FFF190', "post_it", "0", "", "", 0, duree, description, false, false, "", readCookie('idAdmin')));
+        saveNewEvents(listEvent);
     });
 
     //On save free event
@@ -1111,6 +1190,48 @@ header section -->
 
 
     /* ------------------- Popup Event  ------------------- */
+    //Save PostIt
+    $("#savePostIt").click(function () {
+        currentEvent.event.setProp("title", $('#titrePostItModal').val());
+        currentEvent.event.extendedProps.data.info = $("#commentPostIt").val();
+        $('#popupPostIt').modal('hide');
+        savePostIt([createJsonEvent(currentEvent.event)]);
+        calendar.getEventById(currentEvent.event.id).remove();
+    });
+
+    //Delete PostIt
+    $("#suppPostIt").click(function () {
+        $('#popupPostIt').modal('hide');
+        calendar.getEventById(currentEvent.event.id).remove();
+        removeEvents([createJsonEvent(currentEvent.event)]);
+    });
+
+    function savePostIt(listEvent) {
+        $.ajax({
+            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            type: 'POST',
+            url: '/rdv/savepostit',
+            success: function (data, textStatus, jqXHR) {
+                var jsonData = JSON.parse(data);
+                if (jsonData.status === "OK") {
+                    calendar.addEventSource(listEvent);
+                    added = true;
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                    calendar.refetchEvents();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+
     //Save RDV
     $("#saveEvent").click(function () {
         var error = false;
@@ -1390,10 +1511,12 @@ header section -->
         $('#MonthSelectionModal').modal('show');
     }
 
+    //Maybe some lines UseLess
     function resetWeekDayPopup() {
         $("#timeGridSelect").val("default").change();
         $("#suppRDV").hide();
         $("#createListRDV").hide();
+        $("#createPostIt").hide();
         $('.daySelectect2').hide();
         $('#timeGrid').modal('show');
     }
@@ -1435,9 +1558,9 @@ header section -->
 
 
     //Select Admin Calendar
-    $("#adminName").change(function() {
-        if($(this).val() != currentIdAdmin){
-            window.location.href = ("/moncalendrier.html?id="+$(this).val());
+    $("#adminName").change(function () {
+        if ($(this).val() != currentIdAdmin) {
+            window.location.href = ("/moncalendrier.html?id=" + $(this).val());
         }
     });
 
