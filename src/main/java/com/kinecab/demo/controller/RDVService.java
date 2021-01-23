@@ -173,6 +173,44 @@ public class RDVService {
         }
     }
 
+    @PostMapping(value = "/rdv/getrdvbyidadmin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getRDVbyidadmin(@RequestParam("start") String start,
+                                   @RequestParam("end") String end,
+                                   @RequestParam("tokenAdmin") String tokenAdmin,
+                                   @RequestParam("idAdmin") String idAdmin) {
+        try {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            if(colabByToken.get(0).getId() == Integer.parseInt(idAdmin)) {
+                final List<Event> rdvs = RDVDB.getRdvByTime(start, end, colabByToken.get(0).getId());
+                return new GetRDV("OK", "RAS", rdvs);
+            }else{
+                List<Admin> allAdminCab = getAllCabAdminByToken(tokenAdmin);
+                if (allAdminCab.isEmpty()) {
+                    return new Message("FAIL", "Token invalide");
+                }
+                boolean containAdmin = false;
+                for (Admin admin : allAdminCab) {
+                    if (admin.getId() == Integer.parseInt(idAdmin)) {
+                        containAdmin = true;
+                    }
+                }
+                if (!containAdmin) {
+                    return new Message("FAIL", "Token invalide");
+                }
+
+                final List<Event> rdvs = RDVDB.getRdvByTime(start, end, getColabByIdAdmin(idAdmin).getId());
+                return new GetRDV("OK", "RAS", rdvs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des rendez-vous.");
+        }
+    }
+
     @PostMapping(value = "/rdv/getrdvfree", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getRDVFree(
@@ -223,9 +261,9 @@ public class RDVService {
         }
     }
 
-    @PostMapping(value = "/rdv/getmotifcolab", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/getmotifcolabbytoken", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getMotif(@RequestParam("tokenAdmin") String tokenAdmin) {
+    public Message getMotifByToken(@RequestParam("tokenAdmin") String tokenAdmin) {
         try {
             List<Colab> colabByToken = getColabByToken(tokenAdmin);
             if (colabByToken.isEmpty()) {
@@ -233,6 +271,43 @@ public class RDVService {
             }
             final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(colabByToken.get(0).getId());
             return new GetMotif("OK", "RAS", motifByIdAdmin);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
+    //Mdr  to refactor this shit
+    @PostMapping(value = "/rdv/getmotifcolabbyidadmin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getMotifById(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("idAdmin") String idAdmin) {
+        try {
+            List<Colab> colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken.isEmpty()) {
+                return new Message("FAIL", "Token invalide");
+            }
+            if (colabByToken.get(0).getIdAdmin() == Integer.parseInt(idAdmin)) {
+                final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(colabByToken.get(0).getId());
+                return new GetMotif("OK", "RAS", motifByIdAdmin);
+            } else {
+
+                List<Admin> allAdminCab = getAllCabAdminByToken(tokenAdmin);
+                if (allAdminCab.isEmpty()) {
+                    return new Message("FAIL", "Token invalide");
+                }
+                boolean containAdmin = false;
+                for (Admin admin : allAdminCab) {
+                    if (admin.getId() == Integer.parseInt(idAdmin)) {
+                        containAdmin = true;
+                    }
+                }
+                if (!containAdmin) {
+                    return new Message("FAIL", "Token invalide");
+                }
+
+                final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(getColabByIdAdmin(idAdmin).getId());
+                return new GetMotif("OK", "RAS", motifByIdAdmin);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
@@ -358,7 +433,7 @@ public class RDVService {
     @PostMapping(value = "/rdv/getrdvpatient", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getRdvPatient(@RequestParam("id") String id,
-                                    @RequestParam("tokenAdmin") String token) {
+                                 @RequestParam("tokenAdmin") String token) {
         try {
             List<Colab> colabByToken = getColabByToken(token);
             if (colabByToken.isEmpty()) {
@@ -375,7 +450,6 @@ public class RDVService {
             return new Message("FAIL", "Impossible recuperer les rendez-vous");
         }
     }
-
 
 
 }
