@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Objects;
 
 
 @Entity
@@ -95,4 +96,18 @@ public class MotifCab {
     public void setDuree(int duree) {
         this.duree = duree;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MotifCab motifCab = (MotifCab) o;
+        return id == motifCab.id && idCab == motifCab.idCab && resource == motifCab.resource && duree == motifCab.duree && motif.equals(motifCab.motif) && color.equals(motifCab.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, idCab, motif, color, resource, duree);
+    }
+
 }

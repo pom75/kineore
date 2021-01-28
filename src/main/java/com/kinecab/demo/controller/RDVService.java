@@ -475,5 +475,63 @@ public class RDVService {
         }
     }
 
+    @PostMapping(value = "/rdv/getmotifCabNotUsedByColab", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getMotifCabNotUsedByColab(@RequestParam("tokenAdmin") String tokenAdmin) {
+        try {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+
+            final List<MotifCab> motifByIdCab = RDVDB.getMotifCabByIdCab(colabByToken.getIdCab());
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifByIdColab(colabByToken.getId());
+            List<MotifCab> result = new ArrayList<>(motifByIdCab);
+            result.removeAll(motifByIdAdmin);
+            return new GetMotif("OK", "RAS", result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/remCollabMotif", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message removeCollaboratorMotif(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("motifId") String motifId) {
+        try {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+            RDVDB.removeMotifByIdColab(colabByToken.getId(), Integer.parseInt(motifId));
+            return new Message("OK", "Evenement supprimé");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/addMotifsForCollab", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message addMotifsForCollab(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("motifIds") String[] motifIds) {
+        try {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+            ArrayList<Integer> motifs = new ArrayList<Integer>();
+            for (String motif : motifIds
+            ) {
+                motifs.add(Integer.parseInt(motif));
+            }
+            RDVDB.addMotifsForCollab(colabByToken.getId(), motifs);
+            return new Message("OK", "Evenement supprimé");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
+
 
 }
