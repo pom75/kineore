@@ -124,7 +124,7 @@ public class RDVDB {
     public static List<MotifCab> getMotifCabByIdCab(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<MotifCab> motifCabs = new LinkedList<>();
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.idCab = '" + id + "';");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.idCab = '" + id + "'");
             motifCabs.addAll(sqlQuery.addEntity(MotifCab.class).list());
             return motifCabs;
         }
