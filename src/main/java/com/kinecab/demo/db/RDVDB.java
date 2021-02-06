@@ -123,8 +123,8 @@ public class RDVDB {
     public static List<MotifCab> getMotifCabByIdCab(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<MotifCab> motifCabs = new LinkedList<>();
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + id + "'");
-            motifCabs.add((MotifCab) sqlQuery.addEntity(MotifCab.class).list().get(0));
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.idCab = '" + id + "'");
+            motifCabs.addAll(sqlQuery.addEntity(MotifCab.class).list());
             return motifCabs;
         }
     }
@@ -157,4 +157,27 @@ public class RDVDB {
             return (Event) sqlQuery.addEntity(Event.class).uniqueResult();
         }
     }
+
+    public static void removeMotifByIdColab(int id, int motifId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+
+            NativeQuery sqlQuery = session.createSQLQuery("DELETE FROM MOTIF_COLAB WHERE  MOTIF_COLAB.idColab = '" + id + "' AND MOTIF_COLAB.idMotifCab = '" + motifId + "';");
+            sqlQuery.executeUpdate();
+
+            trx.commit();
+        }
+    }
+
+    public static void addMotifsForCollab(int id, List<Integer> motifIds) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+            for (Integer motifId : motifIds) {
+                NativeQuery sqlQuery = session.createSQLQuery("INSERT INTO MOTIF_COLAB (idColab, idMotifCab) VALUES (" + id + ", " + motifId + ")");
+                sqlQuery.executeUpdate();
+            }
+            trx.commit();
+        }
+    }
+
 }
