@@ -65,7 +65,7 @@ public class RDVDB {
             }
             final Event event = new Event(adminId, Timestamp.valueOf((String) currentEvent.get("start")), Timestamp.valueOf((String) currentEvent.get("end")),
                     Status.stringToStatus((String) ((JSONObject) currentEvent.get("data")).get("status")), idPatient, (String) ((JSONObject) currentEvent.get("data")).get("idMotif"),
-                    (Integer) ((JSONObject) currentEvent.get("data")).get("duration"),  (String) currentEvent.get("title"), (String) ((JSONObject) currentEvent.get("data")).get("info"), (boolean) ((JSONObject) currentEvent.get("data")).get("pointe"),
+                    (Integer) ((JSONObject) currentEvent.get("data")).get("duration"), (String) currentEvent.get("title"), (String) ((JSONObject) currentEvent.get("data")).get("info"), (boolean) ((JSONObject) currentEvent.get("data")).get("pointe"),
                     (boolean) ((JSONObject) currentEvent.get("data")).get("paye"), (String) ((JSONObject) currentEvent.get("data")).get("nomPatient"), (String) ((JSONObject) currentEvent.get("data")).get("listIdMotif"));
             if ((currentEvent.get("id") != null) && (Integer.parseInt(String.valueOf(currentEvent.get("id"))) != 0)) { //TODO DIRTY
                 event.setId(Integer.parseInt(String.valueOf(currentEvent.get("id"))));
@@ -135,6 +135,16 @@ public class RDVDB {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB");
             List<MotifCab> list = sqlQuery.addEntity(MotifCab.class).list();
             return list;
+        }
+    }
+
+    public static void addMotif(List<String> args) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+            String query = "insert into MOTIF_CAB (idCab, motif, resource, color, duree) values(" + args.get(0) + ", '" + args.get(1) + "', 0, '" + args.get(2) + "', " + args.get(3) + ")";
+            NativeQuery sqlQuery = session.createSQLQuery(query);
+            sqlQuery.executeUpdate();
+            trx.commit();
         }
     }
 

@@ -341,9 +341,10 @@ public class RDVService {
     //duplicated in AdminService?
     @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getMotifId(@RequestParam("idCab") String idCab) {
+    public Message getMotifId(@RequestParam("tokenAdmin")  String tokenAdmin) {
         try {
-            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifCabByIdCab(Integer.parseInt(idCab.replace("#", "")));
+            int idCab = getColabByToken(tokenAdmin).getIdCab();
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifCabByIdCab(idCab);
             return new GetMotif("OK", "RAS", motifByIdAdmin);
         } catch (Exception e) {
             e.printStackTrace();
@@ -532,6 +533,27 @@ public class RDVService {
         }
     }
 
-
+    @PostMapping(value = "/rdv/addMotifForCabinet", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message addMotifForCabinet(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("args") String[] motifIds) {
+        try {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            colabByToken.getIdCab();
+            if (colabByToken == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+            ArrayList<String> args = new ArrayList<String>();
+            args.add(Integer.toString(colabByToken.getIdCab()));
+            for (String motif : motifIds
+            ) {
+                args.add(motif);
+            }
+            RDVDB.addMotif(args);
+            return new Message("OK", "Motif ajoute");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant l'addition du Motif.");
+        }
+    }
 
 }

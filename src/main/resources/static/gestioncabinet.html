@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>KinéCab - Site de rendez-vous en ligne pour les Kinésithérapeute</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="icon" type="image/png" href="img/ck.png"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js" defer></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js" defer></script>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+
+        window.onload = redirect;
+
+        function redirect() {
+            if (readCookie('session') == '') {
+                window.location.href = ("/index.html");
+            }
+            if (readCookie('admin') == '0') {
+                window.location.href = ("/profiladmin.html");
+            }
+        }
+
+        $.ajax({
+            url: '/login/getprofiladmin',
+            type: 'POST',
+            data: 'token=' + readCookie('session'),
+            success: function (jsonData, textStatus, jqXHR) {
+                $('#mail').val(jsonData.email);
+                $('#num').val(jsonData.tel);
+                $('#nom').val(jsonData.nom);
+                $('#prenom').val(jsonData.prenom);
+                $('#token').val(readCookie('session'));
+                $('#token3').val(readCookie('session'));
+                $('#token2').val(readCookie('session'));
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+
+
+        $.ajax({
+            url: '/cab/getcabprofil',
+            type: 'POST',
+            data: 'token=' + readCookie('session'),
+            success: function (jsonData, textStatus, jqXHR) {
+                $('#vitale').val(jsonData.cartevital);
+                $('#codepostal').val(jsonData.codePostal);
+                $('#convention').val(jsonData.convention);
+                $('#mailcab').val(jsonData.email);
+                $('#nomcab').val(jsonData.name);
+                $('#rue').val(jsonData.nomRue);
+                $('#paiement').val(jsonData.paiment);
+                $('#numcab').val(jsonData.phone);
+                $('#tarifs').val(jsonData.tarif);
+                $('#prescab').val(jsonData.pres);
+                $('#urlcab').val(jsonData.url);
+                $('#urcabsamll').html('<a href="https://www.kinecab.com/cab/'+jsonData.url+'">http://www.kinecab.com/cab/<b>'+jsonData.url+'</b></a>');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+
+
+        function readCookie(name) {
+            var i, c, ca, nameEQ = name + "=";
+            ca = document.cookie.split(';');
+            for (i = 0; i < ca.length; i++) {
+                c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1, c.length);
+                }
+                if (c.indexOf(nameEQ) == 0) {
+                    return c.substring(nameEQ.length, c.length);
+                }
+            }
+            return '';
+        }
+
+        function delete_cookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            window.location.href = ("/index.html");
+        }
+    </script>
+    <script src="js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+<!-- ====================================================
+header section -->
+<header style="padding-bottom: 70px;">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
+        <img src="img/ck.png" width="30" height="30">
+        <a class="navbar-brand" href="index.html">&nbspKinécab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="moncalendrier.html">Mon Calendrier</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="#">Gestion Du Calendrier</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right active" href="#">Gestion Du Cabinet</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="profiladmin.html">Mon Compte</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')" href="#">Deconnexion</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header> <!-- end of header area -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalMessage" style="z-index:99999999" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaleMessageTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span id="dialog_title_span"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<main role="main">
+    <section class="text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading mb-4">Motifs Du Cabinet</h1>
+            <div class="row justify-content-center" >
+                <table id="table_id_motif" class="display mt-3">
+                    <thead>
+                    <tr>
+                        <th>Id_Motif_Cab</th>
+                        <th>Motif</th>
+                        <th>Couleur</th>
+                        <th>Ressource</th>
+                        <th>Durée</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tab_motif">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+
+    <selection>
+        <div class="container">
+            <form id="motifAdditionForm">
+                <div class="form-row">
+                    <div class="col">
+                        <label for="inputMotif">Motif</label>
+                        <input type="text" class="form-control" placeholder="Motif" id="inputMotif">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="inputDuree">Couleur</label>
+                        <select id="inputCouleur" class="form-control">
+                            <option style="background: #3687b2; color: #3687b2;" value="#3687b2">#3687b2</option>
+                            <option style="background: #1CD5FF; color: #1CD5FF;" value="#1CD5FF">#1CD5FF</option>
+                            <option style="background: #FFCBF2; color: #FFCBF2;" value="#FFCBF2">#FFCBF2</option>
+                            <option style="background: #3687b2; color: #DE33FF;" value="#DE33FF">#DE33FF</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="inputDuree">Duree</label>
+                        <select id="inputDuree" class="form-control">
+                            <option>10</option>
+                            <option>15</option>
+                            <option>20</option>
+                            <option>30</option>
+                            <option>45</option>
+                            <option>60</option>
+                            <option>90</option>
+                        </select>
+                    </div>
+
+                </div>
+                <button type="button" id="addMotifForCabinet" class="btn btn-primary">Create</button>
+            </form>
+
+
+        </div>
+
+
+    </selection>
+</main>
+
+<!-- footer starts here -->
+<nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
+    © 2020 Copyright
+</nav>
+
+<!-- script tags
+============================================================= -->
+<script type="text/javascript">
+
+
+    //Table Motif
+    var table_motif;
+    $(document).ready( function () {
+        table_motif = $('#table_id_motif').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
+            },
+            "columnDefs": [
+                {
+                    "targets": [ 0 ],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": 5 ,
+                    "visible": true,
+                    "data": null,
+                    "defaultContent": "<button>supprimer</button>",
+                    "searchable": false
+                }
+            ],
+            responsive: true
+        });
+        getMotif();
+    } );
+
+    $('#table_id_motif tbody').on( 'click', 'button', function () {
+     alert("do nothing for now");
+<!--            var data = table_motif.row( $(this).parents('tr') ).data();-->
+<!--            removeMotif(data[0]);-->
+<!--            var n = table_motif_for_addition.row.add([data[0],data[1], data[2], data[3], data[4]]);-->
+<!--            n.draw();-->
+
+<!--            var index = n.index();-->
+<!--            $(table_motif_for_addition.cell(index,2).node()).css({'background-color':data[2],'color':data[2]});-->
+
+<!--            table_motif.row( $(this).parents('tr') ).remove().draw( false );-->
+    } );
+
+    function getMotif() {
+        $.ajax({
+            data: {tokenAdmin: readCookie('session')},
+            type: 'POST',
+            cache: false,
+            url: '/rdv/getmotifcabid',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.motif.length; i++) {
+                        // Add motif on table_motif
+                        table_motif.row.add([jsonData.motif[i].id,jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree]).draw().node();
+                        $(table_motif.cell(i,2).node()).css({'background-color':jsonData.motif[i].color,'color':jsonData.motif[i].color})
+                    }
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+    function addMotifForCabinet(mids) {
+        $.ajax({
+            data: {tokenAdmin: readCookie('session'), args: mids.toString()},
+            type: 'POST',
+            url: '/rdv/addMotifForCabinet',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                        location.reload(true);
+                } else {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+
+    $('#addMotifForCabinet').on('click', function () {
+        var args=[];
+        args[0]=$(inputMotif).val();
+        args[1]=$(inputCouleur).val();
+        args[2]=$(inputDuree).val();
+        addMotifForCabinet(args);
+        document.getElementById("motifAdditionForm").reset();
+    });
+
+
+</script>
+</body>
+</html>
