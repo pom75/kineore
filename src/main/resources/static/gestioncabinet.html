@@ -15,9 +15,22 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js" defer></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css"/>
     <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js" defer></script>
+    <script type="text/javascript" src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js" defer></script>
+
+    <link href="css/bootstrap-colorpicker.css" rel="stylesheet">
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-colorpicker.js"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/css/bootstrap-colorpicker.css"
+          rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/js/bootstrap-colorpicker.js"></script>
+
+
     <script>
 
         window.onload = redirect;
@@ -189,14 +202,23 @@ header section -->
                         <input type="text" class="form-control" placeholder="Motif" id="inputMotif">
                     </div>
 
+<!--                    <div class="form-group col-md-4">-->
+<!--                        <label for="inputDuree">Couleur</label>-->
+<!--                        <select id="inputCouleur" class="form-control">-->
+<!--                            <option style="background: #3687b2; color: #3687b2;" value="#3687b2">#3687b2</option>-->
+<!--                            <option style="background: #1CD5FF; color: #1CD5FF;" value="#1CD5FF">#1CD5FF</option>-->
+<!--                            <option style="background: #FFCBF2; color: #FFCBF2;" value="#FFCBF2">#FFCBF2</option>-->
+<!--                            <option style="background: #3687b2; color: #DE33FF;" value="#DE33FF">#DE33FF</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
                     <div class="form-group col-md-4">
                         <label for="inputDuree">Couleur</label>
-                        <select id="inputCouleur" class="form-control">
-                            <option style="background: #3687b2; color: #3687b2;" value="#3687b2">#3687b2</option>
-                            <option style="background: #1CD5FF; color: #1CD5FF;" value="#1CD5FF">#1CD5FF</option>
-                            <option style="background: #FFCBF2; color: #FFCBF2;" value="#FFCBF2">#FFCBF2</option>
-                            <option style="background: #3687b2; color: #DE33FF;" value="#DE33FF">#DE33FF</option>
-                        </select>
+                        <input id="inputCouleur" type="text" class="form-control input-lg" value=""/>
+                        <script>
+                              $(function () {
+                                $('#inputCouleur').colorpicker();
+                              });
+                        </script>
                     </div>
 
                     <div class="form-group col-md-4">
@@ -222,6 +244,8 @@ header section -->
 
     </selection>
 </main>
+
+
 
 <!-- footer starts here -->
 <nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
