@@ -185,8 +185,7 @@ header section -->
     </div>
 </div>
 
-
-<main role="main">
+<!--<main role="main">-->
     <section class="text-center">
         <div class="container">
             <h1 class="jumbotron-heading mb-4">Motifs Du Cabinet</h1>
@@ -198,7 +197,6 @@ header section -->
                     <th>Couleur</th>
                     <th>Ressource</th>
                     <th>Durée</th>
-                    <th>Supprimer</th>
                 </tr>
                 </thead>
                 <tbody id="tab_motif">
@@ -207,38 +205,51 @@ header section -->
         </div>
     </section>
 
+<!--</main>-->
 
-    <section class="text-center">
-        <div class="container">
-            <form id="motifAdditionForm">
-                <div class="form-row">
-                    <div class="col">
-                        <label for="inputMotif">Motif</label>
-                        <input type="text" class="form-control input-lg" placeholder="Motif" id="inputMotif">
-                    </div>
-                    <div class="col">
-                        <label for="inputDuree">Couleur</label>
-                        <input id="inputCouleur" type="text" class="form-control input-lg" value=""/>
-                        <script>
+
+
+<!-- Popup motif cab not used by colab -->
+<div class="modal" id="motifAddition" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Motifs du Cabinet</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <form id="motifAdditionForm">
+                        <div class="form">
+                            <div class="form-group">
+                                <label for="inputMotif">Motif</label>
+                                <input type="text" style="width:10%" class="form-control input-lg" placeholder="Motif" id="inputMotif">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputDuree">Couleur</label>
+                                <input id="inputCouleur"  style="width:10%" type="text" class="form-control input-lg" value=""/>
+                                <script>
                               $(function () {
                                 $('#inputCouleur').colorpicker();
                               });
                         </script>
-                    </div>
-
-                    <div class="col">
-                        <label for="inputDuree">Duree</label>
-                        <input id="inputDuree" type="number" class="form-control input-lg"  min="15" max="120" step="1" value="15">
-                    </div>
-
+                            </div>
+                            <div class="form-group">
+                                <label for="inputDuree">Duree</label>
+                                <input id="inputDuree" style="width:10%" type="number" class="form-control input-lg"  min="15" max="120" step="1" value="15">
+                            </div>
+                        </div>
+                        <button type="button" id="addMotif" class="btn btn-primary">Create</button>
+                    </form>
                 </div>
-                <button type="button" id="addMotifForCabinet" class="btn btn-primary">Create</button>
-            </form>
+
+
+            </div>
         </div>
 
-    </section>
+    </div>
+</div>
 
-</main>
 
 
 
@@ -264,18 +275,40 @@ header section -->
                     "targets": [ 0 ],
                     "visible": false,
                     "searchable": false
-                },
-                {
-                    "targets": 5 ,
-                    "visible": true,
-                    "data": null,
-                    "defaultContent": "<button>supprimer</button>",
-                    "searchable": false
                 }
             ],
-            responsive: true
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: [
+               {
+                    text: 'Ajouter Un Motif',
+                    action: function ( e, dt, node, config ) {
+                      $('#motifAddition').modal('show');
+                    }
+               },
+               {
+                    text: 'Modifier Un Motif',
+                    action: function ( e, dt, node, config ) {
+                    var table_data = table_motif.rows('.selected').data();
+                       alert("modifying "+ table_data[0]);
+                    }
+               }
+           ]
+
         });
         getMotif();
+        $('#table_id_motif tbody').on('click', 'tr', function () {
+           // $(this).toggleClass('selected');
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            table_motif.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+
+        });
+
     } );
 
     $('#table_id_motif tbody').on( 'click', 'button', function () {
@@ -326,7 +359,7 @@ header section -->
     }
 
 
-    $('#addMotifForCabinet').on('click', function () {
+    $('#addMotif').on('click', function () {
         var args=[];
         args[0]=$(inputMotif).val();
         args[1]=$(inputCouleur).val();
@@ -334,6 +367,7 @@ header section -->
         addMotifForCabinet(args);
         document.getElementById("motifAdditionForm").reset();
     });
+
 
 </script>
 </body>
