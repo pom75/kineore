@@ -535,6 +535,39 @@ public class RDVService {
         }
     }
 
+    @PostMapping(value = "/rdv/addMotifForCabinet", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message addMotifForCabinet(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("args") String[] motifIds) {
+        try {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            colabByToken.getIdCab();
+            if (colabByToken == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+            ArrayList<String> args = new ArrayList<String>();
+            args.add(Integer.toString(colabByToken.getIdCab()));
+            for (String motif : motifIds
+            ) {
+                args.add(motif);
+            }
+            RDVDB.addMotif(args);
+            return new Message("OK", "Motif ajoute");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant l'addition du Motif.");
+        }
+    }
 
+    @PostMapping(value = "/rdv/modifyMotif", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message modifyMotif(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("args") String[] infos) {
+        try {
+            RDVDB.modifyMotif(Arrays.asList(infos.clone()));
+            return new Message("OK", "Motif ajoute");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant l'addition du Motif.");
+        }
+    }
 
 }
