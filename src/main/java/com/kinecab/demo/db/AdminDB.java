@@ -75,13 +75,13 @@ public class AdminDB {
                 colabDb = (Colab) sqlQuery.addEntity(Colab.class).uniqueResult();
             }
             if (colabDb != null) {
-                sqlQuery = session.createSQLQuery("SELECT * from Colab where  Colab.idCab = '" + colabDb.getIdCab() + "'");
+                sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idCab = '" + colabDb.getIdCab() + "'");
                 colabList = sqlQuery.addEntity(Colab.class).list();
             }
             List<Admin> listAdmin = new LinkedList<>();
             if (!colabList.isEmpty()) {
                 for (Colab currentColab : colabList) {
-                    sqlQuery = session.createSQLQuery("SELECT * from Admin where  Admin.id = '" + currentColab.getIdAdmin() + "'");
+                    sqlQuery = session.createSQLQuery("SELECT * from ADMIN where  ADMIN.id = '" + currentColab.getIdAdmin() + "'");
                     Admin e = (Admin) sqlQuery.addEntity(Admin.class).uniqueResult();
                     e.setPassword("");
                     listAdmin.add(e);
