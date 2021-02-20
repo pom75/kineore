@@ -338,7 +338,7 @@ public class RDVService {
         }
     }
 
-    //duplicated in AdminService?
+
     @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getMotifId(@RequestParam("tokenAdmin")  String tokenAdmin) {
