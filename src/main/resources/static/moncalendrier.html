@@ -72,8 +72,7 @@
             window.location.href = ("/index.html");
         }
 
-        var idMotifMap = {};
-        var firstTime = true;
+        var idMotifMapCab = {};
         var currentIdAdmin = readCookie('idAdmin');
 
         //Select Admin Calendar
@@ -109,11 +108,8 @@
         });
 
 
-        function getMotif() {
-            if (!firstTime) {
-                return;
-            }
-            firstTime = false;
+        //This one for the news events
+        function getMotifColab() {
             $.ajax({
                 async: false,
                 data: {tokenAdmin: readCookie('session'), idAdmin: currentIdAdmin},
@@ -123,9 +119,35 @@
                     var jsonData = JSON.parse(data);
                     if (jsonData.status === "OK") {
                         for (var i = 0; i < jsonData.motif.length; i++) {
-                            idMotifMap[jsonData.motif[i].id] = jsonData.motif[i];
                             $('#selectListIdMotif').append('<input class="form-check-input" name="day" type="checkbox" value="' + jsonData.motif[i].id + '" id="' + jsonData.motif[i].id + '"> <label class="form-check-label" for="' + jsonData.motif[i].id + '">' + jsonData.motif[i].motif + ' </label><br>');
                             $('#selectListIdMotif2').append('<input class="form-check-input" name="month" type="checkbox" value="' + jsonData.motif[i].id + '" id="' + jsonData.motif[i].id + '"> <label class="form-check-label" for="' + jsonData.motif[i].id + '">' + jsonData.motif[i].motif + ' </label><br>');
+                        }
+                    } else {
+                        $('#modaleMessageTitle').text("Une erreur est survenue");
+                        $('#dialog_title_span').text(jsonData.message);
+                        $('#modalMessage').modal('toggle');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#modalMessage').modal('toggle');
+                }
+            });
+        }
+
+        //This one for existing events, we can't break existing if the user remove
+        function getMotifCab() {
+            $.ajax({
+                async: false,
+                data: {tokenAdmin: readCookie('session'), idAdmin: currentIdAdmin},
+                type: 'POST',
+                url: '/rdv/getmotifcabid',
+                success: function (data, textStatus, jqXHR) {
+                    var jsonData = JSON.parse(data);
+                    if (jsonData.status === "OK") {
+                        for (var i = 0; i < jsonData.motif.length; i++) {
+                            idMotifMapCab[jsonData.motif[i].id] = jsonData.motif[i];
                         }
                     } else {
                         $('#modaleMessageTitle').text("Une erreur est survenue");
@@ -668,9 +690,9 @@ header section -->
                     $('#motifBooked').empty();
                     motifs.forEach(motif => {
                         if (motif === data.idMotif) {
-                            $('#motifBooked').append("<option value=\"" + motif + "\"selected>" + idMotifMap[motif].motif + "</option>");
+                            $('#motifBooked').append("<option value=\"" + motif + "\"selected>" + idMotifMapCab[motif].motif + "</option>");
                         } else {
-                            $('#motifBooked').append("<option value=\"" + motif + "\">" + idMotifMap[motif].motif + "</option>");
+                            $('#motifBooked').append("<option value=\"" + motif + "\">" + idMotifMapCab[motif].motif + "</option>");
                         }
                     });
                     $('#commentEventBooked').val(data.info);
@@ -686,7 +708,7 @@ header section -->
                     } else {
                         $('#numWaiting').val("Compte supprimé");
                     }
-                    $('#motifWaiting').val(idMotifMap[data.idMotif].motif);
+                    $('#motifWaiting').val(idMotifMapCab[data.idMotif].motif);
                     $('#commentEventWaiting').val(data.info);
                     $('#popupSingleEventWaiting').modal('show');
                 }
@@ -704,7 +726,7 @@ header section -->
                     } else {
                         $('#numCanceled').val("Compte supprimé");
                     }
-                    $('#motifCanceled').val(idMotifMap[data.idMotif].motif);
+                    $('#motifCanceled').val(idMotifMapCab[data.idMotif].motif);
                     $('#commentEventCanceled').val(data.info);
                     $('#popupSingleEventCanceled').modal('show');
                 }
@@ -713,12 +735,13 @@ header section -->
                     $('#namePat').attr("name", null);
                     $('#commentEvent').val("");
                     $("#eventMotifSelection").val("default").change();
+                    console.log(data);
                     var motifs = data.listIdMotif.split(',');
                     $('#eventMotifSelection').empty();
                     $('#eventMotifSelection').append('<option value="default" selected>Veuillez faire un choix</option>');
                     motifs.forEach(motif => {
-                        $('#eventMotifSelection').append("<option value=\"" + motif + "\">" + idMotifMap[motif].motif + "</option>");
-                    })
+                        $('#eventMotifSelection').append("<option value=\"" + motif + "\">" + idMotifMapCab[motif].motif + "</option>");
+                    });
                     $('#eventFreeTitle').html(moment(info.event.start).format("dddd D MMMM") + "   " + moment(info.event.start).format("HH:mm") + " à " + moment(info.event.end).format("HH:mm"));
                     $('#popupSingleEvent').modal('show');
                 }
@@ -757,7 +780,6 @@ header section -->
     ;
 
     function getEvents(start, end) {
-        getMotif();
         var listEvent = [];
         $.ajax({
             async: false,
@@ -794,7 +816,7 @@ header section -->
         if (data.status.toUpperCase().localeCompare("BOOKED") == 0) {
             data.idMotif
             title = data.nomPrenom;
-            color = idMotifMap[data.idMotif].color;
+            color = idMotifMapCab[data.idMotif].color;
         }
         if (data.status.toUpperCase().localeCompare("WAITING") == 0) {
             title = data.nomPrenom;
@@ -985,7 +1007,7 @@ header section -->
         $.each($("input[name='day']:checked"), function () {
             listIdMotif += $(this).val();
             listIdMotif += ",";
-            listDuree.push(idMotifMap[$(this).val()].duree);
+            listDuree.push(idMotifMapCab[$(this).val()].duree);
         });
 
         listIdMotif = listIdMotif.substring(0, listIdMotif.length - 1); //remove last coma
@@ -1062,7 +1084,7 @@ header section -->
                     var listDuree = [];
                     var tabMotif = currentEvent.event.extendedProps.data.listIdMotif.split(',');
                     tabMotif.forEach(id => {
-                        listDuree.push(idMotifMap[id].duree);
+                        listDuree.push(idMotifMapCab[id].duree);
                     });
 
                     durationRDV = pgdcListe(listDuree);
@@ -1251,9 +1273,9 @@ header section -->
             error = true;
         }
 
-        if (!error && currentEvent.event.extendedProps.data.duration != idMotifMap[$("#eventMotifSelection").val()].duree) {
+        if (!error && currentEvent.event.extendedProps.data.duration != idMotifMapCab[$("#eventMotifSelection").val()].duree) {
             var duration = currentEvent.event.extendedProps.data.duration;
-            var duree = idMotifMap[$("#eventMotifSelection").val()].duree;
+            var duree = idMotifMapCab[$("#eventMotifSelection").val()].duree;
             if (duration > duree) {
                 errorText += "Impossible de choisir ce motif. <br>";
                 error = true;
@@ -1325,7 +1347,7 @@ header section -->
 
     function setEventPropFreeToBooked(event) {
         event.setProp("title", $('#namePat').val());
-        event.setProp("color", idMotifMap[$("#eventMotifSelection").val()].color);
+        event.setProp("color", idMotifMapCab[$("#eventMotifSelection").val()].color);
         event.extendedProps.data.status = "BOOKED";
         event.extendedProps.data.nomPatient = $('#namePat').val();
         event.extendedProps.data.idPatient = $('#namePat').attr("name");
@@ -1352,7 +1374,7 @@ header section -->
     //Accepte RDV
     $("#accepteEventWaiting").click(function () {
         $('#popupSingleEventWaiting').modal('hide');
-        currentEvent.event.setProp("color", idMotifMap[currentEvent.event.extendedProps.data.idMotif].color);
+        currentEvent.event.setProp("color", idMotifMapCab[currentEvent.event.extendedProps.data.idMotif].color);
         currentEvent.event.extendedProps.data.status = "BOOKED";
         changeStatusEvents([createJsonEvent(currentEvent.event)], "ACCEPTE", currentEvent.event.extendedProps.data.idPatient);
         calendar.getEventById(currentEvent.event.id).remove();
@@ -1365,7 +1387,7 @@ header section -->
         var listDuree = [];
         var tabMotif = currentEvent.event.extendedProps.data.listIdMotif.split(',');
         tabMotif.forEach(id => {
-            listDuree.push(idMotifMap[id].duree);
+            listDuree.push(idMotifMapCab[id].duree);
         });
 
         durationRDV = pgdcListe(listDuree);
@@ -1423,7 +1445,7 @@ header section -->
         currentEvent.event.extendedProps.data.info = $('#commentEventBooked').val();
         currentEvent.event.extendedProps.data.motif = $("#motifBooked option:selected").text();
         currentEvent.event.extendedProps.data.idMotif = $("#motifBooked").val();
-        currentEvent.event.setProp("color", idMotifMap[$("#motifBooked").val()].color);
+        currentEvent.event.setProp("color", idMotifMapCab[$("#motifBooked").val()].color);
         moveEvent([createJsonEvent(currentEvent.event)]);
         calendar.getEventById(currentEvent.event.id).remove();
     });
