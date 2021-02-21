@@ -111,7 +111,6 @@
         //This one for the news events
         function getMotifColab() {
             $.ajax({
-                async: false,
                 data: {tokenAdmin: readCookie('session'), idAdmin: currentIdAdmin},
                 type: 'POST',
                 url: '/rdv/getmotifcolabbyidadmin',
@@ -140,7 +139,7 @@
         function getMotifCab() {
             $.ajax({
                 async: false,
-                data: {tokenAdmin: readCookie('session'), idAdmin: currentIdAdmin},
+                data: {tokenAdmin: readCookie('session')},
                 type: 'POST',
                 url: '/rdv/getmotifcabid',
                 success: function (data, textStatus, jqXHR) {
@@ -735,7 +734,6 @@ header section -->
                     $('#namePat').attr("name", null);
                     $('#commentEvent').val("");
                     $("#eventMotifSelection").val("default").change();
-                    console.log(data);
                     var motifs = data.listIdMotif.split(',');
                     $('#eventMotifSelection').empty();
                     $('#eventMotifSelection').append('<option value="default" selected>Veuillez faire un choix</option>');
@@ -780,6 +778,8 @@ header section -->
     ;
 
     function getEvents(start, end) {
+        getMotifCab();
+        getMotifColab();
         var listEvent = [];
         $.ajax({
             async: false,

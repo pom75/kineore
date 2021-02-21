@@ -340,18 +340,19 @@ public class RDVService {
         }
     }
 
-    //duplicated in AdminService?
     @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getMotifId(@RequestParam("idCab") String idCab) {
+    public Message getMotifId(@RequestParam("tokenAdmin")  String tokenAdmin) {
         try {
-            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifCabByIdCab(Integer.parseInt(idCab.replace("#", "")));
+            int idCab = getColabByToken(tokenAdmin).getIdCab();
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifCabByIdCab(idCab);
             return new GetMotif("OK", "RAS", motifByIdAdmin);
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
         }
     }
+
 
     @PostMapping(value = "/rdv/getpersonidadmin", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
