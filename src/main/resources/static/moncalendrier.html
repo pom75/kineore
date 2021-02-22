@@ -140,7 +140,7 @@
         function getMotifCab() {
             $.ajax({
                 async: false,
-                data: {tokenAdmin: readCookie('session'), idAdmin: currentIdAdmin},
+                data: {tokenAdmin: readCookie('session')},
                 type: 'POST',
                 url: '/rdv/getmotifcabid',
                 success: function (data, textStatus, jqXHR) {
@@ -615,8 +615,6 @@ header section -->
     var currentEvent;
     var added = false; // avoid duplication
     getPerson();
-    getMotifColab();
-    getMotifCab();
 
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -786,6 +784,9 @@ header section -->
     ;
 
     function getEvents(start, end) {
+        //Need this information before drawing events (not async)
+        getMotifCab();
+        getMotifColab();
         var listEvent = [];
         $.ajax({
             async: false,
