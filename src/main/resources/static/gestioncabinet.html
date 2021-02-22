@@ -26,9 +26,11 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
     <script src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js" defer></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js"
+            defer></script>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/css/bootstrap-colorpicker.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/css/bootstrap-colorpicker.css"
+          rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/js/bootstrap-colorpicker.js"></script>
 
     <script>
@@ -81,7 +83,7 @@
                 $('#tarifs').val(jsonData.tarif);
                 $('#prescab').val(jsonData.pres);
                 $('#urlcab').val(jsonData.url);
-                $('#urcabsamll').html('<a href="https://www.kinecab.com/cab/'+jsonData.url+'">http://www.kinecab.com/cab/<b>'+jsonData.url+'</b></a>');
+                $('#urcabsamll').html('<a href="https://www.kinecab.com/cab/' + jsonData.url + '">http://www.kinecab.com/cab/<b>' + jsonData.url + '</b></a>');
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
@@ -151,7 +153,8 @@ header section -->
 
 
 <!-- Modal -->
-<div class="modal fade" id="modalMessage" style="z-index:99999999" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="modalMessage" style="z-index:99999999" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -208,20 +211,21 @@ header section -->
                             </div>
                             <div class="form-group">
                                 <label for="inputDuree">Couleur</label>
-                                <input id="inputCouleur" type="color" class="form-control input-lg"/>
+                                <input id="inputCouleur" type="color" class="col-md-2" style="padding-right:0px;padding-left:0;width:50px;padding: 0 0 0 0;border:0px"/>
                                 <script>
-//                                    $(function () {
-//                                       $('#inputCouleur').colorpicker();
-//                                    });
+                                    //                                    $(function () {
+                                    //                                       $('#inputCouleur').colorpicker();
+                                    //                                    });
                                 </script>
                             </div>
                             <div class="form-group">
                                 <label for="inputDuree">Duree</label>
-                                <input id="inputDuree" type="range" min="10" max="120" step="5" value="10" onchange="updateTextInput(this.value);">
+                                <input id="inputDuree" type="range" min="10" max="120" step="5" value="10"
+                                       onchange="updateTextInput(this.value);">
                                 <input type="number" id="textInput" value="10" readonly>
                                 <script>
                                     function updateTextInput(val) {
-                                       document.getElementById('textInput').value=val;
+                                        document.getElementById('textInput').value = val;
                                     }
                                 </script>
                             </div>
@@ -254,20 +258,25 @@ header section -->
                             </div>
                             <div class="row">
                                 <label for="inputDuree">Couleur</label>
-                                <input id="modifyCouleur" type="color" class="form-control input-lg"/>
+                                <input id="modifyCouleur" type="color" class="col-md-2" style="padding-right:0px;padding-left:0;width:50px;padding: 0 0 0 0;border:0px"/>
                                 <script>
-//                                      $(function () {
-//                                        $('#modifyCouleur').colorpicker();
-//                                      });
+                                    //                                      $(function () {
+                                    //                                        $('#modifyCouleur').colorpicker();
+                                    //                                      });
                                 </script>
                             </div>
 
                             <div class="row">
                                 <label for="inputDuree">Duree</label>
-                                <input id="modifyDuree" type="number" class="form-control input-lg"  min="10" max="120" step="5" value="10" readonly>
+                                <input id="modifyDuree" type="number" class="form-control input-lg" min="10" max="120"
+                                       step="5" value="10" readonly>
                             </div>
                         </div>
-                        <button type="button" id="editMotif" class="btn btn-primary">edit</button>
+                        <br>
+                        <div class="float-sm-right" id="modifBlock">
+                            <button type="button" id="editMotif" class="btn btn-secondary float-left">Sauvegarder
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -288,14 +297,14 @@ header section -->
 
     //Table Motif
     var table_motif;
-    $(document).ready( function () {
+    $(document).ready(function () {
         table_motif = $('#table_id_motif').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
             },
             "columnDefs": [
                 {
-                    "targets": [ 0 ],
+                    "targets": [0],
                     "visible": false,
                     "searchable": false
                 }
@@ -303,60 +312,62 @@ header section -->
             responsive: true,
             dom: 'Bfrtip',
             buttons: [
-               {
+                {
                     text: 'Ajouter Un Motif',
-                    action: function ( e, dt, node, config ) {
-                      $('#motifAddition').modal('show');
+                    action: function (e, dt, node, config) {
+                        $('#motifAddition').modal('show');
                     }
-               },
-               {
+                },
+                {
                     text: 'Modifier Un Motif',
-                    action: function ( e, dt, node, config ) {
-                    var table_data = table_motif.rows('.selected').data();
-                    if(table_data[0]){
-                    document.getElementById("modifyMotif").value = table_data[0][1];
-                    document.getElementById("modifyCouleur").value = table_data[0][2].toString().toLowerCase();
-                    document.getElementById("modifyDuree").value = table_data[0][4];
-                    $('#motifModification').modal('show');
-                    }else{
-                       alert("Veuillez sélectionner un motif à modifier");
+                    action: function (e, dt, node, config) {
+                        var table_data = table_motif.rows('.selected').data();
+                        if (table_data[0]) {
+                            document.getElementById("modifyMotif").value = table_data[0][1];
+                            document.getElementById("modifyCouleur").value = table_data[0][2].toString().toLowerCase();
+                            document.getElementById("modifyDuree").value = table_data[0][4];
+                            $('#motifModification').modal('show');
+                        } else {
+                            alert("Veuillez sélectionner un motif à modifier");
+                        }
                     }
-                    }
-               }
-           ]
+                }
+            ]
 
         });
         getMotif();
         $('#table_id_motif tbody').on('click', 'tr', function () {
-           // $(this).toggleClass('selected');
-        if ( $(this).hasClass('selected') ) {
-            $(this).removeClass('selected');
-        }
-        else {
-            table_motif.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
+            // $(this).toggleClass('selected');
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                table_motif.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
 
         });
 
-    } );
+    });
 
-    $('#table_id_motif tbody').on( 'click', 'button', function () {
-     alert("do nothing for now");
-    } );
+    $('#table_id_motif tbody').on('click', 'button', function () {
+        alert("do nothing for now");
+    });
 
     function getMotif() {
         $.ajax({
             data: {tokenAdmin: readCookie('session')},
             type: 'POST',
             cache: false,
-            url: '/rdv/getmotifcabid',
+            url: '/rdv/getmotiftokenadmin',
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
                     for (var i = 0; i < jsonData.motif.length; i++) {
                         // Add motif on table_motif
-                        table_motif.row.add([jsonData.motif[i].id,jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree]).draw().node();
-                        $(table_motif.cell(i,2).node()).css({'background-color':jsonData.motif[i].color,'color':jsonData.motif[i].color})
+                        table_motif.row.add([jsonData.motif[i].id, jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree]).draw().node();
+                        $(table_motif.cell(i, 2).node()).css({
+                            'background-color': jsonData.motif[i].color,
+                            'color': jsonData.motif[i].color
+                        })
                     }
                 } else {
                     $('#modaleMessageTitle').text("Une erreur est survenue");
@@ -372,14 +383,14 @@ header section -->
         });
     }
 
-    function addMotifForCabinet(mids) {
+    function addMotifForCabinet(motif, color, duree) {
         $.ajax({
-            data: {tokenAdmin: readCookie('session'), args: mids.toString()},
+            data: {tokenAdmin: readCookie('session'), motif: motif, color: color, duree: duree},
             type: 'POST',
             url: '/rdv/addMotifForCabinet',
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
-                        location.reload(true);
+                    location.reload(true);
                 } else {
                 }
             },
@@ -388,9 +399,9 @@ header section -->
         });
     }
 
-    function editMotif(mids) {
+    function editMotif(id, motif, color) {
         $.ajax({
-            data: {tokenAdmin: readCookie('session'), args: mids.toString()},
+            data: {tokenAdmin: readCookie('session'), id: id, motif: motif, color: color},
             type: 'POST',
             url: '/rdv/modifyMotif',
             success: function (jsonData, textStatus, jqXHR) {
@@ -406,21 +417,13 @@ header section -->
 
 
     $('#addMotif').on('click', function () {
-        var args=[];
-        args[0]=$(inputMotif).val();
-        args[1]=$(inputCouleur).val();
-        args[2]=$(inputDuree).val();
-        addMotifForCabinet(args);
+        addMotifForCabinet($(inputMotif).val(), $(inputCouleur).val(), $(inputDuree).val());
         document.getElementById("motifAdditionForm").reset();
     });
 
     $('#editMotif').on('click', function () {
         var table_data = table_motif.rows('.selected').data();
-        var args=[];
-        args[0]=table_data[0][0];
-        args[1]=$(modifyMotif).val();
-        args[2]=$(modifyCouleur).val();
-        editMotif(args);
+        editMotif(table_data[0][0], $(modifyMotif).val(), $(modifyCouleur).val());
     });
 
 

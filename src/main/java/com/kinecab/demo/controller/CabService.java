@@ -1,7 +1,6 @@
 
 package com.kinecab.demo.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.kinecab.demo.db.AdminDB.getColabByToken;
@@ -9,7 +8,6 @@ import static com.kinecab.demo.db.CabDB.*;
 import static com.kinecab.demo.db.RDVDB.getMotif;
 
 import com.kinecab.demo.db.CabDB;
-import com.kinecab.demo.db.RDVDB;
 import com.kinecab.demo.db.entity.Cab;
 import com.kinecab.demo.db.entity.Colab;
 import com.kinecab.demo.db.entity.MotifCab;
@@ -150,5 +148,6 @@ public class CabService {
             e.printStackTrace();
         }
     }
+
 
 }

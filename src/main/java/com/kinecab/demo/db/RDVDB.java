@@ -137,20 +137,18 @@ public class RDVDB {
         }
     }
 
-    public static void addMotif(List<String> args) {
+    public static void addMotif(int idCab,String motif,String color, String duree) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction trx = session.beginTransaction();
-            String query = "insert into MOTIF_CAB (idCab, motif, resource, color, duree) values(" + args.get(0) + ", '" + args.get(1) + "', 0, '" + args.get(2) + "', " + args.get(3) + ")";
-            NativeQuery sqlQuery = session.createSQLQuery(query);
+            NativeQuery sqlQuery = session.createSQLQuery("insert into MOTIF_CAB (idCab, motif, resource, color, duree) values(" + idCab + ", '" + motif + "', 0, '" + color + "', " + duree+ ")");
             sqlQuery.executeUpdate();
             trx.commit();
         }
     }
-    public static void modifyMotif(List<String> args) {
+    public static void modifyMotif(String id,String motif,String color) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction trx = session.beginTransaction();
-            String query = "update MOTIF_CAB set motif='" + args.get(1) + "', color='" + args.get(2) + "' where id="+ args.get(0) ;
-            NativeQuery sqlQuery = session.createSQLQuery(query);
+            NativeQuery sqlQuery = session.createSQLQuery("update MOTIF_CAB set motif='" + motif + "', color='" + color + "' where id="+id);
             sqlQuery.executeUpdate();
             trx.commit();
         }
