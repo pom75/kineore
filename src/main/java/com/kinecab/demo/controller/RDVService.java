@@ -339,12 +339,24 @@ public class RDVService {
     }
 
 
-    @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/getmotiftokenadmin", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getMotifId(@RequestParam("tokenAdmin")  String tokenAdmin) {
+    public Message getMotifIdByTokenAdmin(@RequestParam("tokenAdmin")  String tokenAdmin) {
         try {
             int idCab = getColabByToken(tokenAdmin).getIdCab();
             final List<MotifCab> motifByIdAdmin = RDVDB.getMotifCabByIdCab(idCab);
+            return new GetMotif("OK", "RAS", motifByIdAdmin);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getMotifId(@RequestParam("idCab") String idCab) {
+        try {
+            final List<MotifCab> motifByIdAdmin = RDVDB.getMotifCabByIdCab(Integer.parseInt(idCab.replace("#", "")));
             return new GetMotif("OK", "RAS", motifByIdAdmin);
         } catch (Exception e) {
             e.printStackTrace();
@@ -535,20 +547,15 @@ public class RDVService {
 
     @PostMapping(value = "/rdv/addMotifForCabinet", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message addMotifForCabinet(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("args") String[] motifIds) {
+    public Message addMotifForCabinet(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("motif") String motif,@RequestParam("color") String color,@RequestParam("duree") String duree) {
         try {
+            //TODO : add table "superadmin" cab and add check
             Colab colabByToken = getColabByToken(tokenAdmin);
-            colabByToken.getIdCab();
             if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            ArrayList<String> args = new ArrayList<String>();
-            args.add(Integer.toString(colabByToken.getIdCab()));
-            for (String motif : motifIds
-            ) {
-                args.add(motif);
-            }
-            RDVDB.addMotif(args);
+            //TODO add check on input param
+            RDVDB.addMotif(colabByToken.getIdCab(),motif,color,duree);
             return new Message("OK", "Motif ajoute");
         } catch (Exception e) {
             e.printStackTrace();
@@ -558,9 +565,14 @@ public class RDVService {
 
     @PostMapping(value = "/rdv/modifyMotif", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message modifyMotif(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("args") String[] infos) {
+    public Message modifyMotif(@RequestParam("tokenAdmin") String tokenAdmin,@RequestParam("id") String id,@RequestParam("motif") String motif,@RequestParam("color") String color) {
         try {
-            RDVDB.modifyMotif(Arrays.asList(infos.clone()));
+            //TODO : add table "superadmin" cab and add check
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+            RDVDB.modifyMotif(id,motif,color);
             return new Message("OK", "Motif ajoute");
         } catch (Exception e) {
             e.printStackTrace();
