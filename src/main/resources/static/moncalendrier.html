@@ -613,6 +613,7 @@ header section -->
     var calendar;
     var currentEvent;
     var added = false; // avoid duplication
+    var init = false;
     getPerson();
 
 
@@ -781,9 +782,18 @@ header section -->
     })
     ;
 
+    function initMotif() {
+        //To not duplicate motifs in UI
+        if(!init) {
+            getMotifCab();
+            getMotifColab();
+            init = true;
+        }
+
+    }
+
     function getEvents(start, end) {
-        getMotifCab();
-        getMotifColab();
+        initMotif();
         var listEvent = [];
         $.ajax({
             async: false,
