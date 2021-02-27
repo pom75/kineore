@@ -212,25 +212,21 @@ header section -->
                             <div class="form-group">
                                 <label for="inputDuree">Couleur</label>
                                 <input id="inputCouleur" type="color" class="col-md-2" style="padding-right:0px;padding-left:0;width:50px;padding: 0 0 0 0;border:0px"/>
-                                <script>
-                                    //                                    $(function () {
-                                    //                                       $('#inputCouleur').colorpicker();
-                                    //                                    });
-                                </script>
                             </div>
                             <div class="form-group">
-                                <label for="inputDuree">Duree</label>
-                                <input id="inputDuree" type="range" min="10" max="120" step="5" value="10"
-                                       onchange="updateTextInput(this.value);">
-                                <input type="number" id="textInput" value="10" readonly>
+                                <label for="inputDuree">Durée(minutes)</label>
+                                <select id="inputDuree" class="form-control"></select>
                                 <script>
-                                    function updateTextInput(val) {
-                                        document.getElementById('textInput').value = val;
-                                    }
+                                    $(function(){
+                                        var $select = $('#inputDuree');
+                                        for (i=10;i<=120;i=i+5){
+                                            $select.append($('<option></option>').val(i).html(i))
+                                        }
+                                    });
                                 </script>
                             </div>
                         </div>
-                        <button type="button" id="addMotif" class="btn btn-primary">Create</button>
+                        <button type="button" id="addMotif" class="btn btn-primary">Créer</button>
                     </form>
                 </div>
 
@@ -314,12 +310,14 @@ header section -->
             buttons: [
                 {
                     text: 'Ajouter Un Motif',
+                    className: 'btn btn-secondary',
                     action: function (e, dt, node, config) {
                         $('#motifAddition').modal('show');
                     }
                 },
                 {
                     text: 'Modifier Un Motif',
+                    className: 'btn btn-secondary',
                     action: function (e, dt, node, config) {
                         var table_data = table_motif.rows('.selected').data();
                         if (table_data[0]) {
