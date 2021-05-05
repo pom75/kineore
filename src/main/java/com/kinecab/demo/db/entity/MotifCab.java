@@ -34,6 +34,9 @@ public class MotifCab {
     @Column
     private int duree;
 
+    @Column(nullable = false, columnDefinition = "bit default 0")
+    private boolean archived;
+
 //~ ----------------------------------------------------------------------------------------------------------------
     //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
@@ -102,12 +105,20 @@ public class MotifCab {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MotifCab motifCab = (MotifCab) o;
-        return id == motifCab.id && idCab == motifCab.idCab && resource == motifCab.resource && duree == motifCab.duree && motif.equals(motifCab.motif) && color.equals(motifCab.color);
+        return id == motifCab.id && idCab == motifCab.idCab && resource == motifCab.resource && duree == motifCab.duree && archived == motifCab.archived && motif.equals(motifCab.motif) && color.equals(motifCab.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, idCab, motif, color, resource, duree);
+        return Objects.hash(id, idCab, motif, color, resource, duree, archived);
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 
 }
