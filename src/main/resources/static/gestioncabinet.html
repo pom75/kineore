@@ -182,13 +182,19 @@ header section -->
                     <th>Couleur</th>
                     <th>Ressource</th>
                     <th>Durée</th>
+                    <th>Archiver</th>
                 </tr>
                 </thead>
                 <tbody id="tab_motif">
                 </tbody>
             </table>
+            <button type="button" id="showArchivedMotifs"
+                    class="btn btn-secondary float-right mb-5">
+                motifs archivés
+            </button>
         </div>
     </section>
+
 
 </main>
 
@@ -282,6 +288,37 @@ header section -->
 </div>
 
 
+<!-- Popup motif cab archives   -->
+<div class="modal fade" id="archivedMotifsTable" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Motifs Archivés</h4>
+            </div>
+            <div class="modal-body">
+                <table id="table_to_show_archived_motifs" class="display nowrap" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>Id_Motif_Cab</th>
+                        <th>Motif</th>
+                        <th>Couleur</th>
+                        <th>Ressource</th>
+                        <th>Durée</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tab_to_show_archived_motifs_body">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button id="button_to_restore_motif" type="button" class="btn btn-primary">Restaurer</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <!-- footer starts here -->
 <nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
     © 2020 Copyright
@@ -302,6 +339,13 @@ header section -->
                 {
                     "targets": [0],
                     "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": 5,
+                    "visible": true,
+                    "data": null,
+                    "defaultContent": "<button class='btn btn-default btn-lg' ><i class='fa fa-trash' aria-hidden='true'></i></button>",
                     "searchable": false
                 }
             ],
@@ -348,7 +392,17 @@ header section -->
     });
 
     $('#table_id_motif tbody').on('click', 'button', function () {
-        alert("do nothing for now");
+        var data = table_motif.row($(this).parents('tr')).data();
+        $( table_motif.row($(this).parents('tr')) ).addClass('row-disabled');
+
+        var isResponsive = false;
+        if (data === undefined) {
+            isResponsive = true;
+            data = table_motif.row($(this).parents('tr').prev()).data();
+        }
+        //removeMotif(data[0]);
+        //alert("we want to archive " + data[0]+data[1]);
+        archiveMotif(data[0]);
     });
 
     function getMotif() {
@@ -412,6 +466,21 @@ header section -->
             }
         });
     }
+    function archiveMotif(id) {
+        $.ajax({
+            data: {tokenAdmin: readCookie('session'), motifId: id},
+            type: 'POST',
+            url: '/rdv/archiveMotif',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    location.reload(true);
+                } else {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
 
 
     $('#addMotif').on('click', function () {
@@ -424,6 +493,92 @@ header section -->
         editMotif(table_data[0][0], $(modifyMotif).val(), $(modifyCouleur).val());
     });
 
+
+    var table_archived_motif;
+    $(document).ready(function () {
+        table_archived_motif = $('#table_to_show_archived_motifs').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
+            },
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }
+            ],
+            responsive: true
+        });
+        getArchivedMotifs();
+
+        $('#table_to_show_archived_motifs tbody').on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+
+        $(document).on('click', '#button_to_restore_motif', function () {
+            var motif_ids = [];
+            var table_data = table_archived_motif.rows('.selected').data();
+            for (var i = 0; i < table_data.length; i++) {
+                motif_ids[i] = table_data[i][0].toString();
+            }
+            restoreMotifs(motif_ids);
+
+            for (var i = 0; i < table_data.length; i++) {
+                var row_to_add = table_data[i];
+                var n = table_motif.row.add([row_to_add[0], row_to_add[1], row_to_add[2], row_to_add[3], row_to_add[4]]);
+                n.draw();
+                var index = n.index();
+                $(table_motif.cell(index, 2).node()).css({'background-color': row_to_add[2], 'color': row_to_add[2]});
+            }
+
+            table_archived_motif.rows('.selected').remove().draw();
+        });
+    });
+
+
+    function getArchivedMotifs() {
+        $.ajax({
+            data: {tokenAdmin: readCookie('session')},
+            type: 'POST',
+            cache: false,
+            url: '/rdv/getArchivedMotiftokenadmin',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.motif.length; i++) {
+                        //Add motif on table_archived_motif
+                        table_archived_motif.row.add([jsonData.motif[i].id, jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree]).draw().node();
+                        $(table_archived_motif.cell(i, 2).node()).css({
+                            'background-color': jsonData.motif[i].color,
+                            'color': jsonData.motif[i].color
+                        })
+                    }
+                } else {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+    function restoreMotifs(mids) {
+        $.ajax({
+            data: {tokenAdmin: readCookie('session'), motifIds: mids.toString()},
+            type: 'POST',
+            url: '/rdv/restoreMotifs',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                } else {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+
+    $('#showArchivedMotifs').on('click', function () {
+        $('#archivedMotifsTable').modal('show');
+    });
 
 </script>
 </body>

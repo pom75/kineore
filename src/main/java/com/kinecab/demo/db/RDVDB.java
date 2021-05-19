@@ -113,8 +113,11 @@ public class RDVDB {
             List<MotifColab> list = sqlQuery.addEntity(MotifColab.class).list();
             List<MotifCab> motifCabs = new LinkedList<>();
             list.forEach(motifColab -> {
-                NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + motifColab.getIdMotifCab() + "'");
-                motifCabs.add((MotifCab) sqlQuery2.addEntity(MotifCab.class).list().get(0));
+                NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + motifColab.getIdMotifCab() + "' and MOTIF_CAB.archived=0");
+                List l = sqlQuery2.addEntity(MotifCab.class).list();
+                if(!l.isEmpty()){
+                    motifCabs.add((MotifCab) l.get(0));
+                }
             });
             return motifCabs;
         }
@@ -123,7 +126,15 @@ public class RDVDB {
     public static List<MotifCab> getMotifCabByIdCab(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<MotifCab> motifCabs = new LinkedList<>();
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.idCab = '" + id + "'");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.idCab = '" + id + "' and MOTIF_CAB.archived=0");
+            motifCabs.addAll(sqlQuery.addEntity(MotifCab.class).list());
+            return motifCabs;
+        }
+    }
+    public static List<MotifCab> getArchivedMotifCabByIdCab(int id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            List<MotifCab> motifCabs = new LinkedList<>();
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.idCab = '" + id + "' and MOTIF_CAB.archived=1");
             motifCabs.addAll(sqlQuery.addEntity(MotifCab.class).list());
             return motifCabs;
         }
@@ -141,6 +152,14 @@ public class RDVDB {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction trx = session.beginTransaction();
             NativeQuery sqlQuery = session.createSQLQuery("insert into MOTIF_CAB (idCab, motif, resource, color, duree) values(" + idCab + ", '" + motif + "', 0, '" + color + "', " + duree+ ")");
+            sqlQuery.executeUpdate();
+            trx.commit();
+        }
+    }
+    public static void archiveMotif(int idMotif) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+            NativeQuery sqlQuery = session.createSQLQuery("update MOTIF_CAB set archived=1 where id= " + idMotif);
             sqlQuery.executeUpdate();
             trx.commit();
         }
@@ -191,6 +210,16 @@ public class RDVDB {
             Transaction trx = session.beginTransaction();
             for (Integer motifId : motifIds) {
                 NativeQuery sqlQuery = session.createSQLQuery("INSERT INTO MOTIF_COLAB (idColab, idMotifCab) VALUES (" + id + ", " + motifId + ")");
+                sqlQuery.executeUpdate();
+            }
+            trx.commit();
+        }
+    }
+    public static void restoreMotifs(int id, List<Integer> motifIds) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+            for (Integer motifId : motifIds) {
+                NativeQuery sqlQuery = session.createSQLQuery("update MOTIF_CAB set archived=0 where id= " + motifId);
                 sqlQuery.executeUpdate();
             }
             trx.commit();

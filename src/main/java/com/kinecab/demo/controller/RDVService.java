@@ -352,6 +352,18 @@ public class RDVService {
             return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
         }
     }
+    @PostMapping(value = "/rdv/getArchivedMotiftokenadmin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getArchivedMotifIdByTokenAdmin(@RequestParam("tokenAdmin")  String tokenAdmin) {
+        try {
+            int idCab = getColabByToken(tokenAdmin).getIdCab();
+            final List<MotifCab> motifByIdAdmin = RDVDB.getArchivedMotifCabByIdCab(idCab);
+            return new GetMotif("OK", "RAS", motifByIdAdmin);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
 
     @PostMapping(value = "/rdv/getmotifcabid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -545,6 +557,26 @@ public class RDVService {
             return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
         }
     }
+    @PostMapping(value = "/rdv/restoreMotifs", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message restoreMotifs(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("motifIds") String[] motifIds) {
+        try {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+            ArrayList<Integer> motifs = new ArrayList<Integer>();
+            for (String motif : motifIds
+            ) {
+                motifs.add(Integer.parseInt(motif));
+            }
+            RDVDB.restoreMotifs(colabByToken.getId(), motifs);
+            return new Message("OK", "Evenement supprimé");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
+        }
+    }
 
     @PostMapping(value = "/rdv/addMotifForCabinet", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -578,6 +610,23 @@ public class RDVService {
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Erreur pendant l'addition du Motif.");
+        }
+    }
+
+    @PostMapping(value = "/rdv/archiveMotif", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message archiveMotif(@RequestParam("tokenAdmin") String tokenAdmin, @RequestParam("motifId") String motifId) {
+        try {
+            Colab colabByToken = getColabByToken(tokenAdmin);
+            if (colabByToken == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+
+            RDVDB.archiveMotif(Integer.parseInt(motifId));
+            return new Message("OK", "Motif archivé");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
         }
     }
 
