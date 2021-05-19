@@ -19,9 +19,20 @@ public class Colab {
     @Column
     private String name;
 
+    @Column
+    private  boolean isSuperAdmin;
+
     public Colab() {
     }
 
+
+    public boolean isSuperAdmin() {
+        return isSuperAdmin;
+    }
+
+    public void setSuperAdmin(boolean superAdmin) {
+        isSuperAdmin = superAdmin;
+    }
 
     public int getId() {
         return id;
