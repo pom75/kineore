@@ -319,7 +319,7 @@ header section -->
     }
     function getColabs() {
         $.ajax({
-            url: '/cab/getAdminsCab',
+            url: '/cab/getColabCab',
             type: 'POST',
             data: 'id=' + $_GET('id'),
             success: function (data, textStatus, jqXHR) {
@@ -348,7 +348,7 @@ header section -->
 
     function getEvents() {
         $.ajax({
-            data: 'idAdmin=' + $_GET('id'),
+            data: 'idKineUser=' + $_GET('id'),
             type: 'POST',
             url: '/rdv/getrdvfree',
             success: function (data, textStatus, jqXHR) {
@@ -479,8 +479,8 @@ header section -->
                 if (jsonData.status == "OK") {
                     $('#modaleMessageTitle').text("Opération terminée");
                     writeCookie("session", jsonData.token, 30);
-                    writeCookie("admin", jsonData.admin, 30);
-                    writeCookie("idAdmin", jsonData.idAdmin, 30);
+                    writeCookie("admin", jsonData.isKine, 30);
+                    writeCookie("idAdmin", jsonData.idKineUser, 30);
                     window.setTimeout(function () {
                         // Move to a new location or you can do something else
                         if (jsonData.admin == 1) {

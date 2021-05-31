@@ -47,7 +47,7 @@
         }
 
         $.ajax({
-            url: '/login/getprofiladmin',
+            url: '/login/getprofilkineuser',
             type: 'POST',
             data: 'token=' + readCookie('session'),
             success: function (jsonData, textStatus, jqXHR) {
@@ -407,10 +407,10 @@ header section -->
 
     function getMotif() {
         $.ajax({
-            data: {tokenAdmin: readCookie('session')},
+            data: {tokenKineUser: readCookie('session')},
             type: 'POST',
             cache: false,
-            url: '/rdv/getmotiftokenadmin',
+            url: '/rdv/getmotiftokenKineUser',
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
                     for (var i = 0; i < jsonData.motif.length; i++) {
@@ -437,7 +437,7 @@ header section -->
 
     function addMotifForCabinet(motif, color, duree) {
         $.ajax({
-            data: {tokenAdmin: readCookie('session'), motif: motif, color: color, duree: duree},
+            data: {tokenKineUser: readCookie('session'), motif: motif, color: color, duree: duree},
             type: 'POST',
             url: '/rdv/addMotifForCabinet',
             success: function (jsonData, textStatus, jqXHR) {
@@ -453,7 +453,7 @@ header section -->
 
     function editMotif(id, motif, color) {
         $.ajax({
-            data: {tokenAdmin: readCookie('session'), id: id, motif: motif, color: color},
+            data: {tokenKineUser: readCookie('session'), id: id, motif: motif, color: color},
             type: 'POST',
             url: '/rdv/modifyMotif',
             success: function (jsonData, textStatus, jqXHR) {
@@ -468,7 +468,7 @@ header section -->
     }
     function archiveMotif(id) {
         $.ajax({
-            data: {tokenAdmin: readCookie('session'), motifId: id},
+            data: {tokenKineUser: readCookie('session'), motifId: id},
             type: 'POST',
             url: '/rdv/archiveMotif',
             success: function (jsonData, textStatus, jqXHR) {
@@ -538,10 +538,10 @@ header section -->
 
     function getArchivedMotifs() {
         $.ajax({
-            data: {tokenAdmin: readCookie('session')},
+            data: {tokenKineUser: readCookie('session')},
             type: 'POST',
             cache: false,
-            url: '/rdv/getArchivedMotiftokenadmin',
+            url: '/rdv/getArchivedMotiftokenKineUser',
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status === "OK") {
                     for (var i = 0; i < jsonData.motif.length; i++) {
@@ -562,7 +562,7 @@ header section -->
 
     function restoreMotifs(mids) {
         $.ajax({
-            data: {tokenAdmin: readCookie('session'), motifIds: mids.toString()},
+            data: {tokenKineUser: readCookie('session'), motifIds: mids.toString()},
             type: 'POST',
             url: '/rdv/restoreMotifs',
             success: function (jsonData, textStatus, jqXHR) {

@@ -7,9 +7,6 @@ import com.kinecab.demo.db.entity.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-
 
 public class HibernateUtil {
 
@@ -28,7 +25,7 @@ public class HibernateUtil {
             try {
                 Configuration configuration = new Configuration();
                 // Hibernate settings equivalent to hibernate.cfg.xml's properties
-                configuration.addAnnotatedClass(Admin.class);
+                configuration.addAnnotatedClass(KineUser.class);
                 configuration.addAnnotatedClass(Cab.class);
                 configuration.addAnnotatedClass(CabPerson.class);
                 configuration.addAnnotatedClass(Event.class);

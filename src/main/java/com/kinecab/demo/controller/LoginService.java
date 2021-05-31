@@ -3,17 +3,15 @@ package com.kinecab.demo.controller;
 
 import java.nio.charset.StandardCharsets;
 
-import java.util.List;
-
 import com.google.common.hash.Hashing;
 
-import static com.kinecab.demo.db.AdminDB.*;
+import static com.kinecab.demo.db.KineUserDB.*;
 
 import com.kinecab.demo.db.LoginDB;
 
 import static com.kinecab.demo.db.LoginDB.*;
 
-import com.kinecab.demo.db.entity.Admin;
+import com.kinecab.demo.db.entity.KineUser;
 import com.kinecab.demo.db.entity.Person;
 import com.kinecab.demo.db.entity.PersonTemp;
 import com.kinecab.demo.db.entity.Token;
@@ -49,9 +47,9 @@ public class LoginService {
             if (person != null) {
                 return new CookieMessage("OK", "Connexion réussite", getTokenPerson(person), "0","");//TODO FIX THIS
             } else {
-                Admin admin = checkPasswordByEmailAdmin(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
-                if (admin != null) {
-                    return new CookieMessage("OK", "Connexion réussite", getTokenAdmin(admin), "1",admin.getId()+"");
+                KineUser kineUser = checkPasswordByEmailKineUser(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
+                if (kineUser != null) {
+                    return new CookieMessage("OK", "Connexion réussite", getTokenKineUser(kineUser), "1",kineUser.getId()+"");
                 } else {
                     return new Message("FAIL", "Email ou mot de passe incorrecte");
                 }
@@ -106,9 +104,9 @@ public class LoginService {
                 }
                 return new Message("FAIL", "Erreur pendant le changement de mot de passe");
             } else {
-                Admin adminByEmail = getAdminByEmail(email);
-                if (adminByEmail != null) {
-                    String newPassword = newPasswordAdmin(adminByEmail);
+                KineUser kineUser = getKineUserByEmail(email);
+                if (kineUser != null) {
+                    String newPassword = newPasswordKineUser(kineUser);
                     if (!newPassword.isEmpty()) {
                         sendEmail(email, CHANGE_PASSWORD_TITLE, CHANGE_PASSWORD_CONTENT.replace("xxx", newPassword));
                         return new Message("OK", "Un nouveau mot de passe vas vous être envoyé d'ici 5 minutes. Pensez à regarder dans vos spams.");
@@ -217,15 +215,14 @@ public class LoginService {
         }
     }
 
-    @PostMapping(value = "/login/getprofiladmin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/getprofilkineuser", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Admin getProfilAdmin(@RequestParam("token") String token) {
+    public KineUser getProfilKineUser(@RequestParam("token") String token) {
         try {
-            Admin adminByToken = getAdminByToken(token);
-            if (adminByToken != null) {
-                Admin admin = adminByToken;
-                admin.setPassword("");
-                return admin;
+            KineUser kineUser = getKineUserByToken(token);
+            if (kineUser != null) {
+                kineUser.setPassword("");
+                return kineUser;
             } else {
                 return null;
             }
@@ -235,14 +232,14 @@ public class LoginService {
         }
     }
 
-    @PostMapping(value = "/login/changeprofiladmin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/changeprofilkineuser", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message changeProfilAdmin(@RequestParam("num") String tel,
+    public Message changeProfilKineUser(@RequestParam("num") String tel,
                                      @RequestParam("mdp") String mdp,
                                      @RequestParam("token") String token) {
         try {
-            Admin adminByToken = getAdminByToken(token);
-            if (adminByToken == null) {
+            KineUser kineUser = getKineUserByToken(token);
+            if (kineUser == null) {
                 return new Message("FAIL", "Token invalide.");
             }
             if (tel.isEmpty() || !tel.matches("[0][12345679][0-9]{8}$")) {
@@ -252,12 +249,11 @@ public class LoginService {
                 return new Message("FAIL", "Mot de passe trop court.");
             }
 
-            Admin admin = adminByToken;
             if (mdp.length() >= 6) {
-                admin.setPassword(mdp);
+                kineUser.setPassword(mdp);
             }
-            admin.setTel(tel);
-            saveAdmin(admin);
+            kineUser.setTel(tel);
+            saveKineUser(kineUser);
             return new Message("OK", "Modifications enregistrées.");
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,22 +261,22 @@ public class LoginService {
         }
     }
 
-    @PostMapping(value = "/login/suppprofiladmin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login/suppprofilkineuser", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message deleteProfilAdmin(@RequestParam("mdp") String mdp,
+    public Message deleteProfilKineUser(@RequestParam("mdp") String mdp,
                                      @RequestParam("token") String token) {
         try {
 
-             Admin adminByToken = getAdminByToken(token);
-            if (adminByToken == null) {
+             KineUser kineUser = getKineUserByToken(token);
+            if (kineUser == null) {
                 return new Message("FAIL", "Token invalide.");
             }
-            Admin admin = checkPasswordByTokenAdmin(token, Hashing.sha256().hashString(mdp, StandardCharsets.UTF_8).toString());
-            if (admin == null) {
+            KineUser kineUser1 = checkPasswordByTokenKineUser(token, Hashing.sha256().hashString(mdp, StandardCharsets.UTF_8).toString());
+            if (kineUser1 == null) {
                 return new Message("FAIL", "Mot de passe incorrecte.");
             }
-            removeToken(new Token(admin.getId(), token, "1"));
-            removeAdmin(admin);
+            removeToken(new Token(kineUser1.getId(), token, "1"));
+            removeKineUser(kineUser1);
             return new Message("OK", "Compte supprimé.");
         } catch (Exception e) {
             e.printStackTrace();

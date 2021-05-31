@@ -11,8 +11,8 @@ public class GetMotif extends Message {
 
     private final List<MotifCab> motif;
 
-    public GetMotif(String ok, String ras, List<MotifCab> motifByIdAdmin) {
+    public GetMotif(String ok, String ras, List<MotifCab> motifCabs) {
         super(ok,ras);
-        this.motif = motifByIdAdmin;
+        this.motif = motifCabs;
     }
 }

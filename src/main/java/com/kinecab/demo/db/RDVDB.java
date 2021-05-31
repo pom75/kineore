@@ -51,7 +51,7 @@ public class RDVDB {
     }
 
 
-    public static List<Event> rdvJsonToRdvs(int adminId, JSONArray array) {
+    public static List<Event> rdvJsonToRdvs(int idColab, JSONArray array) {
         final Iterator<Object> events = array.iterator();
         ArrayList<Event> rdvs = new ArrayList<>();
         while (events.hasNext()) {
@@ -63,7 +63,7 @@ public class RDVDB {
             } else {
                 idPatient = Integer.parseInt((String) idPatObj);
             }
-            final Event event = new Event(adminId, Timestamp.valueOf((String) currentEvent.get("start")), Timestamp.valueOf((String) currentEvent.get("end")),
+            final Event event = new Event(idColab, Timestamp.valueOf((String) currentEvent.get("start")), Timestamp.valueOf((String) currentEvent.get("end")),
                     Status.stringToStatus((String) ((JSONObject) currentEvent.get("data")).get("status")), idPatient, (String) ((JSONObject) currentEvent.get("data")).get("idMotif"),
                     (Integer) ((JSONObject) currentEvent.get("data")).get("duration"), (String) currentEvent.get("title"), (String) ((JSONObject) currentEvent.get("data")).get("info"), (boolean) ((JSONObject) currentEvent.get("data")).get("pointe"),
                     (boolean) ((JSONObject) currentEvent.get("data")).get("paye"), (String) ((JSONObject) currentEvent.get("data")).get("nomPatient"), (String) ((JSONObject) currentEvent.get("data")).get("listIdMotif"));
@@ -77,19 +77,19 @@ public class RDVDB {
 
     public static List<Event> getRdvByTime(String start, String end, int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idAdmin = '" + id + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "'");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idColab = '" + id + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "'");
             return sqlQuery.addEntity(Event.class).list();
         }
     }
 
-    public static List<Event> getRdvFreeByTime(String start, String end, int id) {
+    public static List<Event> getRdvFreeByTime(String start, String end, int idColab) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idAdmin = '" + id + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "' AND Event.status = 'FREE' ORDER BY Event.start");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM Event WHERE  Event.idColab = '" + idColab + "' AND Event.start BETWEEN '" + start + "' AND '" + end + "' AND Event.status = 'FREE' ORDER BY Event.start");
             return sqlQuery.addEntity(Event.class).list();
         }
     }
 
-    public static boolean removeRdvByEvent(List<Event> events, int idAdmin) {
+    public static boolean removeRdvByEvent(List<Event> events, int idColab) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery;
             Transaction trx = session.beginTransaction();
@@ -99,7 +99,7 @@ public class RDVDB {
                     trx.commit();
                     return false;
                 } else {
-                    sqlQuery = session.createSQLQuery("DELETE FROM Event WHERE Event.idAdmin = '" + idAdmin + "' AND  Event.id = '" + event.getId() + "'");
+                    sqlQuery = session.createSQLQuery("DELETE FROM Event WHERE Event.idColab = '" + idColab + "' AND  Event.id = '" + event.getId() + "'");
                     sqlQuery.executeUpdate();
                 }
             }

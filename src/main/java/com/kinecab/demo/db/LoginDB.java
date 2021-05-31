@@ -3,12 +3,9 @@ package com.kinecab.demo.db;
 
 import java.nio.charset.StandardCharsets;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.google.common.hash.Hashing;
 
-import com.kinecab.demo.db.entity.Admin;
+import com.kinecab.demo.db.entity.KineUser;
 import com.kinecab.demo.db.entity.Person;
 import com.kinecab.demo.db.entity.PersonTemp;
 import com.kinecab.demo.db.entity.Token;
@@ -119,12 +116,12 @@ public class LoginDB {
         return password;
     }
 
-    public static String newPasswordAdmin(Admin admin) {
+    public static String newPasswordKineUser(KineUser kineUser) {
         String password = passwordGenerator.generate(8);
-        admin.setPassword(password);
+        kineUser.setPassword(password);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
-            session.update(admin);
+            session.update(kineUser);
             tx.commit();
         } catch (Exception e) {
             return "";

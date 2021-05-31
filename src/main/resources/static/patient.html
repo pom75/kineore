@@ -41,9 +41,9 @@
             }
 
             $.ajax({
-                data: {tokenAdmin: readCookie('session'), idPerson: $_GET('id')},
+                data: {tokenKineUser: readCookie('session'), idPerson: $_GET('id')},
                 type: 'POST',
-                url: '/admin/getpersonidadminidperson',
+                url: '/kineuser/getpersonbyid',
                 success: function (jsonData, textStatus, jqXHR) {
                     if (jsonData.status === "OK") {
                         patient = jsonData.person;
@@ -443,7 +443,7 @@ header section -->
         $.ajax({
             data: $('#changeProfil').serialize(),
             type: 'POST',
-            url: '/admin/updatepatient',
+            url: '/kineuser/updatepatient',
             success: function (jsonData, textStatus, jqXHR) {
                 if (jsonData.status == "OK") {
                     $('#dialog_title_span').text(jsonData.message);
@@ -569,7 +569,7 @@ header section -->
         getMotif();
         $.ajax({
             async: false,
-            data: {id: $_GET('id'), tokenAdmin: readCookie('session')},
+            data: {id: $_GET('id'), tokenKineUser: readCookie('session')},
             type: 'POST',
             url: '/rdv/getrdvpatient',
             success: function (jsonData, textStatus, jqXHR) {
@@ -617,7 +617,7 @@ header section -->
     function getMotif() {
         $.ajax({
             async: false,
-            data: {tokenAdmin: readCookie('session')},
+            data: {tokenKineUser: readCookie('session')},
             type: 'POST',
             url: '/rdv/getmotifcolabbytoken',
             success: function (jsonData, textStatus, jqXHR) {
@@ -660,7 +660,7 @@ header section -->
                 id: event.id,
                 paye: event.paye,
                 listIdMotif: event.listIdMotif,
-                idAdmin: event.idAdmin
+                idColab: event.idColab
             }
         }
     }
@@ -677,7 +677,7 @@ header section -->
 
     function moveEvent(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
             type: 'POST',
             url: '/rdv/moveevent',
             success: function (jsonData, textStatus, jqXHR) {
@@ -708,7 +708,7 @@ header section -->
         $.ajax({
             data: {
                 events: JSON.stringify(listEvent),
-                tokenAdmin: readCookie('session'),
+                tokenKineUser: readCookie('session'),
                 status: status,
                 idPat: idPatient
             },
@@ -755,7 +755,7 @@ header section -->
         $.ajax({
             data: {
                 events: JSON.stringify(listEvent),
-                tokenAdmin: readCookie('session'),
+                tokenKineUser: readCookie('session'),
                 status: status,
                 idPat: idPatient
             },
@@ -788,7 +788,7 @@ header section -->
 
     function saveNewEvents(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
             type: 'POST',
             url: '/rdv/addevent',
             success: function (jsonData, textStatus, jqXHR) {
@@ -821,7 +821,7 @@ header section -->
     }
     function removeEvents(listEvents) {
         $.ajax({
-            data: {listEvents: JSON.stringify(listEvents), tokenAdmin: readCookie('session')},
+            data: {listEvents: JSON.stringify(listEvents), tokenKineUser: readCookie('session')},
             type: 'POST',
             url: '/rdv/removerdv',
             success: function (jsonData, textStatus, jqXHR) {

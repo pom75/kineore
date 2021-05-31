@@ -11,8 +11,8 @@ import com.kinecab.demo.util.Utils;
 
 
 @Entity
-@Table(name = "ADMIN")
-public class Admin implements Serializable {
+@Table(name = "KINE_USER")
+public class KineUser implements Serializable {
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Instance fields
@@ -47,16 +47,16 @@ public class Admin implements Serializable {
     //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public Admin() {
+    public KineUser() {
     }
 
-    public Admin(String nom, String prenom, String email) {
+    public KineUser(String nom, String prenom, String email) {
         this.email = email;
         this.nom = Utils.trimUp(nom);
         this.prenom = Utils.trimUp(prenom);
     }
 
-    public Admin(String nom, String prenom, String email, String tel, String password) {
+    public KineUser(String nom, String prenom, String email, String tel, String password) {
         this.email = email;
         this.nom = Utils.trimUp(nom);
         this.prenom = Utils.trimUp(prenom);

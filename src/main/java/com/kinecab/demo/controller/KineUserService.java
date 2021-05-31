@@ -3,7 +3,7 @@ package com.kinecab.demo.controller;
 
 import java.util.List;
 
-import static com.kinecab.demo.db.AdminDB.*;
+import static com.kinecab.demo.db.KineUserDB.*;
 import static com.kinecab.demo.db.CabDB.*;
 import static com.kinecab.demo.db.LoginDB.*;
 import static com.kinecab.demo.db.PatientDB.emailExist;
@@ -12,7 +12,7 @@ import static com.kinecab.demo.util.MailUtil.*;
 import com.google.common.base.Strings;
 import com.kinecab.demo.db.LoginDB;
 import com.kinecab.demo.db.entity.*;
-import com.kinecab.demo.json.GetAdmin;
+import com.kinecab.demo.json.GetKineUsers;
 import com.kinecab.demo.json.GetColab;
 import com.kinecab.demo.json.GetPerson;
 import com.kinecab.demo.json.Message;
@@ -25,21 +25,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
-public class AdminService {
+public class KineUserService {
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    @PostMapping(value = "/admin/addpatient", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/kineuser/addpatient", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message ajoutPatient(@RequestParam("nom") String nom,
                                 @RequestParam("prenom") String prenom,
                                 @RequestParam("tel") String tel,
                                 @RequestParam(value = "mail", required = false) String mail,
-                                @RequestParam("tokenAdmin") String tokenAdmin) {
+                                @RequestParam("tokenKineUser") String tokenKineUser) {
         try {
-            Colab colabByToken = getColabByToken(tokenAdmin);
+            Colab colabByToken = getColabByToken(tokenKineUser);
             if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
@@ -74,24 +74,24 @@ public class AdminService {
     }
 
 
-    @PostMapping(value = "/admin/getadmin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/kineuser/getcolab", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getPersonIdAdmin() {
+    public Message getAllColabs() {
         try {
             List<Colab> colabs = getColabs();
             return new GetColab("OK", "RAS", colabs);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Message("FAIL", "Erreur pendant le chargement des admins.");
+            return new Message("FAIL", "Erreur pendant le chargement.");
         }
     }
 
-    @PostMapping(value = "/admin/getpersonidadminidperson", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/kineuser/getpersonbyid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getPersonIdAdminByIdPerson(@RequestParam("tokenAdmin") String tokenAdmin,
+    public Message getPersonById(@RequestParam("tokenKineUser") String tokenKineUser,
                                               @RequestParam("idPerson") String idPerson) {
         try {
-            Colab colabByToken = getColabByToken(tokenAdmin);
+            Colab colabByToken = getColabByToken(tokenKineUser);
             if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
@@ -112,7 +112,7 @@ public class AdminService {
         }
     }
 
-    @PostMapping(value = "/admin/updatepatient", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/kineuser/updatepatient", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message updatePatient(@RequestParam("num") String num,
                                  @RequestParam("mail") String mail,
@@ -152,7 +152,7 @@ public class AdminService {
         }
     }
 
-    @PostMapping(value = "/admin/sendmailinscription", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/kineuser/sendmailinscription", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message sendEmailPatient(@RequestParam("id") String id,
                                     @RequestParam("token") String token) {
@@ -178,13 +178,13 @@ public class AdminService {
         }
     }
 
-    @PostMapping(value = "/admin/getallcabadmins", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/kineuser/getallcabkineusers", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getAllCabAdmins( @RequestParam("token") String token) {
+    public Message getAllCabKineUsers( @RequestParam("token") String token) {
         try {
-            List<Admin> allAdminCab = getAllCabAdminByToken(token);
-            if (!allAdminCab.isEmpty()) {
-                return new GetAdmin("OK","RAS",allAdminCab);
+            List<KineUser> allKineUsersCab = getAllCabKineUserByToken(token);
+            if (!allKineUsersCab.isEmpty()) {
+                return new GetKineUsers("OK","RAS",allKineUsersCab);
             } else {
                 return new Message("FAIL", "Erreur de Token.");
             }
