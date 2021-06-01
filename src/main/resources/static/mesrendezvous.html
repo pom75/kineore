@@ -19,7 +19,7 @@
             if (readCookie('session') == '') {
                 window.location.href = ("/index.html");
             }
-            if (readCookie('admin') === "1") {
+            if (readCookie('isKine') === "1") {
                 window.location.href = ("/moncalendrier.html");
             }
         }
@@ -69,7 +69,7 @@ header section -->
                     <a class="nav-link navbar-right" href="profil.html">Mon Profil</a>
                 </li>
                 <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')"
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('isKine')"
                        href="index.html">Deconnexion</a>
                 </li>
             </ul>

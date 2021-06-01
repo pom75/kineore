@@ -34,7 +34,7 @@
             if (readCookie('session') == '') {
                 window.location.href = ("/index.html");
             }
-            if (readCookie('admin') == '0') {
+            if (readCookie('isKine') == '0') {
                 window.location.href = ("/index.html");
             }
         }
@@ -138,7 +138,7 @@ header section -->
                     <a class="nav-link navbar-right active" href="#">Mon Compte</a>
                 </li>
                 <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')" href="#">Deconnexion</a>
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('isKine')" href="#">Deconnexion</a>
                 </li>
             </ul>
         </div>

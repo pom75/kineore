@@ -13,7 +13,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script>
         function onLoad() {
-            if (readCookie('admin') == '1') {
+            if (readCookie('isKine') == '1') {
                 window.location.href = ("/profiladmin.html");
             }
             if (readCookie('session') == '') {
@@ -88,7 +88,7 @@ header section -->
                     <a class="nav-link navbar-right active" href="#">Mon Profil</a>
                 </li>
                 <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')"
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('isKine')"
                        href="index.html">Deconnexion</a>
                 </li>
             </ul>

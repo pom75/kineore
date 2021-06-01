@@ -21,8 +21,8 @@ public class MotifColab {
     @Column
     private int idMotifCab;
 
-    public MotifColab(int idAdmin, int idMotifCab) {
-        this.idColab=idAdmin;
+    public MotifColab(int idColab, int idMotifCab) {
+        this.idColab=idColab;
         this.idMotifCab = idMotifCab;
     }
 
@@ -37,11 +37,11 @@ public class MotifColab {
         this.id = id;
     }
 
-    public int getIdAdmin() {
+    public int getIdColab() {
         return idColab;
     }
 
-    public void setIdAdmin(int idColab) {
+    public void setIdColab(int idColab) {
         this.idColab = idColab;
     }
 
