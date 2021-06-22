@@ -1,6 +1,7 @@
 
 package com.kinecab.demo.controller;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.kinecab.demo.db.KineUserDB.*;
@@ -12,10 +13,7 @@ import static com.kinecab.demo.util.MailUtil.*;
 import com.google.common.base.Strings;
 import com.kinecab.demo.db.LoginDB;
 import com.kinecab.demo.db.entity.*;
-import com.kinecab.demo.json.GetKineUsers;
-import com.kinecab.demo.json.GetColab;
-import com.kinecab.demo.json.GetPerson;
-import com.kinecab.demo.json.Message;
+import com.kinecab.demo.json.*;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -178,13 +176,18 @@ public class KineUserService {
         }
     }
 
-    @PostMapping(value = "/kineuser/getallcabkineusers", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/kineuser/getallcabcolabs", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getAllCabKineUsers( @RequestParam("token") String token) {
+    public Message getallcabcolabs( @RequestParam("token") String token) {
         try {
             List<KineUser> allKineUsersCab = getAllCabKineUserByToken(token);
             if (!allKineUsersCab.isEmpty()) {
-                return new GetKineUsers("OK","RAS",allKineUsersCab);
+                List<ColabInfo> colabInfos = new LinkedList<>();
+                allKineUsersCab.forEach(e -> {
+                    Colab colab = getColabByIdKineUser(String.valueOf(e.getId()));
+                    colabInfos.add(new ColabInfo(colab.getId(),colab.getName()));
+                });
+                return new GetKineUsers("OK","RAS",colabInfos);
             } else {
                 return new Message("FAIL", "Erreur de Token.");
             }

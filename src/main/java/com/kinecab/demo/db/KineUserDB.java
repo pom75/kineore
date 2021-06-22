@@ -131,6 +131,13 @@ public class KineUserDB {
         }
     }
 
+    public static Colab getColabById(String idColab) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from COLAB WHERE COLAB.id = '" + idColab + "'");
+            return(Colab) sqlQuery.addEntity(Colab.class).uniqueResult();
+        }
+    }
+
     public static KineUser checkPasswordByEmailKineUser(String email, String password) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from KINE_USER where KINE_USER.password = '" + password + "' and  KINE_USER.email = '" + email + "'");

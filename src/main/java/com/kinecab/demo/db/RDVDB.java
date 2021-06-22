@@ -115,10 +115,8 @@ public class RDVDB {
             List<MotifCab> motifCabs = new LinkedList<>();
             list.forEach(motifColab -> {
                 NativeQuery sqlQuery2 = session.createSQLQuery("SELECT * FROM MOTIF_CAB WHERE  MOTIF_CAB.id = '" + motifColab.getIdMotifCab() + "' and MOTIF_CAB.archived=0");
-                List l = sqlQuery2.addEntity(MotifCab.class).list();
-                if(!l.isEmpty()){
-                    motifCabs.add((MotifCab) l.get(0));
-                }
+                MotifCab motifCab = (MotifCab) sqlQuery2.addEntity(MotifCab.class).uniqueResult();
+                    motifCabs.add(motifCab);
             });
             return motifCabs;
         }
