@@ -24,7 +24,7 @@
     window.onload = redirect;
 
     function redirect() {
-        if (readCookie('admin') === '1') {
+        if (readCookie('isKine') === '1') {
             window.location.href = ("/moncalendrier.html");
         }
     }
@@ -32,7 +32,7 @@
 
     function onLoad() {
         if (readCookie('session') != '') {
-            $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'admin\')" href="index.html">Deconnexion</a></li></ul>');
+            $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="mesrendezvous.html">Mes Rendez-vous</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="profil.html">Mon Profil</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" onclick="delete_cookie(\'session\');delete_cookie(\'isKine\')" href="index.html">Deconnexion</a></li></ul>');
         } else {
             $('#navbarSupportedContent').append('<ul class="nav navbar-nav ml-auto"><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="https://www.kinecab.com/connexion.html">Se connecter</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="index.html">Professionel de sant&eacute;</a></li><li class="nav-item navbar-right"><a class="nav-link navbar-right" href="#">Qui somme nous?</a></li></ul>');
         }
@@ -289,7 +289,7 @@ header section -->
     function getMotif() {
         var idMotifMap = {};
         $.ajax({
-            data: 'idAdmin=' + $_GET('id'),
+            data: 'idCab=' + $_GET('id'),
             type: 'POST',
             url: '/rdv/getmotifcabid',
             success: function (data, textStatus, jqXHR) {
@@ -434,7 +434,7 @@ header section -->
                         $('#dialog_title_span').text("Le rendez-vous a bien été pris en compte. Il va être confirmé par le praticien prochainement.");
                         window.setTimeout(function () {
                             // Move to a new location or you can do something else
-                            if (jsonData.admin == 1) {
+                            if (jsonData.isKine == 1) {
                                 window.location.href = "moncalendrier.html";
                             } else {
                                 window.location.href = "mesrendezvous.html";
@@ -479,11 +479,11 @@ header section -->
                 if (jsonData.status == "OK") {
                     $('#modaleMessageTitle').text("Opération terminée");
                     writeCookie("session", jsonData.token, 30);
-                    writeCookie("admin", jsonData.isKine, 30);
-                    writeCookie("idAdmin", jsonData.idKineUser, 30);
+                    writeCookie("isKine", jsonData.isKine, 30);
+                    writeCookie("idKineUser", jsonData.idKineUser, 30);
                     window.setTimeout(function () {
                         // Move to a new location or you can do something else
-                        if (jsonData.admin == 1) {
+                        if (jsonData.isKine == 1) {
                             window.location.href = "moncalendrier.html";
                         } else {
                             saveRDV();

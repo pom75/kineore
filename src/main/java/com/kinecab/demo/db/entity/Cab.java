@@ -63,7 +63,7 @@ public class Cab {
     public Cab() {
     }
 
-    public Cab(String email, String url, String name, String pres, String phone, String nomRue, String ville, String codePostal, String paiment, String cartevital, String tarif, String convention, String adminID) {
+    public Cab(String email, String url, String name, String pres, String phone, String nomRue, String ville, String codePostal, String paiment, String cartevital, String tarif, String convention) {
         this.email = email;
         this.url = url;
         this.name = name;

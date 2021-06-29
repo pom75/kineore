@@ -13,7 +13,7 @@
         window.onload = redirect;
 
         function redirect() {
-            if (readCookie('admin') == '1') {
+            if (readCookie('isKine') == '1') {
                 window.location.href = ("/moncalendrier.html");
             }
             if (readCookie('session') != '') {
@@ -170,11 +170,11 @@ header section -->
                 if (jsonData.status == "OK") {
                     $('#modaleMessageTitle').text("Opération terminée");
                     writeCookie("session", jsonData.token, 30);
-                    writeCookie("admin", jsonData.isKine, 30);
-                    writeCookie("idAdmin", jsonData.idKineUser, 30);
+                    writeCookie("isKine", jsonData.isKine, 30);
+                    writeCookie("idKineUser", jsonData.idKineUser, 30);
                     window.setTimeout(function () {
                         // Move to a new location or you can do something else
-                        if (jsonData.admin == 1) {
+                        if (jsonData.isKine == 1) {
                             window.location.href = "moncalendrier.html";
                         } else {
                             window.location.href = "index.html";

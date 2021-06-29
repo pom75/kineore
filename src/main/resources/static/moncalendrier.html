@@ -31,7 +31,7 @@
             if (readCookie('session') == '') {
                 window.location.href = ("/index.html");
             }
-            if (readCookie('admin') == '0') {
+            if (readCookie('isKine') == '0') {
                 window.location.href = ("/index.html");
             }
         }
@@ -73,11 +73,11 @@
         }
 
         var idMotifMapCab = {};
-        var currentIdAdmin = readCookie('idAdmin');
+        var currentIdKineUser = readCookie('idKineUser');
 
-        //Select Admin Calendar
+        //Select Colab Calendar
         if ($_GET('id') != null) {
-            currentIdAdmin = $_GET('id');
+            currentIdKineUser = $_GET('id');
         }
         $.ajax({
             data: {token: readCookie('session')},
@@ -86,12 +86,12 @@
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
-                    $('#adminName').empty();
+                    $('#colabName').empty();
                     jsonData.kineUsers.forEach(kineUser => {
-                        if (kineUser.id == currentIdAdmin) {
-                            $('#adminName').append("<option value=\"" + kineUser.id + "\" selected=\"selected\">" + kineUser.prenom + "</option>");
+                        if (kineUser.id == currentIdKineUser) {
+                            $('#colabName').append("<option value=\"" + kineUser.id + "\" selected=\"selected\">" + kineUser.prenom + "</option>");
                         } else {
-                            $('#adminName').append("<option value=\"" + kineUser.id + "\">" + kineUser.prenom + "</option>");
+                            $('#colabName').append("<option value=\"" + kineUser.id + "\">" + kineUser.prenom + "</option>");
                         }
                     })
                 } else {
@@ -111,7 +111,7 @@
         //This one for the news events
         function getMotifColab() {
             $.ajax({
-                data: {tokenKineUser: readCookie('session'), idKineUser: currentIdAdmin},
+                data: {tokenKineUser: readCookie('session'), idKineUser: currentIdKineUser},
                 type: 'POST',
                 url: '/rdv/getmotifcolabbyidkineuser',
                 success: function (data, textStatus, jqXHR) {
@@ -191,7 +191,7 @@ header section -->
                     <a class="nav-link navbar-right" href="profiladmin.html">Mon Compte</a>
                 </li>
                 <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('admin')" href="#">Deconnexion</a>
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('isKine')" href="#">Deconnexion</a>
                 </li>
             </ul>
         </div>
@@ -203,7 +203,7 @@ header section -->
 <section class="about text-center mb-5" id="calendare">
     <div class="container">
         <!-- Main Title -->
-        <h2>Planning de : <select class="selectpicker" data-width="fit" id="adminName">
+        <h2>Planning de : <select class="selectpicker" data-width="fit" id="colabName">
             <option value="default" selected></option>
             <option value="15"></option>
         </select>
@@ -798,7 +798,7 @@ header section -->
         var listEvent = [];
         $.ajax({
             async: false,
-            data: {start: start, end: end, tokenKineUser: readCookie('session'), idKineUser: currentIdAdmin},
+            data: {start: start, end: end, tokenKineUser: readCookie('session'), idKineUser: currentIdKineUser},
             type: 'POST',
             url: '/rdv/getrdvbyidcolab',
             success: function (data, textStatus, jqXHR) {
@@ -957,7 +957,7 @@ header section -->
             currentWritterStop.add(i, "days");
             while (currentWritterStop.diff(currentWritter) >= 0) {
                 var integer = parseInt(durationRDV, 10);
-                listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, listIdMotif, readCookie('idAdmin')));
+                listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, listIdMotif, readCookie('idKineUser')));
             }
             i++;
         }
@@ -1004,7 +1004,7 @@ header section -->
         var titre = $("#titrePostIt").val();
         var description = $("#descriptionPostIt").val();
         var listEvent = [];
-        listEvent.push(createNewEvent(0, titre, startDay.format("YYYY-MM-DD HH:mm:ss"), endDay.format("YYYY-MM-DD HH:mm:ss"), '#FFF190', "post_it", "0", "", "", 0, duree, description, false, false, "", readCookie('idAdmin')));
+        listEvent.push(createNewEvent(0, titre, startDay.format("YYYY-MM-DD HH:mm:ss"), endDay.format("YYYY-MM-DD HH:mm:ss"), '#FFF190', "post_it", "0", "", "", 0, duree, description, false, false, "", readCookie('idKineUser')));
         saveNewEvents(listEvent);
     });
 
@@ -1040,7 +1040,7 @@ header section -->
         var listEvent = [];
         while (endDay.diff(currentWritter) > 0) {
             var integer = parseInt(durationRDV, 10);
-            listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, listIdMotif, readCookie('idAdmin')));
+            listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, listIdMotif, readCookie('idKineUser')));
         }
         saveNewEvents(listEvent);
     });
@@ -1115,7 +1115,7 @@ header section -->
                     var listEvent = [];
                     while (moment(currentEvent.event.end).diff(currentWritter) > 0) {
                         var integer = parseInt(durationRDV, 10);
-                        listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, currentEvent.event.extendedProps.data.listIdMotif, readCookie('idAdmin')));
+                        listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, currentEvent.event.extendedProps.data.listIdMotif, readCookie('idKineUser')));
                     }
                     saveNewEvents(listEvent);
                     added = true;
@@ -1418,7 +1418,7 @@ header section -->
         var listEvent = [];
         while (moment(currentEvent.event.end).diff(currentWritter) > 0) {
             var integer = parseInt(durationRDV, 10);
-            listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, currentEvent.event.extendedProps.data.listIdMotif, readCookie('idAdmin')));
+            listEvent.push(createNewEvent(0, 'RDV Libre', currentWritter.format("YYYY-MM-DD HH:mm:ss"), currentWritter.add(durationRDV, 'minutes').format("YYYY-MM-DD HH:mm:ss"), '#257e4a', "free", "0", "", "", 0, integer, "", false, false, currentEvent.event.extendedProps.data.listIdMotif, readCookie('idKineUser')));
         }
         currentEvent.event.setProp("color", '#257e4a');
         currentEvent.event.setProp("title", "RDV Libre");
@@ -1594,9 +1594,9 @@ header section -->
     }
 
 
-    //Select Admin Calendar
-    $("#adminName").change(function () {
-        if ($(this).val() != currentIdAdmin) {
+    //Select Colab Calendar
+    $("#colabName").change(function () {
+        if ($(this).val() != currentIdKineUser) {
             window.location.href = ("/moncalendrier.html?id=" + $(this).val());
         }
     });
