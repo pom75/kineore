@@ -175,6 +175,7 @@ header section -->
                     window.setTimeout(function () {
                         // Move to a new location or you can do something else
                         if (jsonData.isKine == 1) {
+                            writeCookie("idColab", jsonData.idColab, 30);
                             window.location.href = "moncalendrier.html";
                         } else {
                             window.location.href = "index.html";

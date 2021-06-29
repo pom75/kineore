@@ -73,25 +73,26 @@
         }
 
         var idMotifMapCab = {};
-        var currentIdKineUser = readCookie('idKineUser');
+        var currentIdColab = readCookie('idColab');
 
         //Select Colab Calendar
         if ($_GET('id') != null) {
-            currentIdKineUser = $_GET('id');
+            currentIdColab = $_GET('id');
         }
+
         $.ajax({
             data: {token: readCookie('session')},
             type: 'POST',
-            url: '/kineuser/getallcabkineusers',
+            url: '/kineuser/getallcabcolabs',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
-                if (jsonData.status === "OK") {
+                if (jsonData.status == "OK") {
                     $('#colabName').empty();
-                    jsonData.kineUsers.forEach(kineUser => {
-                        if (kineUser.id == currentIdKineUser) {
-                            $('#colabName').append("<option value=\"" + kineUser.id + "\" selected=\"selected\">" + kineUser.prenom + "</option>");
+                    jsonData.colabInfos.forEach(colabInfo => {
+                        if (colabInfo.idColab == currentIdColab) {
+                            $('#colabName').append("<option value=\"" + colabInfo.idColab + "\" selected=\"selected\">" + colabInfo.colabName + "</option>");
                         } else {
-                            $('#colabName').append("<option value=\"" + kineUser.id + "\">" + kineUser.prenom + "</option>");
+                            $('#colabName').append("<option value=\"" + colabInfo.idColab + "\">" + colabInfo.colabName + "</option>");
                         }
                     })
                 } else {
@@ -111,9 +112,9 @@
         //This one for the news events
         function getMotifColab() {
             $.ajax({
-                data: {tokenKineUser: readCookie('session'), idKineUser: currentIdKineUser},
+                data: {tokenKineUser: readCookie('session'), idColab: currentIdColab},
                 type: 'POST',
-                url: '/rdv/getmotifcolabbyidkineuser',
+                url: '/rdv/getmotifcolabbyidcolab',
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
                     if (jsonData.status === "OK") {
@@ -224,6 +225,9 @@ header section -->
                 class="modal-content">
             <div class="modal-header">
                 <h3 id="titreSemaine"></h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form class="form-signin" id="connexion" method="POST">
@@ -280,6 +284,9 @@ header section -->
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="timeGridTitle"></h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form class="form-signin" id="connexion2" method="POST">
@@ -338,6 +345,9 @@ header section -->
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="eventFreeTitle"></h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form class="form-signin" id="eventFreeForm" method="POST">
@@ -376,6 +386,9 @@ header section -->
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="eventWaitingTitle"></h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form class="form-signin" id="eventFreeFormWaiting" method="POST">
@@ -414,6 +427,9 @@ header section -->
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="eventBookedTitle"></h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form class="form-signin" id="eventFreeFormBooked" method="POST">
@@ -450,7 +466,7 @@ header section -->
                         <br>
                         <br>
                         <div class="float-sm-right" id="modifBlockBooked">
-                            <button type="button" id="cancelEventBooked" class="btn btn-secondary float-left">Annuler
+                            <button type="button" id="cancelEventBooked" class="btn btn-secondary float-left">Annuler le RDV
                             </button>
                         </div>
                         <div class="float-sm-left">
@@ -473,6 +489,9 @@ header section -->
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="eventCanceledTitle"></h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form class="form-signin" id="eventFreeFormCanceled" method="POST">
@@ -508,7 +527,10 @@ header section -->
     <div class="modal-dialog event-popup mb-5" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="postItTitle"></h3>
+                <h3 id="postItTitle">Post-it</h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form class="form-signin" id="eventpostItPost" method="POST">
@@ -542,8 +564,8 @@ header section -->
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modaleMessageTitle"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -798,7 +820,7 @@ header section -->
         var listEvent = [];
         $.ajax({
             async: false,
-            data: {start: start, end: end, tokenKineUser: readCookie('session'), idKineUser: currentIdKineUser},
+            data: {start: start, end: end, tokenKineUser: readCookie('session'), idColab: currentIdColab},
             type: 'POST',
             url: '/rdv/getrdvbyidcolab',
             success: function (data, textStatus, jqXHR) {
@@ -1052,7 +1074,8 @@ header section -->
                 events: JSON.stringify(listEvent),
                 tokenKineUser: readCookie('session'),
                 status: status,
-                idPat: idPatient
+                idPat: idPatient,
+                idColab: currentIdColab
             },
             type: 'POST',
             url: '/rdv/changestatusevent',
@@ -1089,7 +1112,8 @@ header section -->
                 events: JSON.stringify(listEvent),
                 tokenKineUser: readCookie('session'),
                 status: status,
-                idPat: idPatient
+                idPat: idPatient,
+                idColab: currentIdColab
             },
             type: 'POST',
             url: '/rdv/changestatusevent',
@@ -1137,7 +1161,12 @@ header section -->
 
     function saveNewEvents(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
+            data: {
+                events: JSON.stringify(listEvent),
+                tokenKineUser: readCookie('session'),
+                status: status,
+                idColab: currentIdColab
+            },
             type: 'POST',
             url: '/rdv/addevent',
             success: function (data, textStatus, jqXHR) {
@@ -1166,7 +1195,12 @@ header section -->
 
     function safebookOneEvent(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
+            data: {
+                events: JSON.stringify(listEvent),
+                tokenKineUser: readCookie('session'),
+                status: status,
+                idColab: currentIdColab
+            },
             type: 'POST',
             url: '/rdv/safebookoneevent',
             success: function (data, textStatus, jqXHR) {
@@ -1191,7 +1225,12 @@ header section -->
 
     function moveEvent(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
+            data: {
+                events: JSON.stringify(listEvent),
+                tokenKineUser: readCookie('session'),
+                status: status,
+                idColab: currentIdColab
+            },
             type: 'POST',
             url: '/rdv/moveevent',
             success: function (data, textStatus, jqXHR) {
@@ -1245,7 +1284,12 @@ header section -->
 
     function savePostIt(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
+            data: {
+                events: JSON.stringify(listEvent),
+                tokenKineUser: readCookie('session'),
+                status: status,
+                idColab: currentIdColab
+            },
             type: 'POST',
             url: '/rdv/savepostit',
             success: function (data, textStatus, jqXHR) {
@@ -1571,7 +1615,11 @@ header section -->
 
     function removeEvents(listEvents) {
         $.ajax({
-            data: {listEvents: JSON.stringify(listEvents), tokenKineUser: readCookie('session')},
+            data: {
+                listEvents: JSON.stringify(listEvents),
+                tokenKineUser: readCookie('session'),
+                idColab: currentIdColab
+            },
             type: 'POST',
             url: '/rdv/removerdv',
             success: function (data, textStatus, jqXHR) {
@@ -1596,7 +1644,7 @@ header section -->
 
     //Select Colab Calendar
     $("#colabName").change(function () {
-        if ($(this).val() != currentIdKineUser) {
+        if ($(this).val() != currentIdColab) {
             window.location.href = ("/moncalendrier.html?id=" + $(this).val());
         }
     });

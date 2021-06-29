@@ -31,13 +31,14 @@ public class RDVService {
     @PostMapping(value = "/rdv/addevent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message addEvent(@RequestParam("events") String events,
-                            @RequestParam("tokenKineUser") String tokenKineUser) {
+                            @RequestParam("tokenKineUser") String tokenKineUser,
+                            @RequestParam("idColab") String idColab) {
         try {
-            Colab colabByToken = getColabByToken(tokenKineUser);
-            if (colabByToken == null) {
-                return new Message("FAIL", "Token invalide");
+            Colab colab = checkTargetColab(tokenKineUser,idColab);
+            if (colab == null) {
+                return new Message("FAIL", "Token invalide, or wrong access");
             }
-            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events));
+            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colab.getId(), new JSONArray(events));
             RDVDB.saveRDVs(rdvs);
             final Set<Integer> collect = rdvs.stream().map(Event::getId).collect(Collectors.toSet());
             return new BookRdv("OK", "RAS", collect);
@@ -49,13 +50,14 @@ public class RDVService {
     @PostMapping(value = "/rdv/safebookoneevent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message safeBookOneEvent(@RequestParam("events") String events,
-                                    @RequestParam("tokenKineUser") String tokenKineUser) {
+                                    @RequestParam("tokenKineUser") String tokenKineUser,
+                                    @RequestParam("idColab") String idColab) {
         try {
-            Colab colabByToken = getColabByToken(tokenKineUser);
-            if (colabByToken == null) {
-                return new Message("FAIL", "Token invalide");
+            Colab colab = checkTargetColab(tokenKineUser,idColab);
+            if (colab == null) {
+                return new Message("FAIL", "Token invalid, or wrong access");
             }
-            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events)).get(0);
+            Event rdv = RDVDB.rdvJsonToRdvs(colab.getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdColab() == rdv.getIdColab()) {
                 if (RDVDB.safeUpdateRDV(rdv, Status.FREE)) {
@@ -75,13 +77,14 @@ public class RDVService {
     @PostMapping(value = "/rdv/savepostit", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message savePostIt(@RequestParam("events") String events,
-                              @RequestParam("tokenKineUser") String tokenKineUser) {
+                              @RequestParam("tokenKineUser") String tokenKineUser,
+                              @RequestParam("idColab") String idColab) {
         try {
-            Colab colabByToken = getColabByToken(tokenKineUser);
-            if (colabByToken == null) {
+            Colab colab = checkTargetColab(tokenKineUser,idColab);
+            if (colab == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events));
+            List<Event> rdvs = RDVDB.rdvJsonToRdvs(colab.getId(), new JSONArray(events));
             Event rdv = rdvs.get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdColab() == rdv.getIdColab()) {
@@ -99,13 +102,14 @@ public class RDVService {
     @PostMapping(value = "/rdv/moveevent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message moveEvent(@RequestParam("events") String events,
-                             @RequestParam("tokenKineUser") String tokenKineUser) {
+                             @RequestParam("tokenKineUser") String tokenKineUser,
+                             @RequestParam("idColab") String idColab) {
         try {
-            Colab colabByToken = getColabByToken(tokenKineUser);
-            if (colabByToken == null) {
+            Colab colab = checkTargetColab(tokenKineUser,idColab);
+            if (colab == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events)).get(0);
+            Event rdv = RDVDB.rdvJsonToRdvs(colab.getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdColab() == rdv.getIdColab()) {
                 if (RDVDB.safeUpdateRDV(rdv, rdv.getStatus())) {
@@ -126,13 +130,14 @@ public class RDVService {
     public Message changeStatusRDV(@RequestParam("events") String events,
                                    @RequestParam("tokenKineUser") String tokenKineUser,
                                    @RequestParam String status,
-                                   @RequestParam String idPat) {
+                                   @RequestParam String idPat,
+                                   @RequestParam("idColab") String idColab) {
         try {
-            Colab colabByToken = getColabByToken(tokenKineUser);
-            if (colabByToken == null) {
+            Colab colab = checkTargetColab(tokenKineUser,idColab);
+            if (colab == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            Event rdv = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(events)).get(0);
+            Event rdv = RDVDB.rdvJsonToRdvs(colab.getId(), new JSONArray(events)).get(0);
             Event rdvbyId = RDVDB.getRdvbyId(rdv.getId());
             if (rdvbyId.getIdColab() == rdv.getIdColab()) {
                 boolean sucess;
@@ -189,33 +194,15 @@ public class RDVService {
     public Message getRDVByIdColab(@RequestParam("start") String start,
                                    @RequestParam("end") String end,
                                    @RequestParam("tokenKineUser") String tokenKineUser,
-                                   @RequestParam("idKineUser") String idKineUser) {
+                                   @RequestParam("idColab") String idColab) {
         try {
-            Colab colab = getColabByToken(tokenKineUser);
+            Colab colab = checkTargetColab(tokenKineUser, idColab);
             if (colab == null) {
-                return new Message("FAIL", "Token invalide");
+                return new Message("FAIL", "Token invalide, or wrong access");
             }
-            if (colab.getId() == Integer.parseInt(idKineUser)) {//TODO wrong comparaison compar idCOlab to idKineuser
-                final List<Event> rdvs = RDVDB.getRdvByTime(start, end, colab.getId());
-                return new GetRDV("OK", "RAS", rdvs);
-            } else {
-                List<KineUser> kineUserList = getAllCabKineUserByToken(tokenKineUser);
-                if (kineUserList.isEmpty()) {
-                    return new Message("FAIL", "Token invalide");
-                }
-                boolean containKineUser = false;
-                for (KineUser kineUser : kineUserList) {
-                    if (kineUser.getId() == Integer.parseInt(idKineUser)) {
-                        containKineUser = true;
-                    }
-                }
-                if (!containKineUser) {
-                    return new Message("FAIL", "Token invalide");
-                }
 
-                final List<Event> rdvs = RDVDB.getRdvByTime(start, end, getColabByIdKineUser(idKineUser).getId());
-                return new GetRDV("OK", "RAS", rdvs);
-            }
+            final List<Event> rdvs = RDVDB.getRdvByTime(start, end, colab.getId());
+            return new GetRDV("OK", "RAS", rdvs);
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Erreur pendant le chargement des rendez-vous.");
@@ -246,14 +233,15 @@ public class RDVService {
     @PostMapping(value = "/rdv/removerdv", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message removeRDV(@RequestParam("listEvents") String listEvents,
-                             @RequestParam("tokenKineUser") String tokenKineUser) {
+                             @RequestParam("tokenKineUser") String tokenKineUser,
+                             @RequestParam("idColab") String idColab) {
         try {
-            Colab colabByToken = getColabByToken(tokenKineUser);
-            if (colabByToken == null) {
-                return new Message("FAIL", "Token invalide");
+            Colab colab = checkTargetColab(tokenKineUser, idColab);
+            if (colab == null) {
+                return new Message("FAIL", "Token invalid, or wrong access");
             }
-            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colabByToken.getId(), new JSONArray(listEvents));
-            boolean success = RDVDB.removeRdvByEvent(rdvs, colabByToken.getId());
+            final List<Event> rdvs = RDVDB.rdvJsonToRdvs(colab.getId(), new JSONArray(listEvents));
+            boolean success = RDVDB.removeRdvByEvent(rdvs, colab.getId());
             if (success) {
                 //sendEmail(getPatientById(idPat).getEmail(), ACCEPTE_TITLE, ACCEPTE_CONTENT.replace("xxx", FORMAT_MAIL.format(rdv.getStart())));
                 return new Message("OK", "Evenement supprimé");
@@ -283,45 +271,45 @@ public class RDVService {
     }
 
     //Mdr  to refactor this shit
-    @PostMapping(value = "/rdv/getmotifcolabbyidkineuser", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rdv/getmotifcolabbyidcolab", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getMotifById(@RequestParam("tokenKineUser") String tokenKineUser, @RequestParam("idKineUser") String idKineUser) {
+    public Message getMotifById(@RequestParam("tokenKineUser") String tokenKineUser, @RequestParam("idColab") String idColab) {
         try {
-            Colab colab = getColabByToken(tokenKineUser);
+            Colab colab = checkTargetColab(tokenKineUser, idColab);
             if (colab == null) {
-                return new Message("FAIL", "Token invalide");
+                return new Message("FAIL", "Token invalid or wrong access");
             }
-            if (colab.getIdKineUser() == Integer.parseInt(idKineUser)) {
-                final List<MotifCab> motifCabList = RDVDB.getMotifByIdColab(colab.getId());
-                return new GetMotif("OK", "RAS", motifCabList);
-            } else {
 
-                List<KineUser> kineUserList = getAllCabKineUserByToken(tokenKineUser);
-                if (kineUserList.isEmpty()) {
-                    return new Message("FAIL", "Token invalide");
-                }
-                boolean containKineUser = false;
-                for (KineUser kineUser : kineUserList) {
-                    if (kineUser.getId() == Integer.parseInt(idKineUser)) {
-                        containKineUser = true;
-                    }
-                }
-                if (!containKineUser) {
-                    return new Message("FAIL", "Token invalide");
-                }
-
-                final List<MotifCab> motifCabs = RDVDB.getMotifByIdColab(getColabByIdKineUser(idKineUser).getId());
-                return new GetMotif("OK", "RAS", motifCabs);
-            }
+            final List<MotifCab> motifCabList = RDVDB.getMotifByIdColab(colab.getId());
+            return new GetMotif("OK", "RAS", motifCabList);
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
         }
     }
 
+    private Colab checkTargetColab(String tokenKineUser, String idColab) {
+        Colab colab = getColabByToken(tokenKineUser);
+        if (colab == null) {
+            return null;//Token invalid
+        }
+        // Request for other Colab
+        if (colab.getId() != Integer.parseInt(idColab)) {
+            Colab colabTarget = getColabById(idColab);
+            if (colabTarget == null) {
+                return null;//Colab target innexistant
+            }
+            if (colab.getIdCab() != colabTarget.getIdCab()) {
+                return null; //Pas le meme cab
+            }
+            return colabTarget;
+        }
+        return colab;
+    }
+
     @PostMapping(value = "/rdv/getmotiftokenKineUser", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getMotifIdBytokenKineUser(@RequestParam("tokenKineUser")  String tokenKineUser) {
+    public Message getMotifIdBytokenKineUser(@RequestParam("tokenKineUser") String tokenKineUser) {
         try {
             int idCab = getColabByToken(tokenKineUser).getIdCab();
             final List<MotifCab> motifCabList = RDVDB.getMotifCabByIdCab(idCab);
@@ -331,9 +319,10 @@ public class RDVService {
             return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
         }
     }
+
     @PostMapping(value = "/rdv/getArchivedMotiftokenKineUser", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getArchivedMotifIdBytokenKineUser(@RequestParam("tokenKineUser")  String tokenKineUser) {
+    public Message getArchivedMotifIdBytokenKineUser(@RequestParam("tokenKineUser") String tokenKineUser) {
         try {
             int idCab = getColabByToken(tokenKineUser).getIdCab();
             final List<MotifCab> motifCabList = RDVDB.getArchivedMotifCabByIdCab(idCab);
@@ -526,6 +515,7 @@ public class RDVService {
             return new Message("FAIL", "Erreur pendant le chargement des Motifs.");
         }
     }
+
     @PostMapping(value = "/rdv/restoreMotifs", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message restoreMotifs(@RequestParam("tokenKineUser") String tokenKineUser, @RequestParam("motifIds") String[] motifIds) {
@@ -549,7 +539,7 @@ public class RDVService {
 
     @PostMapping(value = "/rdv/addMotifForCabinet", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message addMotifForCabinet(@RequestParam("tokenKineUser") String tokenKineUser, @RequestParam("motif") String motif,@RequestParam("color") String color,@RequestParam("duree") String duree) {
+    public Message addMotifForCabinet(@RequestParam("tokenKineUser") String tokenKineUser, @RequestParam("motif") String motif, @RequestParam("color") String color, @RequestParam("duree") String duree) {
         try {
             //TODO : add table "superadmin" cab and add check
             Colab colabByToken = getColabByToken(tokenKineUser);
@@ -557,7 +547,7 @@ public class RDVService {
                 return new Message("FAIL", "Token invalide");
             }
             //TODO add check on input param
-            RDVDB.addMotif(colabByToken.getIdCab(),motif,color,duree);
+            RDVDB.addMotif(colabByToken.getIdCab(), motif, color, duree);
             return new Message("OK", "Motif ajoute");
         } catch (Exception e) {
             e.printStackTrace();
@@ -567,14 +557,14 @@ public class RDVService {
 
     @PostMapping(value = "/rdv/modifyMotif", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message modifyMotif(@RequestParam("tokenKineUser") String tokenKineUser,@RequestParam("id") String id,@RequestParam("motif") String motif,@RequestParam("color") String color) {
+    public Message modifyMotif(@RequestParam("tokenKineUser") String tokenKineUser, @RequestParam("id") String id, @RequestParam("motif") String motif, @RequestParam("color") String color) {
         try {
             //TODO : add table "superadmin" cab and add check
             Colab colabByToken = getColabByToken(tokenKineUser);
             if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide");
             }
-            RDVDB.modifyMotif(id,motif,color);
+            RDVDB.modifyMotif(id, motif, color);
             return new Message("OK", "Motif ajoute");
         } catch (Exception e) {
             e.printStackTrace();

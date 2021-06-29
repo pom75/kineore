@@ -10,16 +10,18 @@ public class CookieMessage extends Message {
     private final String token;
     private final String isKine;
     private final String idKineUser;
+    private final String idColab;
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public CookieMessage(String status, String message, String token, String isKine, String idKineUser) {
+    public CookieMessage(String status, String message, String token, String isKine, String idKineUser, String idColab) {
         super(status, message);
         this.token = token;
         this.isKine = isKine;
         this.idKineUser = idKineUser;
+        this.idColab = idColab;
     }
 
     //~ ----------------------------------------------------------------------------------------------------------------
@@ -36,5 +38,9 @@ public class CookieMessage extends Message {
 
     public String getIdKineUser() {
         return idKineUser;
+    }
+
+    public String getIdColab() {
+        return idColab;
     }
 }

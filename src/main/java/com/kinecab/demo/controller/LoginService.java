@@ -45,11 +45,11 @@ public class LoginService {
         try {
             Person person = LoginDB.checkPasswordByEmailPerson(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
             if (person != null) {
-                return new CookieMessage("OK", "Connexion réussite", getTokenPerson(person), "0","");//TODO FIX THIS
+                return new CookieMessage("OK", "Connexion réussite", getTokenPerson(person), "0","", null);//TODO FIX THIS
             } else {
                 KineUser kineUser = checkPasswordByEmailKineUser(email, Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
                 if (kineUser != null) {
-                    return new CookieMessage("OK", "Connexion réussite", getTokenKineUser(kineUser), "1",kineUser.getId()+"");
+                    return new CookieMessage("OK", "Connexion réussite", getTokenKineUser(kineUser), "1",kineUser.getId()+"", getColabByIdKineUser(String.valueOf(kineUser.getId())).getId()+"");
                 } else {
                     return new Message("FAIL", "Email ou mot de passe incorrecte");
                 }
