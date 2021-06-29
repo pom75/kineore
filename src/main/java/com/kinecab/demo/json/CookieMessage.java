@@ -8,33 +8,33 @@ public class CookieMessage extends Message {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     private final String token;
-    private final String admin;
-    private final String idAdmin;
+    private final String isKine;
+    private final String idKineUser;
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public CookieMessage(String status, String message, String token, String admin, String idAdmin) {
+    public CookieMessage(String status, String message, String token, String isKine, String idKineUser) {
         super(status, message);
         this.token = token;
-        this.admin = admin;
-        this.idAdmin = idAdmin;
+        this.isKine = isKine;
+        this.idKineUser = idKineUser;
     }
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public String getAdmin() {
-        return admin;
+    public String getIsKine() {
+        return isKine;
     }
 
     public String getToken() {
         return token;
     }
 
-    public String getIdAdmin() {
-        return idAdmin;
+    public String getIdKineUser() {
+        return idKineUser;
     }
 }

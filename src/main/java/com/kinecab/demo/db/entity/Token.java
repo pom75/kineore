@@ -19,7 +19,7 @@ public class Token {
     private String token;
 
     @Column
-    private String admin;
+    private String admin;//TODO REMOVE this parameter
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Constructors

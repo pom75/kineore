@@ -28,7 +28,7 @@ public class HibernateUtil {
             try {
                 Configuration configuration = new Configuration();
                 // Hibernate settings equivalent to hibernate.cfg.xml's properties
-                configuration.addAnnotatedClass(Admin.class);
+                configuration.addAnnotatedClass(KineUser.class);
                 configuration.addAnnotatedClass(Cab.class);
                 configuration.addAnnotatedClass(CabPerson.class);
                 configuration.addAnnotatedClass(Event.class);

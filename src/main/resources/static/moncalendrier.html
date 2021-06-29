@@ -82,16 +82,16 @@
         $.ajax({
             data: {token: readCookie('session')},
             type: 'POST',
-            url: '/admin/getallcabadmins',
+            url: '/kineuser/getallcabkineusers',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
                     $('#adminName').empty();
-                    jsonData.admins.forEach(admin => {
-                        if (admin.id == currentIdAdmin) {
-                            $('#adminName').append("<option value=\"" + admin.id + "\" selected=\"selected\">" + admin.prenom + "</option>");
+                    jsonData.kineUsers.forEach(kineUser => {
+                        if (kineUser.id == currentIdAdmin) {
+                            $('#adminName').append("<option value=\"" + kineUser.id + "\" selected=\"selected\">" + kineUser.prenom + "</option>");
                         } else {
-                            $('#adminName').append("<option value=\"" + admin.id + "\">" + admin.prenom + "</option>");
+                            $('#adminName').append("<option value=\"" + kineUser.id + "\">" + kineUser.prenom + "</option>");
                         }
                     })
                 } else {
@@ -111,9 +111,9 @@
         //This one for the news events
         function getMotifColab() {
             $.ajax({
-                data: {tokenAdmin: readCookie('session'), idAdmin: currentIdAdmin},
+                data: {tokenKineUser: readCookie('session'), idKineUser: currentIdAdmin},
                 type: 'POST',
-                url: '/rdv/getmotifcolabbyidadmin',
+                url: '/rdv/getmotifcolabbyidkineuser',
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
                     if (jsonData.status === "OK") {
@@ -139,9 +139,9 @@
         function getMotifCab() {
             $.ajax({
                 async: false,
-                data: {tokenAdmin: readCookie('session')},
+                data: {tokenKineUser: readCookie('session')},
                 type: 'POST',
-                url: '/rdv/getmotiftokenadmin',
+                url: '/rdv/getmotiftokenKineUser',
                 success: function (data, textStatus, jqXHR) {
                     var jsonData = JSON.parse(data);
                     if (jsonData.status === "OK") {
@@ -564,11 +564,12 @@ header section -->
 
     var idPersonMap = {};
 
+    //Get all person from the cab
     function getPerson() {
         $.ajax({
-            data: {tokenAdmin: readCookie('session')},
+            data: {tokenKineUser: readCookie('session')},
             type: 'POST',
-            url: '/rdv/getpersonidadmin',
+            url: '/rdv/getpersonidkineuser',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
@@ -797,9 +798,9 @@ header section -->
         var listEvent = [];
         $.ajax({
             async: false,
-            data: {start: start, end: end, tokenAdmin: readCookie('session'), idAdmin: currentIdAdmin},
+            data: {start: start, end: end, tokenKineUser: readCookie('session'), idKineUser: currentIdAdmin},
             type: 'POST',
-            url: '/rdv/getrdvbyidadmin',
+            url: '/rdv/getrdvbyidcolab',
             success: function (data, textStatus, jqXHR) {
                 var jsonData = JSON.parse(data);
                 if (jsonData.status === "OK") {
@@ -844,7 +845,7 @@ header section -->
             title = data.titrePostIt;
             color = '#FFF190';
         }
-        return createNewEvent(data.id, title, moment(startD).format("YYYY-MM-DD HH:mm:ss"), moment(endD).format("YYYY-MM-DD HH:mm:ss"), color, data.status, data.idPatient, data.nomPrenom, data.idMotif, data.motif, data.duration, data.info, data.pointe, data.paye, data.listIdMotif, data.idAdmin);
+        return createNewEvent(data.id, title, moment(startD).format("YYYY-MM-DD HH:mm:ss"), moment(endD).format("YYYY-MM-DD HH:mm:ss"), color, data.status, data.idPatient, data.nomPrenom, data.idMotif, data.motif, data.duration, data.info, data.pointe, data.paye, data.listIdMotif, data.idColab);
     }
 
 
@@ -1049,7 +1050,7 @@ header section -->
         $.ajax({
             data: {
                 events: JSON.stringify(listEvent),
-                tokenAdmin: readCookie('session'),
+                tokenKineUser: readCookie('session'),
                 status: status,
                 idPat: idPatient
             },
@@ -1086,7 +1087,7 @@ header section -->
         $.ajax({
             data: {
                 events: JSON.stringify(listEvent),
-                tokenAdmin: readCookie('session'),
+                tokenKineUser: readCookie('session'),
                 status: status,
                 idPat: idPatient
             },
@@ -1136,7 +1137,7 @@ header section -->
 
     function saveNewEvents(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
             type: 'POST',
             url: '/rdv/addevent',
             success: function (data, textStatus, jqXHR) {
@@ -1165,7 +1166,7 @@ header section -->
 
     function safebookOneEvent(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
             type: 'POST',
             url: '/rdv/safebookoneevent',
             success: function (data, textStatus, jqXHR) {
@@ -1190,7 +1191,7 @@ header section -->
 
     function moveEvent(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
             type: 'POST',
             url: '/rdv/moveevent',
             success: function (data, textStatus, jqXHR) {
@@ -1244,7 +1245,7 @@ header section -->
 
     function savePostIt(listEvent) {
         $.ajax({
-            data: {events: JSON.stringify(listEvent), tokenAdmin: readCookie('session'), status: status},
+            data: {events: JSON.stringify(listEvent), tokenKineUser: readCookie('session'), status: status},
             type: 'POST',
             url: '/rdv/savepostit',
             success: function (data, textStatus, jqXHR) {
@@ -1485,7 +1486,7 @@ header section -->
 
     /* ------------------ Global functions ---------------------*/
 
-    function createNewEvent(idEvent, title, start, end, color, status, idPatient, nomPatient, idMotif, motif, duration, info, pointe, paye, listIdMotif, idAdmin) {
+    function createNewEvent(idEvent, title, start, end, color, status, idPatient, nomPatient, idMotif, motif, duration, info, pointe, paye, listIdMotif, idColab) {
         return {
             id: idEvent,
             title: title,
@@ -1506,7 +1507,7 @@ header section -->
                 id: idEvent,
                 paye: paye,
                 listIdMotif: listIdMotif,
-                idAdmin: idAdmin
+                idColab: idColab
             }
         }
     }
@@ -1532,7 +1533,7 @@ header section -->
                 id: event.extendedProps.data.id,
                 paye: event.extendedProps.data.paye,
                 listIdMotif: event.extendedProps.data.listIdMotif,
-                idAdmin: event.extendedProps.data.idAdmin
+                idColab: event.extendedProps.data.idColab
             }
         }
     }
@@ -1570,7 +1571,7 @@ header section -->
 
     function removeEvents(listEvents) {
         $.ajax({
-            data: {listEvents: JSON.stringify(listEvents), tokenAdmin: readCookie('session')},
+            data: {listEvents: JSON.stringify(listEvents), tokenKineUser: readCookie('session')},
             type: 'POST',
             url: '/rdv/removerdv',
             success: function (data, textStatus, jqXHR) {

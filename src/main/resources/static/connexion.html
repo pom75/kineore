@@ -170,8 +170,8 @@ header section -->
                 if (jsonData.status == "OK") {
                     $('#modaleMessageTitle').text("Opération terminée");
                     writeCookie("session", jsonData.token, 30);
-                    writeCookie("admin", jsonData.admin, 30);
-                    writeCookie("idAdmin", jsonData.idAdmin, 30);
+                    writeCookie("admin", jsonData.isKine, 30);
+                    writeCookie("idAdmin", jsonData.idKineUser, 30);
                     window.setTimeout(function () {
                         // Move to a new location or you can do something else
                         if (jsonData.admin == 1) {

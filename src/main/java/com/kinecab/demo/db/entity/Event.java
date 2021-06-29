@@ -20,7 +20,7 @@ public class Event {
     private int id;
 
     @Column
-    private int idAdmin;
+    private int idColab;
 
     @Column
     private Timestamp start;
@@ -64,8 +64,8 @@ public class Event {
     //~ Constructors
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public Event(int idAdmin, Timestamp start, Timestamp end, Status status, int idPatient, String idMotif, int duration,String titre, String info, boolean pointe, boolean paye, String nomPrenom, String listIdMotif) {
-        this.idAdmin = idAdmin;
+    public Event(int idColab, Timestamp start, Timestamp end, Status status, int idPatient, String idMotif, int duration, String titre, String info, boolean pointe, boolean paye, String nomPrenom, String listIdMotif) {
+        this.idColab = idColab;
         this.start = start;
         this.end = end;
         this.status = status;
@@ -86,7 +86,7 @@ public class Event {
 
     //Create same event but free
     public Event(Event other) {
-        this.idAdmin = other.idAdmin;
+        this.idColab = other.idColab;
         this.start = other.start;
         this.end = other.end;
         this.status = Status.FREE;
@@ -144,12 +144,12 @@ public class Event {
         this.id = id;
     }
 
-    public int getIdAdmin() {
-        return idAdmin;
+    public int getIdColab() {
+        return idColab;
     }
 
-    public void setIdAdmin(int idAdmin) {
-        this.idAdmin = idAdmin;
+    public void setIdColab(int idColab) {
+        this.idColab = idColab;
     }
 
     public Timestamp getStart() {
@@ -222,7 +222,7 @@ public class Event {
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
         return getId() == event.getId() &&
-                getIdAdmin() == event.getIdAdmin() &&
+                getIdColab() == event.getIdColab() &&
                 getIdPatient() == event.getIdPatient() &&
                 getIdMotif() == event.getIdMotif() &&
                 getDuration() == event.getDuration() &&
@@ -237,6 +237,6 @@ public class Event {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId(), getIdAdmin(), getStart(), getEnd(), getStatus(), getIdPatient(), getIdMotif(), getDuration(), getInfo(), isPointe(), isPaye(), getNomPrenom());
+        return Objects.hashCode(getId(), getIdColab(), getStart(), getEnd(), getStatus(), getIdPatient(), getIdMotif(), getDuration(), getInfo(), isPointe(), isPaye(), getNomPrenom());
     }
 }

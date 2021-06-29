@@ -3,7 +3,7 @@ package com.kinecab.demo.controller;
 
 import java.util.List;
 
-import static com.kinecab.demo.db.AdminDB.getColabByToken;
+import static com.kinecab.demo.db.KineUserDB.getColabByToken;
 import static com.kinecab.demo.db.CabDB.*;
 import static com.kinecab.demo.db.RDVDB.getMotif;
 
@@ -48,11 +48,11 @@ public class CabService {
             if (colabByToken == null) {
                 return new Message("FAIL", "Token invalide.");
             }
-            Cab cabByAdminID = getCabByColabID(String.valueOf(colabByToken.getId()));
-            if (cabByAdminID == null) {
+            Cab cabByColabID = getCabByColabID(String.valueOf(colabByToken.getId()));
+            if (cabByColabID == null) {
                 return new Message("FAIL", "Pas de Cabinet a ce nom.");
             }
-            Cab cab = cabByAdminID;
+            Cab cab = cabByColabID;
             cab.setName(nomcab);
             cab.setPres(prescab);
             cab.setPhone(numcab);
@@ -104,9 +104,9 @@ public class CabService {
         }
     }
 
-    @PostMapping(value = "/cab/getAdminsCab", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/cab/getColabCab", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getAdminsCab(@RequestParam("id") String id) {
+    public Message getColabCab(@RequestParam("id") String id) {
         try {
             List<Colab> colabs = getColabsByIdCab(id.replace("#",""));
             if (colabs.isEmpty()) {

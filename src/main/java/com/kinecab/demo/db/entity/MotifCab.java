@@ -88,8 +88,8 @@ public class MotifCab {
         return idCab;
     }
 
-    public void setIdCab(int idAdmin) {
-        this.idCab = idAdmin;
+    public void setIdCab(int idCab) {
+        this.idCab = idCab;
     }
 
     public int getDuree() {

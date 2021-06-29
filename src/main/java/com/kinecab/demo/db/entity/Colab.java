@@ -14,7 +14,7 @@ public class Colab {
     private int idCab;
 
     @Column
-    private int idAdmin;
+    private int idKineUser;
 
     @Column
     private String name;
@@ -50,12 +50,12 @@ public class Colab {
         this.idCab = idCab;
     }
 
-    public int getIdAdmin() {
-        return idAdmin;
+    public int getIdKineUser() {
+        return idKineUser;
     }
 
-    public void setIdAdmin(int idAdmin) {
-        this.idAdmin = idAdmin;
+    public void setIdKineUser(int idKineUser) {
+        this.idKineUser = idKineUser;
     }
 
     public String getName() {
