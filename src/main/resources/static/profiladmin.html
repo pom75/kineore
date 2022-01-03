@@ -61,32 +61,6 @@
         });
 
 
-        $.ajax({
-            url: '/cab/getcabprofil',
-            type: 'POST',
-            data: 'token=' + readCookie('session'),
-            success: function (jsonData, textStatus, jqXHR) {
-                $('#vitale').val(jsonData.cartevital);
-                $('#codepostal').val(jsonData.codePostal);
-                $('#convention').val(jsonData.convention);
-                $('#mailcab').val(jsonData.email);
-                $('#nomcab').val(jsonData.name);
-                $('#rue').val(jsonData.nomRue);
-                $('#paiement').val(jsonData.paiment);
-                $('#numcab').val(jsonData.phone);
-                $('#tarifs').val(jsonData.tarif);
-                $('#prescab').val(jsonData.pres);
-                $('#urlcab').val(jsonData.url);
-                $('#urcabsamll').html('<a href="https://www.kinecab.com/cab/' + jsonData.url + '">http://www.kinecab.com/cab/<b>' + jsonData.url + '</b></a>');
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-                $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');
-            }
-        });
-
-
         function readCookie(name) {
             var i, c, ca, nameEQ = name + "=";
             ca = document.cookie.split(';');
@@ -171,9 +145,7 @@ header section -->
         <div class="container">
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-                       aria-controls="nav-home" aria-selected="true">Mon Cabinet</a>
-                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+                    <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
                        aria-controls="nav-profile" aria-selected="false">Profil</a>
                     <a class="nav-item nav-link" id="nav-pat-tab" data-toggle="tab" href="#nav-pat" role="tab"
                        aria-controls="nav-pat" aria-selected="false">Mes Patients</a>
@@ -181,134 +153,9 @@ header section -->
                        aria-controls="nav-motif" aria-selected="false">Mes Motifs</a>
                 </div>
             </nav>
+
             <div class="tab-content justify-content-md-center" id="nav-tabContent">
-                <div class="tab-pane fade show active mt-2" id="nav-home" role="tabpanel"
-                     aria-labelledby="nav-home-tab">
-                    <section class="text-center">
-                        <div class="container">
-                            <h1 class="jumbotron-heading mb-4">Mon Cabinet</h1>
-                            <div class="row">
-                                <div class="col-sm-6" id="mycab">
-                                    <h3 class="text-left">Ajouter un nouveau patient</h3>
-                                    <div class="text-left" id="addPatientz">
-                                        <button type="button" id="addPatient" class="btn btn-primary float-left">Ajouter
-                                        </button>
-                                    </div>
-                                    <br>
-                                    <br>
-                                    <h3 class="text-left">Mes rendez-vous en attente de confirmation</h3>
-                                    <div class="text-left" id="waitRDV">
-                                        <p>Aucun rendez-vous en attente de confirmation.</p>
-                                    </div>
-                                    <h3 class="text-left">Accepter un collaborateur dans mon cabinet</h3>
-                                    <div class="text-left" id="waitCollab">
-                                        <p>Aucun collaborateur en attente de confirmation.</p>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <form id="changeCabinet" action="" method="post">
-                                        <div class="row" id="darwCab">
-                                            <div class="col-sm text-left mb-3">
-                                                <label class="text-left">Nom URL du cabinet</label>
-                                                <input class="form-control" name="urlcab" id="urlcab" value=""
-                                                       style="padding:5px;width: 200px; "
-                                                       readonly>
-                                                <small id="urcabsamll" class="form-text text-muted">
-                                                </small>
-                                            </div>
-                                            <div class="col-sm text-left mb-3">
-                                                <label>Nom du Cabinet</label>
-                                                <input class="form-control btn-group-sm" id="nomcab" name="nomcab"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-                                            <div class="col-sm text-left mb-3">
-                                                <label>Présentation du Cabinet</label>
-                                                <textarea class="form-control btn-group-sm" rows="5" id="prescab"
-                                                          name="prescab" readonly></textarea>
-                                            </div>
-                                            <div class="col-sm text-left mb-3">
-                                                <label>Photos de présentation</label>
-                                                <input class="form-control btn-group-sm" id="photo" name="photo"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-                                            <div class="col-sm text-left mb-3">
-                                                <label>Téléphone</label>
-                                                <input class="form-control btn-group-sm" id="numcab" name="numcab"
-                                                       pattern="[0][12345679][0-9]{8}$"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-                                            <div class="col-sm text-left">
-                                                <label>Adresse mail</label>
-                                                <input class="form-control btn-group-sm" id="mailcab" name="mailcab"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-                                            <div class="col-sm text-left mb-3" style="display: none">
-                                                <label>Token</label>
-                                                <input class="form-control btn-group-sm" id="token3" name="token"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-                                            <div class="col-sm text-left mb-3">
-                                                <label>Numéro et nom de rue</label>
-                                                <input class="form-control btn-group-sm" id="rue" name="rue"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-                                            <div class="col-sm text-left mb-3">
-                                                <label>Code postal</label>
-                                                <input class="form-control btn-group-sm" id="codepostal"
-                                                       name="codepostal"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-
-                                            <div class="col-sm text-left mb-3">
-                                                <label>Moyen de paiement</label>
-                                                <input class="form-control btn-group-sm" id="paiement" name="paiement"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-
-                                            <div class="col-sm text-left mb-3">
-                                                <label>Carte vitale acceptée</label>
-                                                <input class="form-control btn-group-sm" id="vitale" name="vitale"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-                                            <div class="col-sm text-left">
-                                                <label>Tarifs</label>
-                                                <input class="form-control btn-group-sm" id="tarifs" name="tarifs"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-                                            <div class="col-sm text-left">
-                                                <label>Conventionné</label>
-                                                <input class="form-control btn-group-sm" id="convention"
-                                                       name="convention"
-                                                       style="padding:5px;width: 200px; "
-                                                       value="" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="float-sm-right mt-4 mb-5" id="modifBlock2">
-                                            <button type="button" id="modif2" class="btn btn-secondary float-right">
-                                                Modifier
-                                            </button>
-                                        </div>
-                                        <div class="float-sm-right mt-4 mb-5" id="saveBlock2" style="display: none">
-                                            <input type="submit" value="Enregistrer"
-                                                   class="btn btn-secondary float-right"/>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-                <div class="tab-pane fade mt-2" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div class="tab-pane fade show active mt-2" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <section class="text-center">
                         <div class="container">
                             <h1 class="jumbotron-heading mb-4">Mon Profil</h1>
@@ -547,21 +394,6 @@ header section -->
         $('#mdp').removeAttr('readonly');
     });
 
-    $('#modif2').click(function () {
-        jQuery('#modifBlock2').css("display", "none");
-        jQuery('#saveBlock2').css("display", "block");
-        $('#nomcab').removeAttr('readonly');
-        $('#prescab').removeAttr('readonly');
-        $('#numcab').removeAttr('readonly');
-        $('#mailcab').removeAttr('readonly');
-        $('#rue').removeAttr('readonly');
-        $('#paiement').removeAttr('readonly');
-        $('#codepostal').removeAttr('readonly');
-        $('#vitale').removeAttr('readonly');
-        $('#tarifs').removeAttr('readonly');
-        $('#convention').removeAttr('readonly');
-        $('#urlcab').removeAttr('readonly');
-    });
 
     $('#supp').click(function () {
         $('#modalSupp').modal('toggle');
@@ -592,40 +424,6 @@ header section -->
         return false; // cancel original event to prevent form submitting
     });
 
-    $('#changeCabinet').submit(function () {
-        $('#dialog_title_span').text("");
-        $('#modalMessage').modal('toggle');
-        $.ajax({
-            data: $('#changeCabinet').serialize(),
-            type: 'POST',
-            url: '/cab/updatecab',
-            success: function (jsonData, textStatus, jqXHR) {
-                $('#dialog_title_span').text(jsonData.message);
-                if (jsonData.status == "OK") {
-                    $('#urcabsamll').html('<a href="https://www.kinecab.com/cab/' + $('#urlcab').val() + '">http://www.kinecab.com/cab/<b>' + $('#urlcab').val() + '</b></a>');
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-                $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');
-            }
-        });
-        jQuery('#modifBlock2').css("display", "block");
-        jQuery('#saveBlock2').css("display", "none");
-        $('#urlcab').attr('readonly', true);
-        $('#nomcab').attr('readonly', true);
-        $('#prescab').attr('readonly', true);
-        $('#numcab').attr('readonly', true);
-        $('#mailcab').attr('readonly', true);
-        $('#rue').attr('readonly', true);
-        $('#paiement').attr('readonly', true);
-        $('#codepostal').attr('readonly', true);
-        $('#vitale').attr('readonly', true);
-        $('#tarifs').attr('readonly', true);
-        $('#convention').attr('readonly', true);
-        return false; // cancel original event to prevent form submitting
-    });
 
     //Do nothing on submit
     $("#suppForm").submit(function (e) {
@@ -654,46 +452,6 @@ header section -->
             }
         });
     });
-
-    $("#addPatient").click(function () {
-        $('#popupAddPatient').modal('show');
-    });
-
-    //DO nothing on submit
-    $("#eventAddPatient").submit(function (e) {
-        e.preventDefault();
-    });
-
-    $("#savePatient").click(function (e) {
-        addPatient($('#namePat').val(), $('#prenomPat').val(), $('#telPat').val(), $('#mailPat').val())
-    });
-
-    function addPatient(nom, prenom, tel, mail) {
-        $('#dialog_title_span').text("");
-        $.ajax({
-            data: {nom: nom, prenom: prenom, tel: tel, mail: mail, tokenKineUser: readCookie('session')},
-            type: 'POST',
-            url: '/kineuser/addpatient',
-            success: function (jsonData, textStatus, jqXHR) {
-                $('#dialog_title_span').text(jsonData.message);
-                if (jsonData.status == "OK") {
-                    $('#popupAddPatient').modal('hide');
-                    $('#modalMessage').modal('toggle');
-                    $('#modaleMessageTitle').text("Opération terminée");
-                    $('#namePat').val('');
-                    $('#prenomPat').val('');
-                    $('#telPat').val('');
-                } else {
-                    $('#modalMessage').modal('toggle');
-                    $('#modaleMessageTitle').text("Une erreur est survenue");
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-                $('#modaleMessageTitle').text("Une erreur est survenue");
-            }
-        });
-    }
 
     //Table Person
     var table;
