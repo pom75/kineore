@@ -179,6 +179,8 @@ header section -->
                        aria-controls="nav-home" aria-selected="true">Mon Cabinet</a>
                     <a class="nav-item nav-link" id="nav-motif-tab" data-toggle="tab" href="#nav-motif" role="tab"
                        aria-controls="nav-profile" aria-selected="false">Motifs du Cabinet</a>
+                    <a class="nav-item nav-link" id="nav-pat-tab" data-toggle="tab" href="#nav-pat" role="tab"
+                       aria-controls="nav-pat" aria-selected="false">Mes Patients</a>
                 </div>
             </nav>
             <div class="tab-content justify-content-md-center" id="nav-tabContent">
@@ -331,6 +333,28 @@ header section -->
                                     class="btn btn-secondary float-right mb-5">
                                 motifs archivés
                             </button>
+                        </div>
+                    </section>
+                </div>
+                <div class="tab-pane fade mt-2" id="nav-pat" role="tabpanel" aria-labelledby="nav-pat-tab">
+                    <section class="text-center">
+                        <div class="container">
+                            <h1 class="jumbotron-heading mb-4">Mes Patients</h1>
+                            <table id="table_id" class="display nowrap" style="width:100%">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nom</th>
+                                    <th>Prenom</th>
+                                    <th>Mail</th>
+                                    <th>Tel</th>
+                                    <th>Profil</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tab_pat">
+                                </tbody>
+                            </table>
+                            <br><br><br>
                         </div>
                     </section>
                 </div>
@@ -852,6 +876,66 @@ header section -->
         $('#convention').removeAttr('readonly');
         $('#urlcab').removeAttr('readonly');
     });
+
+    //Table Person
+    var table;
+    $(document).ready(function () {
+        table = $('#table_id').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
+            },
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": 5,
+                    "visible": true,
+                    "data": null,
+                    "defaultContent": "<button type='button' class='btn btn-primary btn-sm' >Voir</button>",
+                    "searchable": false
+                }
+            ],
+            responsive: true
+
+        });
+        //On click row -> redirect person profil
+        $('#table_id tbody').on('click', 'button', function () {
+            var data = table.row($(this).parents('tr')).data();
+            if (data === undefined) {
+                data = table.row($(this).parents('tr').prev()).data();
+            }
+            window.location.href = "patient.html?id=" + data[0];
+        });
+        getPerson();
+    });
+
+    function getPerson() {
+        $.ajax({
+            data: {tokenKineUser: readCookie('session')},
+            type: 'POST',
+            url: '/rdv/getpersonidkineuser',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.people.length; i++) {
+                        //Add person on table person
+                        table.row.add([jsonData.people[i].id, jsonData.people[i].nom, jsonData.people[i].prenom, jsonData.people[i].email, jsonData.people[i].tel]).draw().node();
+                    }
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
 
 
 </script>
