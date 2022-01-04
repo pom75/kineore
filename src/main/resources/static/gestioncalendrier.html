@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>KinéCab - Site de rendez-vous en ligne pour les Kinésithérapeute</title>
+    <link rel="icon" type="image/png" href="img/ck.png"/>
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.datatables.net/rss.xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/rowreorder/1.2.7/css/rowReorder.dataTables.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/responsive/2.2.7/css/responsive.dataTables.min.css">
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" language="javascript"
+            src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript"
+            src="https://cdn.datatables.net/rowreorder/1.2.7/js/dataTables.rowReorder.min.js"></script>
+    <script type="text/javascript" language="javascript"
+            src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.23/r-2.2.7/datatables.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+
+        window.onload = redirect;
+
+        function redirect() {
+            if (readCookie('session') == '') {
+                window.location.href = ("/index.html");
+            }
+            if (readCookie('isKine') == '0') {
+                window.location.href = ("/index.html");
+            }
+        }
+
+        function readCookie(name) {
+            var i, c, ca, nameEQ = name + "=";
+            ca = document.cookie.split(';');
+            for (i = 0; i < ca.length; i++) {
+                c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1, c.length);
+                }
+                if (c.indexOf(nameEQ) == 0) {
+                    return c.substring(nameEQ.length, c.length);
+                }
+            }
+            return '';
+        }
+
+        function delete_cookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            window.location.href = ("/index.html");
+        }
+    </script>
+
+
+</head>
+<body>
+
+<!-- ====================================================
+header section -->
+<header style="padding-bottom: 70px;">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
+        <img src="img/ck.png" width="30" height="30">
+        <a class="navbar-brand" href="index.html">&nbspKinécab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="moncalendrier.html">Mon Calendrier</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right active" href="#">Gestion Du Calendrier</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="gestioncabinet.html">Gestion Du Cabinet</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" href="profiladmin.html">Mon Compte</a>
+                </li>
+                <li class="nav-item navbar-right">
+                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('isKine')" href="#">Deconnexion</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header> <!-- end of header area -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalMessage" style="z-index:99999999" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaleMessageTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span id="dialog_title_span"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<main role="main">
+    <section class="text-center">
+        <div class="container">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-pref-tab" data-toggle="tab" href="#nav-pref" role="tab"
+                       aria-controls="nav-pref" aria-selected="false">Préférences</a>
+                    <a class="nav-item nav-link" id="nav-motif-tab" data-toggle="tab" href="#nav-motif" role="tab"
+                       aria-controls="nav-motif" aria-selected="false">Mes Motifs</a>
+                    <a class="nav-item nav-link" id="nav-pat-tab" data-toggle="tab" href="#nav-pat" role="tab"
+                       aria-controls="nav-pat" aria-selected="false">Mes Patients</a>
+                </div>
+            </nav>
+
+            <div class="tab-content justify-content-md-center" id="nav-tabContent">
+                <div class="tab-pane fade show active mt-2" id="nav-pref" role="tabpanel" aria-labelledby="nav-pref-tab">
+                    <section class="text-center">
+                        <div class="container">
+                            <h1 class="jumbotron-heading mb-4">Préférences</h1>
+                            <div class="row">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="tab-pane fade mt-2" id="nav-motif" role="tabpanel" aria-labelledby="nav-pat-tab">
+                    <section class="text-center">
+                        <div class="container">
+                            <h1 class="jumbotron-heading mb-4">Mes Motifs</h1>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table id="table_id_motif" class="display nowrap" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>Id_Motif_Cab</th>
+                                            <th>Motif</th>
+                                            <th>Couleur</th>
+                                            <th>Ressource</th>
+                                            <th>Durée</th>
+                                            <th>Supprimer</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tab_motif">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <button type="button" id="addCollabMotif"
+                            class="btn btn-secondary float-right mb-5">
+                        Ajouter un motif
+                    </button>
+                </div>
+                <div class="tab-pane fade mt-2" id="nav-pat" role="tabpanel" aria-labelledby="nav-pat-tab">
+                    <section class="text-center">
+                        <div class="container">
+                            <h1 class="jumbotron-heading mb-4">Mes Patients</h1>
+                            <table id="table_id" class="display nowrap" style="width:100%">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nom</th>
+                                    <th>Prenom</th>
+                                    <th>Mail</th>
+                                    <th>Tel</th>
+                                    <th>Profil</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tab_pat">
+                                </tbody>
+                            </table>
+                            <br><br><br>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div class="modal fade" id="modalSupp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Suppression définitive de votre compte</h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="suppForm" action="" method="post">
+                    <p>Attention, cette action est définitive et irréversible!</p>
+                    <input type="password" class="form-control" name="mdp" id="mdp2" placeholder="Mot de passe"
+                           required=""
+                           autofocus=""/>
+                    <input type="token" id="token2" class="form-control" name="token" placeholder="token" required=""
+                           autofocus="" style="display: none"/>
+                    <br>
+                    <button class="btn btn-lg btn-danger btn-block" type="submit">Supprimer mon compte</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Popup motif cab not used by colab -->
+<div class="modal fade" id="addMotifForCollabTable2" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Motifs du Cabinet</h4>
+            </div>
+            <div class="modal-body">
+                <table id="table_to_add_id_motif" class="display nowrap" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>Id_Motif_Cab</th>
+                        <th>Motif</th>
+                        <th>Couleur</th>
+                        <th>Ressource</th>
+                        <th>Durée</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tab_to_add_motif">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button id="button_to_add_motif" type="button" class="btn btn-primary">Ajouter</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Popup Add Patient -->
+
+<div class="modal fade" id="popupAddPatient" tabindex="-99" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered event-popup mb-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter un nouveau patient</h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-signin" id="eventAddPatient" method="POST">
+                    <div id="CanceledEvent" class="daySelectect">
+                        <input type="text" id="namePat" class="form-control" name="nom" placeholder="Nom" required=""
+                               oninput="setCustomValidity( this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                        <br>
+                        <input type="text" id="prenomPat" class="form-control" name="prenom" placeholder="Prenom"
+                               required=""
+                               oninput="setCustomValidity(this.validity.patternMismatch ? 'Le champ est vide' : '')"/>
+                        <br>
+                        <input type="tel" id="telPat" class="form-control" name="tel"
+                               pattern="[0][12345679][0-9]{8}$"
+                               placeholder="Téléphone : ex 0637849203" required="" autofocus=""
+                               oninput="setCustomValidity(this.validity.patternMismatch ? 'Numéro de téléphone incorrecte' : '')"/>
+                        <br>
+                        <input type="email" id="mailPat" class="form-control" name="email"
+                               placeholder="email" autofocus=""/>
+                        <br>
+                        <div class="col-sm">
+                            <button type="button" id="savePatient" class="btn btn-secondary float-right">Enregistrer
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- footer starts here -->
+<nav class="navbar fixed-bottom navbar-light bg-light align-items-center justify-content-center">
+    © 2020 Copyright
+</nav>
+
+<!-- script tags
+============================================================= -->
+<script type="text/javascript">
+
+
+    $('#modif').click(function () {
+        jQuery('#modifBlock').css("display", "none");
+        jQuery('#saveBlock').css("display", "block");
+        $('#num').removeAttr('readonly');
+        $('#mdp').removeAttr('readonly');
+    });
+
+
+    $('#supp').click(function () {
+        $('#modalSupp').modal('toggle');
+    });
+
+
+    $('#changeProfil').submit(function () {
+        $('#dialog_title_span').text("");
+        $('#modalMessage').modal('toggle');
+        $.ajax({
+            data: $('#changeProfil').serialize(),
+            type: 'POST',
+            url: '/login/changeprofilkineuser',
+            success: function (jsonData, textStatus, jqXHR) {
+                $('#modaleMessageTitle').text("Ok");
+                $('#dialog_title_span').text(jsonData.message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+        jQuery('#modifBlock').css("display", "block");
+        jQuery('#saveBlock').css("display", "none");
+        $('#num').attr('readonly', true);
+        $('#mdp').attr('readonly', true);
+        return false; // cancel original event to prevent form submitting
+    });
+
+
+    //Do nothing on submit
+    $("#suppForm").submit(function (e) {
+        e.preventDefault();
+    });
+
+    $('#suppForm').submit(function () {
+        $('#dialog_title_span').text("");
+        $('#modalSupp').modal('hide');
+        $('#modalMessage').modal('toggle');
+        $.ajax({
+            data: $('#suppForm').serialize(),
+            type: 'POST',
+            url: '/login/suppprofilkineuser',
+            success: function (jsonData, textStatus, jqXHR) {
+                $('#dialog_title_span').text(jsonData.message);
+                if (jsonData.status == "OK") {
+                    delete_cookie('session');
+                } else {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    });
+
+
+    function removeMotif(mid) {
+        $.ajax({
+            data: {tokenKineUser: readCookie('session'), motifId: mid},
+            type: 'POST',
+            url: '/rdv/remCollabMotif',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+
+    //Table Motif
+    var table_motif;
+    $(document).ready(function () {
+        table_motif = $('#table_id_motif').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
+            },
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": 5,
+                    "visible": true,
+                    "data": null,
+                    "defaultContent": "<button class='btn btn-default btn-lg' ><i class='fa fa-trash' aria-hidden='true'></i></button>",
+                    "searchable": false
+                }
+            ],
+            responsive: true
+        });
+        getMotif();
+    });
+
+    $('#table_id_motif tbody').on('click', 'button', function () {
+        var data = table_motif.row($(this).parents('tr')).data();
+        var isResponsive = false;
+        if (data === undefined) {
+            isResponsive = true;
+            data = table_motif.row($(this).parents('tr').prev()).data();
+        }
+        removeMotif(data[0]);
+        var n = table_motif_for_addition.row.add([data[0], data[1], data[2], data[3], data[4]]);
+        n.draw();
+
+        var index = n.index();
+        $(table_motif_for_addition.cell(index, 2).node()).css({'background-color': data[2], 'color': data[2]});
+
+        if (isResponsive) {
+            table_motif.row($(this).parents('tr').prev()).remove().draw(false);
+            table_motif.row($(this).parents('tr')).remove().draw(false);
+        } else {
+            table_motif.row($(this).parents('tr')).remove().draw(false);
+        }
+    });
+
+    function getMotif() {
+        $.ajax({
+            data: {tokenKineUser: readCookie('session')},
+            type: 'POST',
+            cache: false,
+            url: '/rdv/getmotifcolabbytoken',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.motif.length; i++) {
+                        // Add motif on table_motif
+                        table_motif.row.add([jsonData.motif[i].id, jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree]).draw().node();
+                        $(table_motif.cell(i, 2).node()).css({
+                            'background-color': jsonData.motif[i].color,
+                            'color': jsonData.motif[i].color
+                        })
+                    }
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+    function addMotifsForCollab(mids) {
+        $.ajax({
+            data: {tokenKineUser: readCookie('session'), motifIds: mids.toString()},
+            type: 'POST',
+            url: '/rdv/addMotifsForCollab',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                } else {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+
+    var table_motif_for_addition;
+    $(document).ready(function () {
+        table_motif_for_addition = $('#table_to_add_id_motif').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
+            },
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }
+            ],
+            responsive: true
+        });
+        getMotifsForAddition();
+
+        $('#table_to_add_id_motif tbody').on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+
+        $(document).on('click', '#button_to_add_motif', function () {
+            var motif_ids = [];
+            var table_data = table_motif_for_addition.rows('.selected').data();
+            for (var i = 0; i < table_data.length; i++) {
+                motif_ids[i] = table_data[i][0].toString();
+            }
+            addMotifsForCollab(motif_ids);
+
+            for (var i = 0; i < table_data.length; i++) {
+                var row_to_add = table_data[i];
+                var n = table_motif.row.add([row_to_add[0], row_to_add[1], row_to_add[2], row_to_add[3], row_to_add[4]]);
+                n.draw();
+                var index = n.index();
+                $(table_motif.cell(index, 2).node()).css({'background-color': row_to_add[2], 'color': row_to_add[2]});
+            }
+
+            table_motif_for_addition.rows('.selected').remove().draw();
+        });
+    });
+
+
+    function getMotifsForAddition() {
+        $.ajax({
+            data: {tokenKineUser: readCookie('session')},
+            type: 'POST',
+            cache: false,
+            url: '/rdv/getmotifCabNotUsedByColab',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.motif.length; i++) {
+                        //Add motif on table_motif_for_addition
+                        table_motif_for_addition.row.add([jsonData.motif[i].id, jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree]).draw().node();
+                        $(table_motif_for_addition.cell(i, 2).node()).css({
+                            'background-color': jsonData.motif[i].color,
+                            'color': jsonData.motif[i].color
+                        })
+                    }
+                } else {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+    $('#addCollabMotif').on('click', function () {
+        $('#addMotifForCollabTable2').modal('show');
+    });
+
+    //Table Person
+    var table;
+    $(document).ready(function () {
+        table = $('#table_id').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
+            },
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": 5,
+                    "visible": true,
+                    "data": null,
+                    "defaultContent": "<button type='button' class='btn btn-primary btn-sm' >Voir</button>",
+                    "searchable": false
+                }
+            ],
+            responsive: true
+
+        });
+        //On click row -> redirect person profil
+        $('#table_id tbody').on('click', 'button', function () {
+            var data = table.row($(this).parents('tr')).data();
+            if (data === undefined) {
+                data = table.row($(this).parents('tr').prev()).data();
+            }
+            window.location.href = "patient.html?id=" + data[0];
+        });
+        getPerson();
+    });
+
+    function getPerson() {
+        $.ajax({
+            data: {tokenKineUser: readCookie('session')},
+            type: 'POST',
+            url: '/rdv/getpersonidkineuser',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    for (var i = 0; i < jsonData.people.length; i++) {
+                        //Add person on table person
+                        table.row.add([jsonData.people[i].id, jsonData.people[i].nom, jsonData.people[i].prenom, jsonData.people[i].email, jsonData.people[i].tel]).draw().node();
+                    }
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
