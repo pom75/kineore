@@ -87,7 +87,7 @@ public class KineUserService {
     @PostMapping(value = "/kineuser/getpersonbyid", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Message getPersonById(@RequestParam("tokenKineUser") String tokenKineUser,
-                                              @RequestParam("idPerson") String idPerson) {
+                                 @RequestParam("idPerson") String idPerson) {
         try {
             Colab colabByToken = getColabByToken(tokenKineUser);
             if (colabByToken == null) {
@@ -97,10 +97,10 @@ public class KineUserService {
             if (person != null) {
                 if (person.getPassword() == null) {
                     person.setCryptedPassword("null");
-                }else {
+                } else {
                     person.setCryptedPassword("not null");
                 }
-                    return new GetPerson("OK", "RAS", person);
+                return new GetPerson("OK", "RAS", person);
             } else {
                 return new Message("FAIL", "Erreur pendant le chargement du patient.");
             }
@@ -134,7 +134,7 @@ public class KineUserService {
                 return new Message("FAIL", "Mail déjà utilisé");
             }
             //TODO update nom prenom RDVs
-            if (person.getPassword()== null) {
+            if (person.getPassword() == null) {
                 person.setEmail(mail);
                 person.setNom(nom);
                 person.setPrenom(prenom);
@@ -166,7 +166,7 @@ public class KineUserService {
             if (person.getPassword() == null) {
                 String newPassword = newPasswordPerson(person);
                 sendEmail(person.getEmail(), SEND_PERSON_TITLE, SEND_PERSON_CONTENT.replace("xxx", newPassword));
-                return new Message("OK", "Email d'inscription envoyé à "+person.getEmail()+".");
+                return new Message("OK", "Email d'inscription envoyé à " + person.getEmail() + ".");
             } else {
                 return new Message("FAIL", "Vous ne pouvez pas envoyer un mail d'inscription a un patient déja inscrit.");
             }
@@ -178,19 +178,51 @@ public class KineUserService {
 
     @PostMapping(value = "/kineuser/getallcabcolabs", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Message getallcabcolabs( @RequestParam("token") String token) {
+    public Message getallcabcolabs(@RequestParam("token") String token) {
         try {
             List<KineUser> allKineUsersCab = getAllCabKineUserByToken(token);
             if (!allKineUsersCab.isEmpty()) {
                 List<ColabInfo> colabInfos = new LinkedList<>();
                 allKineUsersCab.forEach(e -> {
                     Colab colab = getColabByIdKineUser(String.valueOf(e.getId()));
-                    colabInfos.add(new ColabInfo(colab.getId(),colab.getName()));
+                    colabInfos.add(new ColabInfo(colab.getId(), colab.getName(),colab.getJours()));
                 });
-                return new GetKineUsers("OK","RAS",colabInfos);
+                return new GetKineUsers("OK", "RAS", colabInfos);
             } else {
                 return new Message("FAIL", "Erreur de Token.");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Impossible de changer le profil.");
+        }
+    }
+
+    @PostMapping(value = "/kineuser/savejours", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message saveJoursColab(@RequestParam("token") String token, @RequestParam("jours") String jours) {
+        try {
+            Colab colab = getColabByToken(token);
+            if (colab == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+            colab.setJours(jours);
+            saveColab(colab);
+            return new Message("OK", "RAS");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Message("FAIL", "Impossible de changer le profil.");
+        }
+    }
+
+    @PostMapping(value = "/kineuser/getjours", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Message getJoursColab(@RequestParam("token") String token) {
+        try {
+            Colab colab = getColabByToken(token);
+            if (colab == null) {
+                return new Message("FAIL", "Token invalide");
+            }
+            return new Message("OK", colab.getJours());
         } catch (Exception e) {
             e.printStackTrace();
             return new Message("FAIL", "Impossible de changer le profil.");

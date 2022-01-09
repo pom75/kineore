@@ -196,4 +196,12 @@ public class KineUserDB {
         }
     }
 
+    public static void saveColab(Colab colab) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction trx = session.beginTransaction();
+            session.saveOrUpdate(colab);
+            trx.commit();
+        }
+    }
+
 }
