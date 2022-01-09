@@ -106,7 +106,7 @@ public class KineUserDB {
 
     public static Colab getColabByIdKineUser(String idKineUser) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idKineUser = '" + idKineUser+ "'");
+            NativeQuery sqlQuery = session.createSQLQuery("SELECT * from COLAB where  COLAB.idKineUser = '" + idKineUser + "'");
             return (Colab) sqlQuery.addEntity(Colab.class).uniqueResult();
         }
     }
@@ -134,7 +134,7 @@ public class KineUserDB {
     public static Colab getColabById(String idColab) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * from COLAB WHERE COLAB.id = '" + idColab + "'");
-            return(Colab) sqlQuery.addEntity(Colab.class).uniqueResult();
+            return (Colab) sqlQuery.addEntity(Colab.class).uniqueResult();
         }
     }
 
@@ -150,16 +150,21 @@ public class KineUserDB {
             List<Person> people = new ArrayList<>();
             NativeQuery sqlQuery = session.createSQLQuery("SELECT * FROM CAB_PERSON WHERE  CAB_PERSON.idCab = '" + idCab + "'");
             List<CabPerson> cabPerson = (List<CabPerson>) sqlQuery.addEntity(CabPerson.class).list();
-            try {
-                cabPerson.forEach(person -> {
-                    final NativeQuery sqlQuery1 = session.createSQLQuery("SELECT * FROM PERSON WHERE  PERSON.id = '" + person.getIdPerson() + "'");
-                    final Person singleResult = (Person) sqlQuery1.addEntity(Person.class).getSingleResult();
+
+            cabPerson.forEach(person -> {
+                final NativeQuery sqlQuery1 = session.createSQLQuery("SELECT * FROM PERSON WHERE  PERSON.id = '" + person.getIdPerson() + "'");
+                Person singleResult = null;
+                try {
+                    singleResult = (Person) sqlQuery1.addEntity(Person.class).getSingleResult();
+                } catch (NoResultException nre) {
+                    //Ignore this because as per your logic this is ok!
+                }
+                if (singleResult != null) {
                     singleResult.setPassword("");
                     people.add(singleResult);
-                });
-            } catch (NoResultException nre) {
-                //Ignore this because as per your logic this is ok!
-            }
+                }
+            });
+
             return people;
         }
     }
