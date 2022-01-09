@@ -103,7 +103,7 @@ header section -->
                     <a class="nav-link navbar-right" href="moncalendrier.html">Mon Calendrier</a>
                 </li>
                 <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" href="#">Gestion Du Calendrier</a>
+                    <a class="nav-link navbar-right" href="gestioncalendrier.html">Gestion Du Calendrier</a>
                 </li>
                 <li class="nav-item navbar-right">
                     <a class="nav-link navbar-right" href="gestioncabinet.html">Gestion Du Cabinet</a>
@@ -147,8 +147,6 @@ header section -->
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
                        aria-controls="nav-profile" aria-selected="false">Profil</a>
-                    <a class="nav-item nav-link" id="nav-motif-tab" data-toggle="tab" href="#nav-motif" role="tab"
-                       aria-controls="nav-motif" aria-selected="false">Mes Motifs</a>
                 </div>
             </nav>
 
@@ -225,35 +223,6 @@ header section -->
                             </div>
                         </div>
                     </section>
-                </div>
-                <div class="tab-pane fade mt-2" id="nav-motif" role="tabpanel" aria-labelledby="nav-pat-tab">
-                    <section class="text-center">
-                        <div class="container">
-                            <h1 class="jumbotron-heading mb-4">Mes Motifs</h1>
-                            <div class="row">
-                                <div class="table-responsive">
-                                    <table id="table_id_motif" class="display nowrap" style="width:100%">
-                                        <thead>
-                                        <tr>
-                                            <th>Id_Motif_Cab</th>
-                                            <th>Motif</th>
-                                            <th>Couleur</th>
-                                            <th>Ressource</th>
-                                            <th>Durée</th>
-                                            <th>Supprimer</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="tab_motif">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <button type="button" id="addCollabMotif"
-                            class="btn btn-secondary float-right mb-5">
-                        Ajouter un motif
-                    </button>
                 </div>
             </div>
         </div>
@@ -429,195 +398,6 @@ header section -->
             }
         });
     });
-
-
-    function removeMotif(mid) {
-        $.ajax({
-            data: {tokenKineUser: readCookie('session'), motifId: mid},
-            type: 'POST',
-            url: '/rdv/remCollabMotif',
-            success: function (jsonData, textStatus, jqXHR) {
-                if (jsonData.status === "OK") {
-                } else {
-                    $('#modaleMessageTitle').text("Une erreur est survenue");
-                    $('#dialog_title_span').text(jsonData.message);
-                    $('#modalMessage').modal('toggle');
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-                $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');
-            }
-        });
-    }
-
-
-    //Table Motif
-    var table_motif;
-    $(document).ready(function () {
-        table_motif = $('#table_id_motif').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
-            },
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
-                },
-                {
-                    "targets": 5,
-                    "visible": true,
-                    "data": null,
-                    "defaultContent": "<button class='btn btn-default btn-lg' ><i class='fa fa-trash' aria-hidden='true'></i></button>",
-                    "searchable": false
-                }
-            ],
-            responsive: true
-        });
-        getMotif();
-    });
-
-    $('#table_id_motif tbody').on('click', 'button', function () {
-        var data = table_motif.row($(this).parents('tr')).data();
-        var isResponsive = false;
-        if (data === undefined) {
-            isResponsive = true;
-            data = table_motif.row($(this).parents('tr').prev()).data();
-        }
-        removeMotif(data[0]);
-        var n = table_motif_for_addition.row.add([data[0], data[1], data[2], data[3], data[4]]);
-        n.draw();
-
-        var index = n.index();
-        $(table_motif_for_addition.cell(index, 2).node()).css({'background-color': data[2], 'color': data[2]});
-
-        if (isResponsive) {
-            table_motif.row($(this).parents('tr').prev()).remove().draw(false);
-            table_motif.row($(this).parents('tr')).remove().draw(false);
-        } else {
-            table_motif.row($(this).parents('tr')).remove().draw(false);
-        }
-    });
-
-    function getMotif() {
-        $.ajax({
-            data: {tokenKineUser: readCookie('session')},
-            type: 'POST',
-            cache: false,
-            url: '/rdv/getmotifcolabbytoken',
-            success: function (jsonData, textStatus, jqXHR) {
-                if (jsonData.status === "OK") {
-                    for (var i = 0; i < jsonData.motif.length; i++) {
-                        // Add motif on table_motif
-                        table_motif.row.add([jsonData.motif[i].id, jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree]).draw().node();
-                        $(table_motif.cell(i, 2).node()).css({
-                            'background-color': jsonData.motif[i].color,
-                            'color': jsonData.motif[i].color
-                        })
-                    }
-                } else {
-                    $('#modaleMessageTitle').text("Une erreur est survenue");
-                    $('#dialog_title_span').text(jsonData.message);
-                    $('#modalMessage').modal('toggle');
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-                $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');
-            }
-        });
-    }
-
-    function addMotifsForCollab(mids) {
-        $.ajax({
-            data: {tokenKineUser: readCookie('session'), motifIds: mids.toString()},
-            type: 'POST',
-            url: '/rdv/addMotifsForCollab',
-            success: function (jsonData, textStatus, jqXHR) {
-                if (jsonData.status === "OK") {
-                } else {
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            }
-        });
-    }
-
-
-    var table_motif_for_addition;
-    $(document).ready(function () {
-        table_motif_for_addition = $('#table_to_add_id_motif').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
-            },
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
-                }
-            ],
-            responsive: true
-        });
-        getMotifsForAddition();
-
-        $('#table_to_add_id_motif tbody').on('click', 'tr', function () {
-            $(this).toggleClass('selected');
-        });
-
-        $(document).on('click', '#button_to_add_motif', function () {
-            var motif_ids = [];
-            var table_data = table_motif_for_addition.rows('.selected').data();
-            for (var i = 0; i < table_data.length; i++) {
-                motif_ids[i] = table_data[i][0].toString();
-            }
-            addMotifsForCollab(motif_ids);
-
-            for (var i = 0; i < table_data.length; i++) {
-                var row_to_add = table_data[i];
-                var n = table_motif.row.add([row_to_add[0], row_to_add[1], row_to_add[2], row_to_add[3], row_to_add[4]]);
-                n.draw();
-                var index = n.index();
-                $(table_motif.cell(index, 2).node()).css({'background-color': row_to_add[2], 'color': row_to_add[2]});
-            }
-
-            table_motif_for_addition.rows('.selected').remove().draw();
-        });
-    });
-
-
-    function getMotifsForAddition() {
-        $.ajax({
-            data: {tokenKineUser: readCookie('session')},
-            type: 'POST',
-            cache: false,
-            url: '/rdv/getmotifCabNotUsedByColab',
-            success: function (jsonData, textStatus, jqXHR) {
-                if (jsonData.status === "OK") {
-                    for (var i = 0; i < jsonData.motif.length; i++) {
-                        //Add motif on table_motif_for_addition
-                        table_motif_for_addition.row.add([jsonData.motif[i].id, jsonData.motif[i].motif, jsonData.motif[i].color, jsonData.motif[i].resource, jsonData.motif[i].duree]).draw().node();
-                        $(table_motif_for_addition.cell(i, 2).node()).css({
-                            'background-color': jsonData.motif[i].color,
-                            'color': jsonData.motif[i].color
-                        })
-                    }
-                } else {
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            }
-        });
-    }
-
-    $('#addCollabMotif').on('click', function () {
-        $('#addMotifForCollabTable2').modal('show');
-    });
-
-
 </script>
 </body>
 </html>
