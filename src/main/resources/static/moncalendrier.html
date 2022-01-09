@@ -80,33 +80,37 @@
             currentIdColab = $_GET('id');
         }
 
-        $.ajax({
-            data: {token: readCookie('session')},
-            type: 'POST',
-            url: '/kineuser/getallcabcolabs',
-            success: function (data, textStatus, jqXHR) {
-                var jsonData = JSON.parse(data);
-                if (jsonData.status == "OK") {
-                    $('#colabName').empty();
-                    jsonData.colabInfos.forEach(colabInfo => {
-                        if (colabInfo.idColab == currentIdColab) {
-                            $('#colabName').append("<option value=\"" + colabInfo.idColab + "\" selected=\"selected\">" + colabInfo.colabName + "</option>");
-                        } else {
-                            $('#colabName').append("<option value=\"" + colabInfo.idColab + "\">" + colabInfo.colabName + "</option>");
-                        }
-                    })
-                } else {
+        function getColabs() {
+            $.ajax({
+                data: {token: readCookie('session')},
+                type: 'POST',
+                url: '/kineuser/getallcabcolabs',
+                async: false,
+                success: function (data, textStatus, jqXHR) {
+                    var jsonData = JSON.parse(data);
+                    if (jsonData.status == "OK") {
+                        $('#colabName').empty();
+                        jsonData.colabInfos.forEach(colabInfo => {
+                            idColabDaysMap[colabInfo.idColab] = colabInfo.colabDays;
+                            if (colabInfo.idColab == currentIdColab) {
+                                $('#colabName').append("<option value=\"" + colabInfo.idColab + "\" selected=\"selected\">" + colabInfo.colabName + "</option>");
+                            } else {
+                                $('#colabName').append("<option value=\"" + colabInfo.idColab + "\">" + colabInfo.colabName + "</option>");
+                            }
+                        })
+                    } else {
+                        $('#modaleMessageTitle').text("Une erreur est survenue");
+                        $('#dialog_title_span').text(jsonData.message);
+                        $('#modalMessage').modal('toggle');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
                     $('#modaleMessageTitle').text("Une erreur est survenue");
-                    $('#dialog_title_span').text(jsonData.message);
                     $('#modalMessage').modal('toggle');
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
-                $('#modaleMessageTitle').text("Une erreur est survenue");
-                $('#modalMessage').modal('toggle');
-            }
-        });
+            });
+        }
 
 
         //This one for the news events
@@ -585,6 +589,7 @@ header section -->
 <script>
 
     var idPersonMap = {};
+    var idColabDaysMap = {};
 
     //Get all person from the cab
     function getPerson() {
@@ -637,11 +642,13 @@ header section -->
     var currentEvent;
     var added = false; // avoid duplication
     var init = false;
+    var hiddenDays;
     getPerson();
 
 
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
+        getColabs();
         calendar = new FullCalendar.Calendar(calendarEl, {
             plugins: ['interaction', 'dayGrid', 'timeGrid'],
             header: {
@@ -660,7 +667,7 @@ header section -->
             minTime: "07:00:00",
             maxTime: "21:00:00",
             droppable: true,
-            weekends: false,
+            hiddenDays: idColabDaysMap[currentIdColab],
             displayEventTime: false,
             nowIndicator: true,
             buttonText: {
@@ -1649,6 +1656,7 @@ header section -->
         }
     });
 
+    //TODO bouton escape modale bootstrap 5 + changeemnt caldar hiddens days
 </script>
 <script>
     moment.locale('fr', {

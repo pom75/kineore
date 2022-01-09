@@ -22,6 +22,9 @@ public class Colab {
     @Column
     private  boolean isSuperAdmin;
 
+    @Column
+    private String jours;
+
     public Colab() {
     }
 
@@ -64,5 +67,13 @@ public class Colab {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getJours() {
+        return jours;
+    }
+
+    public void setJours(String jours) {
+        this.jours = jours;
     }
 }

@@ -22,9 +22,9 @@
             src="js/dataTables.responsive.min.js"></script>
     <script type="text/javascript"
             src="js/datatables.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
-    <script src="js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
     <script>
 
         window.onload = redirect;
@@ -67,31 +67,35 @@
 header section -->
 <header style="padding-bottom: 70px;">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom">
-        <img src="img/ck.png" width="30" height="30">
-        <a class="navbar-brand" href="index.html">&nbspKinécab</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="container-fluid">
+            <img src="img/ck.png" width="30" height="30" class="ms-3">
+            <a class="navbar-brand" href="index.html">&nbspKinécab</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="nav navbar-nav ml-auto">
-                <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" href="moncalendrier.html">Mon Calendrier</a>
-                </li>
-                <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right active" href="#">Gestion Du Calendrier</a>
-                </li>
-                <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" href="gestioncabinet.html">Gestion Du Cabinet</a>
-                </li>
-                <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" href="profiladmin.html">Mon Compte</a>
-                </li>
-                <li class="nav-item navbar-right">
-                    <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('isKine')" href="#">Deconnexion</a>
-                </li>
-            </ul>
+            <div class="collapse navbar-collapse me-3" id="navbarSupportedContent">
+                <ul class="nav navbar-nav ms-auto">
+                    <li class="nav-item navbar-right">
+                        <a class="nav-link navbar-right" href="moncalendrier.html">Mon Calendrier</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-right active" href="#">Gestion Du Calendrier</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-right" href="gestioncabinet.html">Gestion Du Cabinet</a>
+                    </li>
+                    <li class="nav-item navbar-right">
+                        <a class="nav-link navbar-right" href="profiladmin.html">Mon Compte</a>
+                    </li>
+                    <li class="nav-item navbar-right">
+                        <a class="nav-link navbar-right" onclick="delete_cookie('session');delete_cookie('isKine')"
+                           href="#">Deconnexion</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 </header> <!-- end of header area -->
@@ -105,9 +109,7 @@ header section -->
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modaleMessageTitle"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <span id="dialog_title_span"></span>
@@ -120,28 +122,72 @@ header section -->
 <main role="main">
     <section class="text-center">
         <div class="container">
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-pref-tab" data-toggle="tab" href="#nav-pref" role="tab"
-                       aria-controls="nav-pref" aria-selected="false">Préférences</a>
-                    <a class="nav-item nav-link" id="nav-motif-tab" data-toggle="tab" href="#nav-motif" role="tab"
-                       aria-controls="nav-motif" aria-selected="false">Mes Motifs</a>
-                    <a class="nav-item nav-link" id="nav-pat-tab" data-toggle="tab" href="#nav-pat" role="tab"
-                       aria-controls="nav-pat" aria-selected="false">Mes Patients</a>
-                </div>
-            </nav>
-
+            <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pref-tab" data-bs-toggle="tab" data-bs-target="#pref"
+                            type="button" role="tab" aria-controls="pref" aria-selected="true">Préférences
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="motif-tab" data-bs-toggle="tab" data-bs-target="#motif" type="button"
+                            role="tab" aria-controls="motif" aria-selected="false">Mes Motifs
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pat-tab" data-bs-toggle="tab" data-bs-target="#pat" type="button"
+                            role="tab" aria-controls="pat" aria-selected="false">Mes Patients
+                    </button>
+                </li>
+            </ul>
             <div class="tab-content justify-content-md-center" id="nav-tabContent">
-                <div class="tab-pane fade show active mt-2" id="nav-pref" role="tabpanel" aria-labelledby="nav-pref-tab">
+                <div class="tab-pane fade show active mt-2" id="pref" role="tabpanel" aria-labelledby="pref-tab">
                     <section class="text-center">
                         <div class="container">
                             <h1 class="jumbotron-heading mb-4">Préférences</h1>
                             <div class="row">
+                                <div class="col-sm-6" id="prefefrenc">
+                                    <h3>Jour à afficher sur le calendrier</h3>
+                                    <form id="changeJour" action="" method="post">
+                                        <div class="form-check-inline form-switch mt-2">
+                                            <input class="form-check-input" value="1" type="checkbox" name="jours" id="lundi">
+                                            <label class="form-check-label" for="lundi">Lundi</label>
+                                        </div>
+                                        <div class="form-check-inline form-switch">
+                                            <input class="form-check-input" value="2" type="checkbox" name="jours" id="mardi">
+                                            <label class="form-check-label" for="mardi">Mardi</label>
+                                        </div>
+                                        <div class="form-check-inline form-switch">
+                                            <input class="form-check-input" value="3" type="checkbox" name="jours" id="mercredi">
+                                            <label class="form-check-label" for="mercredi">Mercredi</label>
+                                        </div>
+                                        <div class="form-check-inline form-switch">
+                                            <input class="form-check-input" value="4" type="checkbox" name="jours" id="jeudi">
+                                            <label class="form-check-label" for="jeudi">Jeudi</label>
+                                        </div>
+                                        <div class="form-check-inline form-switch">
+                                            <input class="form-check-input" value="5" type="checkbox" name="jours" id="vendredi">
+                                            <label class="form-check-label" for="vendredi">Vendredi</label>
+                                        </div>
+                                        <div class="form-check-inline form-switch">
+                                            <input class="form-check-input" value="6" type="checkbox" name="jours" id="samedi">
+                                            <label class="form-check-label" for="samedi">Samedi</label>
+                                        </div>
+                                        <div class="form-check-inline form-switch">
+                                            <input class="form-check-input" value="0" type="checkbox" name="jours" id="dimanche">
+                                            <label class="form-check-label" for="dimanche">Dimanche</label>
+                                        </div>
+                                        <div class="float-md-none mt-3" id="saveJour">
+                                            <input type="submit" value="Enregistrer" class="btn btn-primary float"/>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-sm-6">
+                                </div>
                             </div>
                         </div>
                     </section>
                 </div>
-                <div class="tab-pane fade mt-2" id="nav-motif" role="tabpanel" aria-labelledby="nav-pat-tab">
+                <div class="tab-pane fade mt-2" id="motif" role="tabpanel" aria-labelledby="motif-tab">
                     <section class="text-center">
                         <div class="container">
                             <h1 class="jumbotron-heading mb-4">Mes Motifs</h1>
@@ -170,7 +216,7 @@ header section -->
                         Ajouter un motif
                     </button>
                 </div>
-                <div class="tab-pane fade mt-2" id="nav-pat" role="tabpanel" aria-labelledby="nav-pat-tab">
+                <div class="tab-pane fade mt-2" id="pat" role="tabpanel" aria-labelledby="pat-tab">
                     <section class="text-center">
                         <div class="container">
                             <h1 class="jumbotron-heading mb-4">Mes Patients</h1>
@@ -407,7 +453,11 @@ header section -->
                     "targets": 5,
                     "visible": true,
                     "data": null,
-                    "defaultContent": "<button class='btn btn-default btn-lg' ><i class='fa fa-trash' aria-hidden='true'></i></button>",
+                    "defaultContent": "<button type=\"button\" class=\"btn btn-outline-danger\">" +
+                        "                <svg  width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-trash\" viewBox=\"0 0 16 16\">" +
+                        "  <path d=\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\"></path>" +
+                        "  <path fill-rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\"></path>" +
+                        "</svg></button>",
                     "searchable": false
                 }
             ],
@@ -613,6 +663,87 @@ header section -->
             }
         });
     }
+
+    //Prference
+    //JOUR
+    //DO nothing on submit
+    $("#changeJour").submit(function (e) {
+        e.preventDefault();
+    });
+
+    //Init jour
+    $.ajax({
+        data: {token: readCookie('session')},
+        type: 'POST',
+        url: '/kineuser/getjours',
+        success: function (jsonData, textStatus, jqXHR) {
+            if (jsonData.status === "OK") {
+                if(!jsonData.message.includes("1")){
+                    $('#lundi').prop('checked',true);
+                }
+                if(!jsonData.message.includes("2")){
+                    $('#mardi').prop('checked',true);
+                }
+                if(!jsonData.message.includes("3")){
+                    $('#mercredi').prop('checked',true);
+                }
+                if(!jsonData.message.includes("4")){
+                    $('#jeudi').prop('checked',true);
+                }
+                if(!jsonData.message.includes("5")){
+                    $('#vendredi').prop('checked',true);
+                }
+                if(!jsonData.message.includes("6")){
+                    $('#samedi').prop('checked',true);
+                }
+                if(!jsonData.message.includes("0")){
+                    $('#dimanche').prop('checked',true);
+                }
+
+
+                //Nothing TODO
+            } else {
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#dialog_title_span').text(jsonData.message);
+                $('#modalMessage').modal('toggle');
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+            $('#modaleMessageTitle').text("Une erreur est survenue");
+            $('#modalMessage').modal('toggle');
+        }
+    });
+
+    $("#saveJour").click(function (e) {
+        var jours ="[";
+        $.each($("input[name='jours']:checkbox:not(:checked)"), function(){
+            jours += $(this).val()+",";
+        });
+        jours = jours.slice(0,-1);
+        jours += "]";
+        $.ajax({
+            data: {token: readCookie('session'),jours:jours},
+            type: 'POST',
+            url: '/kineuser/savejours',
+            success: function (jsonData, textStatus, jqXHR) {
+                if (jsonData.status === "OK") {
+                    $('#dialog_title_span').text("Préférences sauvegardé");
+                    $('#modaleMessageTitle').text("Préférences sauvegardé");
+                    $('#modalMessage').modal('toggle');
+                } else {
+                    $('#modaleMessageTitle').text("Une erreur est survenue");
+                    $('#dialog_title_span').text(jsonData.message);
+                    $('#modalMessage').modal('toggle');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#dialog_title_span').text("Un probleme est survenue veuillez contacter un administrateur");
+                $('#modaleMessageTitle').text("Une erreur est survenue");
+                $('#modalMessage').modal('toggle');
+            }
+        });
+    });
 
 </script>
 </body>
